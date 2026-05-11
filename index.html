@@ -74,8 +74,17 @@ align-items:center;
 gap:12px;
 }
 
-.logo{
-font-size:24px;
+.logo-wrap{
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.logo-img{
+height:34px;
+width:auto;
+display:block;
+object-fit:contain;
 }
 
 .title{
@@ -346,12 +355,6 @@ background:var(--navy);
 color:white;
 }
 
-.btn-outline{
-background:white;
-border:1px solid var(--gray-300);
-color:var(--gray-700);
-}
-
 .empty{
 background:white;
 padding:45px;
@@ -401,7 +404,9 @@ font-size:16px;
 
 <div class="h-left">
 
-<div class="logo">🗂</div>
+<div class="logo-wrap">
+<img src="data/cx_white.png" class="logo-img">
+</div>
 
 <div>
 
@@ -841,6 +846,7 @@ renderData(filtered);
 updateStats(filtered);
 
 }
+
 function updateStats(data){
 
 document.getElementById('statTotal').innerText =
