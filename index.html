@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GIS Metadata Explorer</title>
+<title>GIS Data Explorer</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -13,18 +13,10 @@
 
 :root{
 
---navy:#0c234a;
---navy2:#143a7b;
+--navy:#0d2b63;
+--navy2:#153d87;
+
 --blue:#2563eb;
-
---green:#16a34a;
---green-soft:#dcfce7;
-
---orange:#f59e0b;
---orange-soft:#fef3c7;
-
---red:#dc2626;
---red-soft:#fee2e2;
 
 --gray-50:#f9fafb;
 --gray-100:#f3f4f6;
@@ -32,14 +24,29 @@
 --gray-300:#d1d5db;
 --gray-400:#9ca3af;
 --gray-500:#6b7280;
+--gray-600:#4b5563;
 --gray-700:#374151;
 --gray-900:#111827;
 
---white:#ffffff;
+--green:#16a34a;
+--green-bg:#dcfce7;
 
---shadow:0 2px 10px rgba(0,0,0,.05);
+--orange:#d97706;
+--orange-bg:#fef3c7;
+
+--red:#dc2626;
+--red-bg:#fee2e2;
+
+--purple:#7c3aed;
+--purple-bg:#ede9fe;
+
+--cyan:#0891b2;
+--cyan-bg:#cffafe;
 
 --radius:10px;
+
+--shadow:
+0 1px 3px rgba(0,0,0,.04);
 
 --font:'Inter',sans-serif;
 
@@ -58,14 +65,27 @@ color:var(--gray-900);
 }
 
 header{
-height:62px;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
+
+height:60px;
+
+background:
+linear-gradient(
+90deg,
+var(--navy),
+var(--navy2)
+);
+
 display:flex;
 align-items:center;
 justify-content:space-between;
-padding:0 24px;
+
+padding:0 22px;
+
 color:white;
-box-shadow:0 2px 10px rgba(0,0,0,.2);
+
+box-shadow:
+0 2px 8px rgba(0,0,0,.15);
+
 }
 
 .h-left{
@@ -74,29 +94,17 @@ align-items:center;
 gap:12px;
 }
 
-.logo-wrap{
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
 .logo-img{
-height:34px;
+height:30px;
 width:auto;
-display:block;
 object-fit:contain;
+display:block;
 }
 
 .title{
 font-size:16px;
 font-weight:700;
-letter-spacing:.3px;
-}
-
-.subtitle{
-font-size:11px;
-opacity:.8;
-margin-top:2px;
+letter-spacing:.2px;
 }
 
 .h-right{
@@ -104,25 +112,27 @@ font-size:13px;
 opacity:.9;
 }
 
+
 .page{
-max-width:1380px;
+max-width:1250px;
 margin:auto;
-padding:20px;
+padding:18px;
 }
 
 .toolbar{
 
 background:white;
 
-padding:14px;
+border:1px solid var(--gray-200);
 
 border-radius:var(--radius);
 
-border:1px solid var(--gray-200);
+padding:12px;
 
 display:grid;
 
-grid-template-columns:1.5fr .8fr .8fr .8fr auto;
+grid-template-columns:
+1.5fr .8fr .8fr .8fr;
 
 gap:10px;
 
@@ -135,7 +145,9 @@ box-shadow:var(--shadow);
 .toolbar input,
 .toolbar select{
 
-padding:9px 11px;
+height:40px;
+
+padding:0 12px;
 
 border:1px solid var(--gray-300);
 
@@ -156,36 +168,37 @@ background:white;
 border-color:var(--blue);
 }
 
-.btn{
-background:var(--navy);
-color:white;
-border:none;
-padding:9px 14px;
-border-radius:8px;
-cursor:pointer;
-font-size:12px;
-font-weight:600;
-}
-
 .stats{
+
 display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:14px;
+
+grid-template-columns:
+repeat(4,1fr);
+
+gap:12px;
+
 margin-bottom:18px;
+
 }
 
 .stat-card{
+
 background:white;
-padding:14px 16px;
-border-radius:var(--radius);
+
 border:1px solid var(--gray-200);
+
+border-radius:var(--radius);
+
+padding:14px;
+
 box-shadow:var(--shadow);
+
 }
 
 .stat-label{
 font-size:11px;
 color:var(--gray-500);
-margin-bottom:5px;
+margin-bottom:4px;
 }
 
 .stat-value{
@@ -195,7 +208,7 @@ font-weight:700;
 
 .dataset-list{
 display:grid;
-gap:12px;
+gap:10px;
 }
 
 .dataset-card{
@@ -206,7 +219,7 @@ border:1px solid var(--gray-200);
 
 border-radius:var(--radius);
 
-padding:16px 18px;
+padding:16px;
 
 box-shadow:var(--shadow);
 
@@ -215,54 +228,95 @@ transition:.15s;
 }
 
 .dataset-card:hover{
-transform:translateY(-1px);
+border-color:#c7d2fe;
 }
 
-.dataset-type{
-font-size:11px;
-font-weight:600;
-color:var(--gray-500);
-margin-bottom:6px;
-}
-
-.dataset-title{
-font-size:18px;
-font-weight:600;
-color:#1d4ed8;
-line-height:1.3;
-margin-bottom:4px;
-}
-
-.dataset-sub{
-font-size:12px;
-color:var(--gray-500);
+.dataset-top{
+display:flex;
+justify-content:space-between;
+gap:16px;
 margin-bottom:10px;
 }
 
+.dataset-main{
+flex:1;
+}
+
+.dataset-category{
+
+font-size:11px;
+
+font-weight:600;
+
+color:var(--gray-500);
+
+margin-bottom:6px;
+
+}
+
+.dataset-title{
+
+font-size:20px;
+
+font-weight:600;
+
+line-height:1.35;
+
+margin-bottom:5px;
+
+}
+
+.dataset-title a{
+text-decoration:none;
+color:#1d4ed8;
+}
+
+.dataset-title a:hover{
+text-decoration:underline;
+}
+
+.dataset-sub{
+
+font-size:12px;
+
+color:var(--gray-500);
+
+margin-bottom:10px;
+
+}
+
 .dataset-desc{
+
 font-size:13px;
-line-height:1.6;
+
+line-height:1.7;
+
 color:var(--gray-700);
-margin-bottom:12px;
+
 }
 
 .badges{
 display:flex;
 flex-wrap:wrap;
 gap:6px;
-margin-bottom:12px;
+margin-top:12px;
 }
 
 .badge{
+
 padding:4px 8px;
+
 border-radius:999px;
+
 font-size:10px;
+
 font-weight:600;
+
 }
 
 .public{
-background:var(--green-soft);
-color:#166534;
+background:var(--green-bg);
+color:var(--green);
 }
 
 .internal{
@@ -271,101 +325,93 @@ color:#1d4ed8;
 }
 
 .restricted{
-background:var(--orange-soft);
-color:#92400e;
+background:var(--orange-bg);
+color:var(--orange);
 }
 
 .confidential{
-background:var(--red-soft);
-color:#991b1b;
+background:var(--red-bg);
+color:var(--red);
 }
 
 .vector{
-background:#ede9fe;
-color:#5b21b6;
+background:var(--purple-bg);
+color:var(--purple);
 }
 
 .raster{
-background:#cffafe;
-color:#155e75;
+background:var(--cyan-bg);
+color:var(--cyan);
 }
 
 .dataset-meta{
 
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(180px,1fr));
-
-gap:8px;
-
-margin-bottom:14px;
-
-}
-
-.meta-box{
-background:var(--gray-50);
-border:1px solid var(--gray-200);
-border-radius:8px;
-padding:10px;
-}
-
-.meta-label{
-font-size:10px;
-color:var(--gray-500);
-margin-bottom:4px;
-}
-
-.meta-value{
-font-size:12px;
-font-weight:600;
-word-break:break-word;
-}
-
-.dataset-bottom{
 display:flex;
-justify-content:space-between;
-align-items:center;
-gap:12px;
+
 flex-wrap:wrap;
-padding-top:2px;
-}
 
-.bottom-left{
-font-size:11px;
-color:var(--gray-500);
-line-height:1.6;
-}
+gap:16px;
 
-.bottom-actions{
-display:flex;
-gap:8px;
-}
+margin-top:14px;
 
-.action-btn{
-text-decoration:none;
-padding:8px 12px;
-border-radius:7px;
+padding-top:14px;
+
+border-top:1px solid var(--gray-200);
+
 font-size:12px;
-font-weight:600;
+
+color:var(--gray-600);
+
 }
 
-.btn-primary{
+.meta-item strong{
+color:var(--gray-900);
+}
+
+.dataset-action{
+margin-left:auto;
+display:flex;
+align-items:flex-start;
+}
+
+.open-btn{
+
+text-decoration:none;
+
 background:var(--navy);
+
 color:white;
+
+padding:9px 14px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+white-space:nowrap;
+
 }
 
 .empty{
+
 background:white;
-padding:45px;
-text-align:center;
-border-radius:var(--radius);
+
 border:1px solid var(--gray-200);
+
+border-radius:var(--radius);
+
+padding:50px;
+
+text-align:center;
+
 color:var(--gray-500);
+
 }
 
 .footer{
-margin-top:14px;
+margin-top:16px;
 text-align:right;
 font-size:11px;
 color:var(--gray-500);
@@ -381,6 +427,10 @@ grid-template-columns:1fr;
 grid-template-columns:1fr 1fr;
 }
 
+.dataset-top{
+flex-direction:column;
+}
+
 }
 
 @media(max-width:700px){
@@ -390,7 +440,7 @@ grid-template-columns:1fr;
 }
 
 .dataset-title{
-font-size:16px;
+font-size:17px;
 }
 
 }
@@ -404,20 +454,13 @@ font-size:16px;
 
 <div class="h-left">
 
-<div class="logo-wrap">
-<img src="data/cx_white.png" class="logo-img">
-</div>
-
-<div>
+<img
+src="data/cx_white.png"
+class="logo-img"
+>
 
 <div class="title">
 GIS DATA EXPLORER
-</div>
-
-<div class="subtitle">
-Metadata Catalog & Spatial Dataset Repository
-</div>
-
 </div>
 
 </div>
@@ -450,10 +493,6 @@ placeholder="Search dataset, keyword, author..."
 <option value="">All Access</option>
 </select>
 
-<button class="btn" onclick="loadData()">
-Refresh
-</button>
-
 </div>
 
 <div class="stats">
@@ -464,12 +503,12 @@ Refresh
 </div>
 
 <div class="stat-card">
-<div class="stat-label">Raster Dataset</div>
+<div class="stat-label">Raster</div>
 <div class="stat-value" id="statRaster">0</div>
 </div>
 
 <div class="stat-card">
-<div class="stat-label">Vector Dataset</div>
+<div class="stat-label">Vector</div>
 <div class="stat-value" id="statVector">0</div>
 </div>
 
@@ -489,7 +528,7 @@ Loading spreadsheet data...
 </div>
 
 <div class="footer">
-GIS Explorer
+GIS Explorer • GitHub Pages Ready
 </div>
 
 </div>
@@ -505,11 +544,14 @@ async function loadData(){
 
 try{
 
-const response = await fetch(SHEET_CSV);
+const response =
+await fetch(SHEET_CSV);
 
-const csv = await response.text();
+const csv =
+await response.text();
 
-RAW_DATA = csvToArray(csv);
+RAW_DATA =
+csvToArray(csv);
 
 populateFilters();
 
@@ -524,7 +566,7 @@ console.error(err);
 
 document.getElementById('datasetList').innerHTML = `
 <div class="empty">
-Failed to load spreadsheet data
+Failed to load spreadsheet
 </div>
 `;
 
@@ -534,18 +576,23 @@ Failed to load spreadsheet data
 
 function csvToArray(str){
 
-const rows = str.trim().split('\n');
+const rows =
+str.trim().split('\n');
 
-const headers = rows[0].split(',');
+const headers =
+rows[0].split(',');
 
-const data = rows.slice(1).map(row=>{
+const data =
+rows.slice(1).map(row=>{
 
-const values = splitCSV(row);
+const values =
+splitCSV(row);
 
 const obj = {};
 
 headers.forEach((h,i)=>{
-obj[h.trim()] = values[i] || '';
+obj[h.trim()] =
+values[i] || '';
 });
 
 return obj;
@@ -588,7 +635,9 @@ current += char;
 
 result.push(current);
 
-return result.map(v=>v.replace(/^"|"$/g,''));
+return result.map(v=>
+v.replace(/^"|"$/g,'')
+);
 
 }
 
@@ -617,16 +666,27 @@ container.innerHTML += `
 
 <div class="dataset-card">
 
-<div class="dataset-type">
-Dataset
+<div class="dataset-top">
+
+<div class="dataset-main">
+
+<div class="dataset-category">
+${d.l2}
 </div>
 
 <div class="dataset-title">
+
+<a
+href="${d.file_link}"
+target="_blank"
+>
 ${d.file_name}
+</a>
+
 </div>
 
 <div class="dataset-sub">
-${d.l2}
+${d.author} • ${d.division}
 </div>
 
 <div class="dataset-desc">
@@ -643,46 +703,36 @@ ${geoBadge(d.geo_type)}
 
 <div class="dataset-meta">
 
-<div class="meta-box">
-<div class="meta-label">Geographic Extent</div>
-<div class="meta-value">${d.extent}</div>
+<div class="meta-item">
+<strong>Extent:</strong>
+${d.extent}
 </div>
 
-<div class="meta-box">
-<div class="meta-label">Coordinate System</div>
-<div class="meta-value">${d.crs}</div>
+<div class="meta-item">
+<strong>CRS:</strong>
+${d.crs}
 </div>
 
-<div class="meta-box">
-<div class="meta-label">Data Source</div>
-<div class="meta-value">${d.data_source}</div>
+<div class="meta-item">
+<strong>Updated:</strong>
+${d.date_of_update}
 </div>
 
-<div class="meta-box">
-<div class="meta-label">Keywords</div>
-<div class="meta-value">${d.keywords}</div>
+<div class="meta-item">
+<strong>Keywords:</strong>
+${d.keywords}
 </div>
-
-</div>
-
-<div class="dataset-bottom">
-
-<div class="bottom-left">
-
-<strong>Author:</strong> ${d.author}<br>
-
-<strong>Division:</strong> ${d.division}<br>
-
-<strong>Updated:</strong> ${d.date_of_update}
 
 </div>
 
-<div class="bottom-actions">
+</div>
+
+<div class="dataset-action">
 
 <a
 href="${d.file_link}"
 target="_blank"
-class="action-btn btn-primary"
+class="open-btn"
 >
 Open Dataset
 </a>
@@ -734,13 +784,19 @@ return `<span class="badge vector">${v}</span>`;
 function populateFilters(){
 
 const l1Set =
-[...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
+[...new Set(
+RAW_DATA.map(d=>d.l1).filter(Boolean)
+)];
 
 const geoSet =
-[...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
+[...new Set(
+RAW_DATA.map(d=>d.geo_type).filter(Boolean)
+)];
 
 const accessSet =
-[...new Set(RAW_DATA.map(d=>d.access).filter(Boolean))];
+[...new Set(
+RAW_DATA.map(d=>d.access).filter(Boolean)
+)];
 
 const f1 =
 document.getElementById('filterL1');
@@ -813,7 +869,8 @@ document
 .getElementById('filterAccess')
 .value;
 
-const filtered = RAW_DATA.filter(d=>{
+const filtered =
+RAW_DATA.filter(d=>{
 
 const text =
 Object.values(d)
@@ -853,13 +910,19 @@ document.getElementById('statTotal').innerText =
 data.length;
 
 document.getElementById('statRaster').innerText =
-data.filter(d=>d.geo_type.includes('Raster')).length;
+data.filter(d=>
+d.geo_type.includes('Raster')
+).length;
 
 document.getElementById('statVector').innerText =
-data.filter(d=>!d.geo_type.includes('Raster')).length;
+data.filter(d=>
+!d.geo_type.includes('Raster')
+).length;
 
 document.getElementById('statPublic').innerText =
-data.filter(d=>d.access.includes('Public')).length;
+data.filter(d=>
+d.access.includes('Public')
+).length;
 
 }
 
