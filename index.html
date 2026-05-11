@@ -5,16 +5,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Data Explorer</title>
+<title>GIS Metadata Explorer</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
---navy:#0b1f4d;
---navy2:#112b66;
+
+--navy:#0c234a;
+--navy2:#143a7b;
 --blue:#2563eb;
+
+--green:#16a34a;
+--green-soft:#dcfce7;
+
+--orange:#f59e0b;
+--orange-soft:#fef3c7;
+
+--red:#dc2626;
+--red-soft:#fee2e2;
 
 --gray-50:#f9fafb;
 --gray-100:#f3f4f6;
@@ -27,11 +37,12 @@
 
 --white:#ffffff;
 
---shadow:0 2px 10px rgba(0,0,0,.08);
+--shadow:0 2px 12px rgba(0,0,0,.06);
 
---radius:10px;
+--radius:12px;
 
 --font:'Inter',sans-serif;
+
 }
 
 *{
@@ -47,14 +58,14 @@ color:var(--gray-900);
 }
 
 header{
-height:64px;
+height:68px;
 background:linear-gradient(90deg,var(--navy),var(--navy2));
 display:flex;
 align-items:center;
 justify-content:space-between;
 padding:0 28px;
 color:white;
-box-shadow:0 2px 12px rgba(0,0,0,.25);
+box-shadow:0 2px 10px rgba(0,0,0,.25);
 }
 
 .h-left{
@@ -68,43 +79,57 @@ font-size:28px;
 }
 
 .title{
-font-size:18px;
+font-size:17px;
 font-weight:700;
 letter-spacing:.3px;
+}
+
+.subtitle{
+font-size:12px;
+opacity:.8;
 }
 
 .h-right{
 font-size:14px;
 opacity:.9;
 }
-
 .page{
-padding:24px;
-max-width:1500px;
+max-width:1450px;
 margin:auto;
+padding:24px;
 }
 
 .toolbar{
 background:white;
-border-radius:var(--radius);
 padding:18px;
-display:grid;
-grid-template-columns:1.4fr .8fr .8fr .8fr auto;
-gap:12px;
-margin-bottom:20px;
+border-radius:var(--radius);
 box-shadow:var(--shadow);
 border:1px solid var(--gray-200);
+
+display:grid;
+grid-template-columns:1.5fr .8fr .8fr .8fr auto;
+gap:12px;
+
+margin-bottom:22px;
 }
 
 .toolbar input,
 .toolbar select{
-padding:10px 12px;
+
+padding:11px 12px;
+
 border:1px solid var(--gray-300);
+
 border-radius:8px;
+
 font-size:13px;
+
 font-family:var(--font);
+
 outline:none;
+
 background:white;
+
 }
 
 .toolbar input:focus,
@@ -113,10 +138,10 @@ border-color:var(--blue);
 }
 
 .btn{
-border:none;
 background:var(--navy);
 color:white;
-padding:10px 18px;
+border:none;
+padding:11px 18px;
 border-radius:8px;
 cursor:pointer;
 font-weight:600;
@@ -126,142 +151,223 @@ font-weight:600;
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:16px;
-margin-bottom:20px;
+margin-bottom:24px;
 }
 
 .stat-card{
 background:white;
 padding:18px;
 border-radius:var(--radius);
-box-shadow:var(--shadow);
 border:1px solid var(--gray-200);
+box-shadow:var(--shadow);
 }
 
 .stat-label{
 font-size:12px;
 color:var(--gray-500);
-margin-bottom:6px;
+margin-bottom:8px;
 }
 
 .stat-value{
-font-size:24px;
+font-size:28px;
 font-weight:700;
 }
 
-.table-wrap{
-background:white;
-border-radius:var(--radius);
-overflow:hidden;
-box-shadow:var(--shadow);
-border:1px solid var(--gray-200);
+.dataset-list{
+display:grid;
+gap:16px;
 }
 
-.table-head{
-padding:16px 20px;
-border-bottom:1px solid var(--gray-200);
+.dataset-card{
+
+background:white;
+
+border:1px solid var(--gray-200);
+
+border-radius:var(--radius);
+
+padding:20px;
+
+box-shadow:var(--shadow);
+
+transition:.2s;
+
+}
+
+.dataset-card:hover{
+transform:translateY(-2px);
+}
+
+.dataset-top{
 display:flex;
 justify-content:space-between;
-align-items:center;
+gap:18px;
+margin-bottom:10px;
 }
 
-.table-title{
-font-size:15px;
-font-weight:600;
+.dataset-left{
+flex:1;
 }
 
-.table-info{
+.dataset-type{
 font-size:12px;
-color:var(--gray-500);
-}
-
-.table-scroll{
-overflow:auto;
-max-height:70vh;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-font-size:13px;
-}
-
-thead{
-background:var(--gray-50);
-position:sticky;
-top:0;
-z-index:10;
-}
-
-th{
-padding:12px 14px;
-text-align:left;
-border-bottom:1px solid var(--gray-200);
 font-weight:600;
-white-space:nowrap;
+color:var(--gray-500);
+margin-bottom:8px;
 }
 
-td{
-padding:12px 14px;
-border-bottom:1px solid var(--gray-100);
-vertical-align:top;
+.dataset-title{
+font-size:22px;
+font-weight:600;
+color:#1d4ed8;
+margin-bottom:6px;
+line-height:1.25;
 }
 
-tr:hover{
-background:#f8fbff;
+.dataset-sub{
+font-size:13px;
+color:var(--gray-500);
+margin-bottom:14px;
+}
+
+.dataset-desc{
+font-size:14px;
+line-height:1.7;
+color:var(--gray-700);
+margin-bottom:18px;
+}
+
+.dataset-meta{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(180px,1fr));
+
+gap:12px;
+
+margin-bottom:16px;
+
+}
+
+.meta-box{
+background:var(--gray-50);
+border:1px solid var(--gray-200);
+border-radius:10px;
+padding:12px;
+}
+
+.meta-label{
+font-size:11px;
+color:var(--gray-500);
+margin-bottom:5px;
+}
+
+.meta-value{
+font-size:13px;
+font-weight:600;
+word-break:break-word;
+}
+
+.badges{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-bottom:14px;
 }
 
 .badge{
-display:inline-block;
-padding:4px 8px;
+padding:5px 10px;
 border-radius:999px;
 font-size:11px;
 font-weight:600;
 }
 
-.badge-public{
-background:#dcfce7;
+.public{
+background:var(--green-soft);
 color:#166534;
 }
 
-.badge-internal{
+.internal{
 background:#dbeafe;
 color:#1d4ed8;
 }
 
-.badge-restricted{
-background:#fef3c7;
+.restricted{
+background:var(--orange-soft);
 color:#92400e;
 }
 
-.badge-confidential{
-background:#fee2e2;
+.confidential{
+background:var(--red-soft);
 color:#991b1b;
 }
 
-.link-btn{
-display:inline-block;
-padding:6px 10px;
-border-radius:6px;
+.vector{
+background:#ede9fe;
+color:#5b21b6;
+}
+
+.raster{
+background:#cffafe;
+color:#155e75;
+}
+
+.dataset-bottom{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:16px;
+flex-wrap:wrap;
+}
+
+.bottom-left{
+font-size:12px;
+color:var(--gray-500);
+line-height:1.7;
+}
+
+.bottom-actions{
+display:flex;
+gap:10px;
+}
+
+.action-btn{
+text-decoration:none;
+padding:10px 14px;
+border-radius:8px;
+font-size:13px;
+font-weight:600;
+}
+
+.btn-primary{
 background:var(--navy);
 color:white;
-text-decoration:none;
-font-size:12px;
+}
+
+.btn-outline{
+background:white;
+border:1px solid var(--gray-300);
+color:var(--gray-700);
 }
 
 .empty{
-padding:40px;
+background:white;
+padding:50px;
 text-align:center;
+border-radius:var(--radius);
+border:1px solid var(--gray-200);
 color:var(--gray-500);
 }
 
 .footer{
-margin-top:16px;
+margin-top:18px;
+text-align:right;
 font-size:12px;
 color:var(--gray-500);
-text-align:right;
 }
 
-@media(max-width:1200px){
+@media(max-width:1100px){
 
 .toolbar{
 grid-template-columns:1fr;
@@ -279,6 +385,10 @@ grid-template-columns:1fr 1fr;
 grid-template-columns:1fr;
 }
 
+.dataset-title{
+font-size:18px;
+}
+
 }
 
 </style>
@@ -289,8 +399,21 @@ grid-template-columns:1fr;
 <header>
 
 <div class="h-left">
+
 <div class="logo">🗂</div>
-<div class="title">GIS DATA EXPLORER</div>
+
+<div>
+
+<div class="title">
+GIS DATA EXPLORER
+</div>
+
+<div class="subtitle">
+Metadata Catalog & Spatial Dataset Repository
+</div>
+
+</div>
+
 </div>
 
 <div class="h-right">
@@ -301,13 +424,16 @@ Metadata Explorer
 
 <div class="page">
 
-
 <div class="toolbar">
 
-<input type="text" id="searchInput" placeholder="Search dataset, keyword, author, description...">
+<input
+type="text"
+id="searchInput"
+placeholder="Search dataset, keyword, description, author..."
+>
 
 <select id="filterL1">
-<option value="">All Level 1</option>
+<option value="">All Category</option>
 </select>
 
 <select id="filterGeo">
@@ -324,7 +450,6 @@ Refresh
 
 </div>
 
-
 <div class="stats">
 
 <div class="stat-card">
@@ -333,75 +458,28 @@ Refresh
 </div>
 
 <div class="stat-card">
-<div class="stat-label">Raster</div>
+<div class="stat-label">Raster Dataset</div>
 <div class="stat-value" id="statRaster">0</div>
 </div>
 
 <div class="stat-card">
-<div class="stat-label">Vector</div>
+<div class="stat-label">Vector Dataset</div>
 <div class="stat-value" id="statVector">0</div>
 </div>
 
 <div class="stat-card">
-<div class="stat-label">Public Data</div>
+<div class="stat-label">Public Dataset</div>
 <div class="stat-value" id="statPublic">0</div>
 </div>
 
 </div>
 
+<div class="dataset-list" id="datasetList">
 
-<div class="table-wrap">
-
-<div class="table-head">
-
-<div class="table-title">
-Dataset Catalog
-</div>
-
-<div class="table-info" id="tableInfo">
-Loading...
-</div>
-
-</div>
-
-<div class="table-scroll">
-
-<table>
-
-<thead>
-
-<tr>
-<th>ID</th>
-<th>File Name</th>
-<th>Description</th>
-<th>Keywords</th>
-<th>Category</th>
-<th>Extent</th>
-<th>CRS</th>
-<th>Geometry</th>
-<th>Scale</th>
-<th>Source</th>
-<th>Accuracy</th>
-<th>Access</th>
-<th>Author</th>
-<th>Link</th>
-</tr>
-
-</thead>
-
-<tbody id="tableBody">
-
-<tr>
-<td colspan="14" class="empty">
+<div class="empty">
 Loading spreadsheet data...
-</td>
-</tr>
-
-</tbody>
-
-</table>
-
 </div>
+
 </div>
 
 <div class="footer">
@@ -429,7 +507,7 @@ RAW_DATA = csvToArray(csv);
 
 populateFilters();
 
-renderTable(RAW_DATA);
+renderData(RAW_DATA);
 
 updateStats(RAW_DATA);
 
@@ -438,17 +516,16 @@ catch(err){
 
 console.error(err);
 
-document.getElementById('tableBody').innerHTML = `
-<tr>
-<td colspan="14" class="empty">
-Failed to load spreadsheet
-</td>
-</tr>
+document.getElementById('datasetList').innerHTML = `
+<div class="empty">
+Failed to load spreadsheet data
+</div>
 `;
 
 }
 
 }
+
 
 function csvToArray(str){
 
@@ -477,7 +554,9 @@ return data;
 function splitCSV(row){
 
 const result = [];
+
 let current = '';
+
 let insideQuotes = false;
 
 for(let i=0;i<row.length;i++){
@@ -489,8 +568,11 @@ insideQuotes = !insideQuotes;
 }
 
 else if(char === ',' && !insideQuotes){
+
 result.push(current);
+
 current = '';
+
 }
 
 else{
@@ -505,19 +587,201 @@ return result.map(v=>v.replace(/^"|"$/g,''));
 
 }
 
+function renderData(data){
+
+const container =
+document.getElementById('datasetList');
+
+if(data.length === 0){
+
+container.innerHTML = `
+<div class="empty">
+No dataset found
+</div>
+`;
+
+return;
+
+}
+
+container.innerHTML = '';
+
+data.forEach(d=>{
+
+container.innerHTML += `
+
+<div class="dataset-card">
+
+<div class="dataset-top">
+
+<div class="dataset-left">
+
+<div class="dataset-type">
+Dataset
+</div>
+
+<div class="dataset-title">
+${d.file_name}
+</div>
+
+<div class="dataset-sub">
+${d.l1} • ${d.l2} • ${d.l3}
+</div>
+
+<div class="dataset-desc">
+${d.desc}
+</div>
+
+<div class="badges">
+
+${accessBadge(d.access)}
+
+${geoBadge(d.geo_type)}
+
+</div>
+
+<div class="dataset-meta">
+
+<div class="meta-box">
+<div class="meta-label">Geographic Extent</div>
+<div class="meta-value">${d.extent}</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Coordinate System</div>
+<div class="meta-value">${d.crs}</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Scale / Resolution</div>
+<div class="meta-value">${d.scale}</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Data Source</div>
+<div class="meta-value">${d.data_source}</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Quality Accuracy</div>
+<div class="meta-value">${d.quality_accuracy}</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Keywords</div>
+<div class="meta-value">${d.keywords}</div>
+</div>
+
+</div>
+
+<div class="dataset-bottom">
+
+<div class="bottom-left">
+
+<strong>Author:</strong> ${d.author}<br>
+
+<strong>Division:</strong> ${d.division}<br>
+
+<strong>Created:</strong> ${d.date_of_creation}<br>
+
+<strong>Updated:</strong> ${d.date_of_update}
+
+</div>
+
+<div class="bottom-actions">
+
+<a
+href="${d.file_link}"
+target="_blank"
+class="action-btn btn-primary"
+>
+Open Dataset
+</a>
+
+<a
+href="${d.file_link}"
+target="_blank"
+class="action-btn btn-outline"
+>
+Metadata
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+function accessBadge(v){
+
+if(v.includes('Public')){
+return `<span class="badge public">${v}</span>`;
+}
+
+if(v.includes('Internal')){
+return `<span class="badge internal">${v}</span>`;
+}
+
+if(v.includes('Restricted')){
+return `<span class="badge restricted">${v}</span>`;
+}
+
+if(v.includes('Confidential')){
+return `<span class="badge confidential">${v}</span>`;
+}
+
+return `<span class="badge">${v}</span>`;
+
+}
+
+function geoBadge(v){
+
+if(v.includes('Raster')){
+return `<span class="badge raster">${v}</span>`;
+}
+
+return `<span class="badge vector">${v}</span>`;
+
+}
+
 function populateFilters(){
 
-const l1Set = [...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
-const geoSet = [...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
-const accessSet = [...new Set(RAW_DATA.map(d=>d.access).filter(Boolean))];
+const l1Set =
+[...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
 
-const f1 = document.getElementById('filterL1');
-const fg = document.getElementById('filterGeo');
-const fa = document.getElementById('filterAccess');
+const geoSet =
+[...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
 
-f1.innerHTML = '<option value="">All Level 1</option>';
-fg.innerHTML = '<option value="">All Geometry</option>';
-fa.innerHTML = '<option value="">All Access</option>';
+const accessSet =
+[...new Set(RAW_DATA.map(d=>d.access).filter(Boolean))];
+
+const f1 =
+document.getElementById('filterL1');
+
+const fg =
+document.getElementById('filterGeo');
+
+const fa =
+document.getElementById('filterAccess');
+
+f1.innerHTML =
+'<option value="">All Category</option>';
+
+fg.innerHTML =
+'<option value="">All Geometry</option>';
+
+fa.innerHTML =
+'<option value="">All Access</option>';
 
 l1Set.forEach(v=>{
 f1.innerHTML += `<option>${v}</option>`;
@@ -533,161 +797,49 @@ fa.innerHTML += `<option>${v}</option>`;
 
 }
 
-function renderTable(data){
-
-const tb = document.getElementById('tableBody');
-
-if(data.length === 0){
-
-tb.innerHTML = `
-<tr>
-<td colspan="14" class="empty">
-No dataset found
-</td>
-</tr>
-`;
-
-return;
-
-}
-
-tb.innerHTML = '';
-
-data.forEach(d=>{
-
-tb.innerHTML += `
-
-<tr>
-
-<td>${d.id}</td>
-
-<td>
-<strong>${d.file_name}</strong>
-</td>
-
-<td>${d.desc}</td>
-
-<td>${d.keywords}</td>
-
-<td>
-${d.l1}<br>
-${d.l2}<br>
-${d.l3}
-</td>
-
-<td>${d.extent}</td>
-
-<td>${d.crs}</td>
-
-<td>${d.geo_type}</td>
-
-<td>${d.scale}</td>
-
-<td>${d.data_source}</td>
-
-<td>${d.quality_accuracy}</td>
-
-<td>
-${accessBadge(d.access)}
-</td>
-
-<td>
-${d.author}<br>
-<span style="font-size:11px;color:#6b7280">
-${d.division}
-</span>
-</td>
-
-<td>
-<a
-class="link-btn"
-href="${d.file_link}"
-target="_blank"
->
-Open
-</a>
-</td>
-
-</tr>
-
-`;
-
-});
-
-document.getElementById('tableInfo').innerText =
-`${data.length} dataset loaded`;
-
-}
-
-function accessBadge(v){
-
-if(v.includes('Public')){
-return `<span class="badge badge-public">${v}</span>`;
-}
-
-if(v.includes('Internal')){
-return `<span class="badge badge-internal">${v}</span>`;
-}
-
-if(v.includes('Restricted')){
-return `<span class="badge badge-restricted">${v}</span>`;
-}
-
-if(v.includes('Confidential')){
-return `<span class="badge badge-confidential">${v}</span>`;
-}
-
-return v;
-
-}
-
-function updateStats(data){
-
-document.getElementById('statTotal').innerText =
-data.length;
-
-document.getElementById('statRaster').innerText =
-data.filter(d=>d.geo_type.includes('Raster')).length;
-
-document.getElementById('statVector').innerText =
-data.filter(d=>!d.geo_type.includes('Raster')).length;
-
-document.getElementById('statPublic').innerText =
-data.filter(d=>d.access.includes('Public')).length;
-
-}
-
-document.getElementById('searchInput')
+document
+.getElementById('searchInput')
 .addEventListener('input',applyFilters);
 
-document.getElementById('filterL1')
+document
+.getElementById('filterL1')
 .addEventListener('change',applyFilters);
 
-document.getElementById('filterGeo')
+document
+.getElementById('filterGeo')
 .addEventListener('change',applyFilters);
 
-document.getElementById('filterAccess')
+document
+.getElementById('filterAccess')
 .addEventListener('change',applyFilters);
 
 function applyFilters(){
 
 const q =
-document.getElementById('searchInput')
+document
+.getElementById('searchInput')
 .value
 .toLowerCase();
 
 const l1 =
-document.getElementById('filterL1').value;
+document
+.getElementById('filterL1')
+.value;
 
 const geo =
-document.getElementById('filterGeo').value;
+document
+.getElementById('filterGeo')
+.value;
 
 const access =
-document.getElementById('filterAccess').value;
+document
+.getElementById('filterAccess')
+.value;
 
 const filtered = RAW_DATA.filter(d=>{
 
-const text = Object.values(d)
+const text =
+Object.values(d)
 .join(' ')
 .toLowerCase();
 
@@ -712,9 +864,24 @@ matchAccess
 
 });
 
-renderTable(filtered);
+renderData(filtered);
 
 updateStats(filtered);
+
+}
+function updateStats(data){
+
+document.getElementById('statTotal').innerText =
+data.length;
+
+document.getElementById('statRaster').innerText =
+data.filter(d=>d.geo_type.includes('Raster')).length;
+
+document.getElementById('statVector').innerText =
+data.filter(d=>!d.geo_type.includes('Raster')).length;
+
+document.getElementById('statPublic').innerText =
+data.filter(d=>d.access.includes('Public')).length;
 
 }
 
