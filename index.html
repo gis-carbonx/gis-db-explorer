@@ -37,9 +37,9 @@
 
 --white:#ffffff;
 
---shadow:0 2px 12px rgba(0,0,0,.06);
+--shadow:0 2px 10px rgba(0,0,0,.05);
 
---radius:12px;
+--radius:10px;
 
 --font:'Inter',sans-serif;
 
@@ -58,71 +58,81 @@ color:var(--gray-900);
 }
 
 header{
-height:68px;
+height:62px;
 background:linear-gradient(90deg,var(--navy),var(--navy2));
 display:flex;
 align-items:center;
 justify-content:space-between;
-padding:0 28px;
+padding:0 24px;
 color:white;
-box-shadow:0 2px 10px rgba(0,0,0,.25);
+box-shadow:0 2px 10px rgba(0,0,0,.2);
 }
 
 .h-left{
 display:flex;
 align-items:center;
-gap:14px;
+gap:12px;
 }
 
 .logo{
-font-size:28px;
+font-size:24px;
 }
 
 .title{
-font-size:17px;
+font-size:16px;
 font-weight:700;
 letter-spacing:.3px;
 }
 
 .subtitle{
-font-size:12px;
+font-size:11px;
 opacity:.8;
+margin-top:2px;
 }
 
 .h-right{
-font-size:14px;
+font-size:13px;
 opacity:.9;
 }
+
 .page{
-max-width:1450px;
+max-width:1380px;
 margin:auto;
-padding:24px;
+padding:20px;
 }
 
 .toolbar{
+
 background:white;
-padding:18px;
+
+padding:14px;
+
 border-radius:var(--radius);
-box-shadow:var(--shadow);
+
 border:1px solid var(--gray-200);
 
 display:grid;
-grid-template-columns:1.5fr .8fr .8fr .8fr auto;
-gap:12px;
 
-margin-bottom:22px;
+grid-template-columns:1.5fr .8fr .8fr .8fr auto;
+
+gap:10px;
+
+margin-bottom:18px;
+
+box-shadow:var(--shadow);
+
 }
 
 .toolbar input,
 .toolbar select{
 
-padding:11px 12px;
+padding:9px 11px;
 
 border:1px solid var(--gray-300);
 
 border-radius:8px;
 
-font-size:13px;
+font-size:12px;
 
 font-family:var(--font);
 
@@ -141,41 +151,42 @@ border-color:var(--blue);
 background:var(--navy);
 color:white;
 border:none;
-padding:11px 18px;
+padding:9px 14px;
 border-radius:8px;
 cursor:pointer;
+font-size:12px;
 font-weight:600;
 }
 
 .stats{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:16px;
-margin-bottom:24px;
+gap:14px;
+margin-bottom:18px;
 }
 
 .stat-card{
 background:white;
-padding:18px;
+padding:14px 16px;
 border-radius:var(--radius);
 border:1px solid var(--gray-200);
 box-shadow:var(--shadow);
 }
 
 .stat-label{
-font-size:12px;
+font-size:11px;
 color:var(--gray-500);
-margin-bottom:8px;
+margin-bottom:5px;
 }
 
 .stat-value{
-font-size:28px;
+font-size:22px;
 font-weight:700;
 }
 
 .dataset-list{
 display:grid;
-gap:16px;
+gap:12px;
 }
 
 .dataset-card{
@@ -186,100 +197,57 @@ border:1px solid var(--gray-200);
 
 border-radius:var(--radius);
 
-padding:20px;
+padding:16px 18px;
 
 box-shadow:var(--shadow);
 
-transition:.2s;
+transition:.15s;
 
 }
 
 .dataset-card:hover{
-transform:translateY(-2px);
-}
-
-.dataset-top{
-display:flex;
-justify-content:space-between;
-gap:18px;
-margin-bottom:10px;
-}
-
-.dataset-left{
-flex:1;
+transform:translateY(-1px);
 }
 
 .dataset-type{
-font-size:12px;
+font-size:11px;
 font-weight:600;
 color:var(--gray-500);
-margin-bottom:8px;
+margin-bottom:6px;
 }
 
 .dataset-title{
-font-size:22px;
+font-size:18px;
 font-weight:600;
 color:#1d4ed8;
-margin-bottom:6px;
-line-height:1.25;
+line-height:1.3;
+margin-bottom:4px;
 }
 
 .dataset-sub{
-font-size:13px;
+font-size:12px;
 color:var(--gray-500);
-margin-bottom:14px;
+margin-bottom:10px;
 }
 
 .dataset-desc{
-font-size:14px;
-line-height:1.7;
-color:var(--gray-700);
-margin-bottom:18px;
-}
-
-.dataset-meta{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(180px,1fr));
-
-gap:12px;
-
-margin-bottom:16px;
-
-}
-
-.meta-box{
-background:var(--gray-50);
-border:1px solid var(--gray-200);
-border-radius:10px;
-padding:12px;
-}
-
-.meta-label{
-font-size:11px;
-color:var(--gray-500);
-margin-bottom:5px;
-}
-
-.meta-value{
 font-size:13px;
-font-weight:600;
-word-break:break-word;
+line-height:1.6;
+color:var(--gray-700);
+margin-bottom:12px;
 }
 
 .badges{
 display:flex;
 flex-wrap:wrap;
-gap:8px;
-margin-bottom:14px;
+gap:6px;
+margin-bottom:12px;
 }
 
 .badge{
-padding:5px 10px;
+padding:4px 8px;
 border-radius:999px;
-font-size:11px;
+font-size:10px;
 font-weight:600;
 }
 
@@ -313,30 +281,63 @@ background:#cffafe;
 color:#155e75;
 }
 
+.dataset-meta{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(180px,1fr));
+
+gap:8px;
+
+margin-bottom:14px;
+
+}
+
+.meta-box{
+background:var(--gray-50);
+border:1px solid var(--gray-200);
+border-radius:8px;
+padding:10px;
+}
+
+.meta-label{
+font-size:10px;
+color:var(--gray-500);
+margin-bottom:4px;
+}
+
+.meta-value{
+font-size:12px;
+font-weight:600;
+word-break:break-word;
+}
+
 .dataset-bottom{
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:16px;
+gap:12px;
 flex-wrap:wrap;
+padding-top:2px;
 }
 
 .bottom-left{
-font-size:12px;
+font-size:11px;
 color:var(--gray-500);
-line-height:1.7;
+line-height:1.6;
 }
 
 .bottom-actions{
 display:flex;
-gap:10px;
+gap:8px;
 }
 
 .action-btn{
 text-decoration:none;
-padding:10px 14px;
-border-radius:8px;
-font-size:13px;
+padding:8px 12px;
+border-radius:7px;
+font-size:12px;
 font-weight:600;
 }
 
@@ -353,7 +354,7 @@ color:var(--gray-700);
 
 .empty{
 background:white;
-padding:50px;
+padding:45px;
 text-align:center;
 border-radius:var(--radius);
 border:1px solid var(--gray-200);
@@ -361,9 +362,9 @@ color:var(--gray-500);
 }
 
 .footer{
-margin-top:18px;
+margin-top:14px;
 text-align:right;
-font-size:12px;
+font-size:11px;
 color:var(--gray-500);
 }
 
@@ -386,7 +387,7 @@ grid-template-columns:1fr;
 }
 
 .dataset-title{
-font-size:18px;
+font-size:16px;
 }
 
 }
@@ -429,7 +430,7 @@ Metadata Explorer
 <input
 type="text"
 id="searchInput"
-placeholder="Search dataset, keyword, description, author..."
+placeholder="Search dataset, keyword, author..."
 >
 
 <select id="filterL1">
@@ -483,7 +484,7 @@ Loading spreadsheet data...
 </div>
 
 <div class="footer">
-GIS Metadata Explorer • GitHub Pages Ready
+GIS Explorer
 </div>
 
 </div>
@@ -525,7 +526,6 @@ Failed to load spreadsheet data
 }
 
 }
-
 
 function csvToArray(str){
 
@@ -612,10 +612,6 @@ container.innerHTML += `
 
 <div class="dataset-card">
 
-<div class="dataset-top">
-
-<div class="dataset-left">
-
 <div class="dataset-type">
 Dataset
 </div>
@@ -625,7 +621,7 @@ ${d.file_name}
 </div>
 
 <div class="dataset-sub">
-${d.l1} • ${d.l2} • ${d.l3}
+${d.l2}
 </div>
 
 <div class="dataset-desc">
@@ -653,18 +649,8 @@ ${geoBadge(d.geo_type)}
 </div>
 
 <div class="meta-box">
-<div class="meta-label">Scale / Resolution</div>
-<div class="meta-value">${d.scale}</div>
-</div>
-
-<div class="meta-box">
 <div class="meta-label">Data Source</div>
 <div class="meta-value">${d.data_source}</div>
-</div>
-
-<div class="meta-box">
-<div class="meta-label">Quality Accuracy</div>
-<div class="meta-value">${d.quality_accuracy}</div>
 </div>
 
 <div class="meta-box">
@@ -682,8 +668,6 @@ ${geoBadge(d.geo_type)}
 
 <strong>Division:</strong> ${d.division}<br>
 
-<strong>Created:</strong> ${d.date_of_creation}<br>
-
 <strong>Updated:</strong> ${d.date_of_update}
 
 </div>
@@ -697,18 +681,6 @@ class="action-btn btn-primary"
 >
 Open Dataset
 </a>
-
-<a
-href="${d.file_link}"
-target="_blank"
-class="action-btn btn-outline"
->
-Metadata
-</a>
-
-</div>
-
-</div>
 
 </div>
 
