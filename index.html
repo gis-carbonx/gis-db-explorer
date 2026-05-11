@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Data Explorer</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--navy:#0b1f4d;
+--navy2:#112b66;
+--blue:#2563eb;
+
+--gray-50:#f9fafb;
+--gray-100:#f3f4f6;
+--gray-200:#e5e7eb;
+--gray-300:#d1d5db;
+--gray-400:#9ca3af;
+--gray-500:#6b7280;
+--gray-700:#374151;
+--gray-900:#111827;
+
+--white:#ffffff;
+
+--shadow:0 2px 10px rgba(0,0,0,.08);
+
+--radius:10px;
+
+--font:'Inter',sans-serif;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:var(--font);
+background:var(--gray-100);
+color:var(--gray-900);
+}
+
+header{
+height:64px;
+background:linear-gradient(90deg,var(--navy),var(--navy2));
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 28px;
+color:white;
+box-shadow:0 2px 12px rgba(0,0,0,.25);
+}
+
+.h-left{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.logo{
+font-size:28px;
+}
+
+.title{
+font-size:18px;
+font-weight:700;
+letter-spacing:.3px;
+}
+
+.h-right{
+font-size:14px;
+opacity:.9;
+}
+
+.page{
+padding:24px;
+max-width:1500px;
+margin:auto;
+}
+
+.toolbar{
+background:white;
+border-radius:var(--radius);
+padding:18px;
+display:grid;
+grid-template-columns:1.4fr .8fr .8fr .8fr auto;
+gap:12px;
+margin-bottom:20px;
+box-shadow:var(--shadow);
+border:1px solid var(--gray-200);
+}
+
+.toolbar input,
+.toolbar select{
+padding:10px 12px;
+border:1px solid var(--gray-300);
+border-radius:8px;
+font-size:13px;
+font-family:var(--font);
+outline:none;
+background:white;
+}
+
+.toolbar input:focus,
+.toolbar select:focus{
+border-color:var(--blue);
+}
+
+.btn{
+border:none;
+background:var(--navy);
+color:white;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+margin-bottom:20px;
+}
+
+.stat-card{
+background:white;
+padding:18px;
+border-radius:var(--radius);
+box-shadow:var(--shadow);
+border:1px solid var(--gray-200);
+}
+
+.stat-label{
+font-size:12px;
+color:var(--gray-500);
+margin-bottom:6px;
+}
+
+.stat-value{
+font-size:24px;
+font-weight:700;
+}
+
+.table-wrap{
+background:white;
+border-radius:var(--radius);
+overflow:hidden;
+box-shadow:var(--shadow);
+border:1px solid var(--gray-200);
+}
+
+.table-head{
+padding:16px 20px;
+border-bottom:1px solid var(--gray-200);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.table-title{
+font-size:15px;
+font-weight:600;
+}
+
+.table-info{
+font-size:12px;
+color:var(--gray-500);
+}
+
+.table-scroll{
+overflow:auto;
+max-height:70vh;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:13px;
+}
+
+thead{
+background:var(--gray-50);
+position:sticky;
+top:0;
+z-index:10;
+}
+
+th{
+padding:12px 14px;
+text-align:left;
+border-bottom:1px solid var(--gray-200);
+font-weight:600;
+white-space:nowrap;
+}
+
+td{
+padding:12px 14px;
+border-bottom:1px solid var(--gray-100);
+vertical-align:top;
+}
+
+tr:hover{
+background:#f8fbff;
+}
+
+.badge{
+display:inline-block;
+padding:4px 8px;
+border-radius:999px;
+font-size:11px;
+font-weight:600;
+}
+
+.badge-public{
+background:#dcfce7;
+color:#166534;
+}
+
+.badge-internal{
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+.badge-restricted{
+background:#fef3c7;
+color:#92400e;
+}
+
+.badge-confidential{
+background:#fee2e2;
+color:#991b1b;
+}
+
+.link-btn{
+display:inline-block;
+padding:6px 10px;
+border-radius:6px;
+background:var(--navy);
+color:white;
+text-decoration:none;
+font-size:12px;
+}
+
+.empty{
+padding:40px;
+text-align:center;
+color:var(--gray-500);
+}
+
+.footer{
+margin-top:16px;
+font-size:12px;
+color:var(--gray-500);
+text-align:right;
+}
+
+@media(max-width:1200px){
+
+.toolbar{
+grid-template-columns:1fr;
+}
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+}
+
+@media(max-width:700px){
+
+.stats{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="h-left">
+<div class="logo">🗂</div>
+<div class="title">GIS DATA EXPLORER</div>
+</div>
+
+<div class="h-right">
+Metadata Explorer
+</div>
+
+</header>
+
+<div class="page">
+
+
+<div class="toolbar">
+
+<input type="text" id="searchInput" placeholder="Search dataset, keyword, author, description...">
+
+<select id="filterL1">
+<option value="">All Level 1</option>
+</select>
+
+<select id="filterGeo">
+<option value="">All Geometry</option>
+</select>
+
+<select id="filterAccess">
+<option value="">All Access</option>
+</select>
+
+<button class="btn" onclick="loadData()">
+Refresh
+</button>
+
+</div>
+
+
+<div class="stats">
+
+<div class="stat-card">
+<div class="stat-label">Total Dataset</div>
+<div class="stat-value" id="statTotal">0</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-label">Raster</div>
+<div class="stat-value" id="statRaster">0</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-label">Vector</div>
+<div class="stat-value" id="statVector">0</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-label">Public Data</div>
+<div class="stat-value" id="statPublic">0</div>
+</div>
+
+</div>
+
+
+<div class="table-wrap">
+
+<div class="table-head">
+
+<div class="table-title">
+Dataset Catalog
+</div>
+
+<div class="table-info" id="tableInfo">
+Loading...
+</div>
+
+</div>
+
+<div class="table-scroll">
+
+<table>
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>File Name</th>
+<th>Description</th>
+<th>Keywords</th>
+<th>Category</th>
+<th>Extent</th>
+<th>CRS</th>
+<th>Geometry</th>
+<th>Scale</th>
+<th>Source</th>
+<th>Accuracy</th>
+<th>Access</th>
+<th>Author</th>
+<th>Link</th>
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+
+<tr>
+<td colspan="14" class="empty">
+Loading spreadsheet data...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+<div class="footer">
+GIS Metadata Explorer • GitHub Pages Ready
+</div>
+
+</div>
+
+<script>
+
+const SHEET_CSV =
+'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv';
+
+let RAW_DATA = [];
+
+async function loadData(){
+
+try{
+
+const response = await fetch(SHEET_CSV);
+
+const csv = await response.text();
+
+RAW_DATA = csvToArray(csv);
+
+populateFilters();
+
+renderTable(RAW_DATA);
+
+updateStats(RAW_DATA);
+
+}
+catch(err){
+
+console.error(err);
+
+document.getElementById('tableBody').innerHTML = `
+<tr>
+<td colspan="14" class="empty">
+Failed to load spreadsheet
+</td>
+</tr>
+`;
+
+}
+
+}
+
+function csvToArray(str){
+
+const rows = str.trim().split('\n');
+
+const headers = rows[0].split(',');
+
+const data = rows.slice(1).map(row=>{
+
+const values = splitCSV(row);
+
+const obj = {};
+
+headers.forEach((h,i)=>{
+obj[h.trim()] = values[i] || '';
+});
+
+return obj;
+
+});
+
+return data;
+
+}
+
+function splitCSV(row){
+
+const result = [];
+let current = '';
+let insideQuotes = false;
+
+for(let i=0;i<row.length;i++){
+
+const char = row[i];
+
+if(char === '"'){
+insideQuotes = !insideQuotes;
+}
+
+else if(char === ',' && !insideQuotes){
+result.push(current);
+current = '';
+}
+
+else{
+current += char;
+}
+
+}
+
+result.push(current);
+
+return result.map(v=>v.replace(/^"|"$/g,''));
+
+}
+
+function populateFilters(){
+
+const l1Set = [...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
+const geoSet = [...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
+const accessSet = [...new Set(RAW_DATA.map(d=>d.access).filter(Boolean))];
+
+const f1 = document.getElementById('filterL1');
+const fg = document.getElementById('filterGeo');
+const fa = document.getElementById('filterAccess');
+
+f1.innerHTML = '<option value="">All Level 1</option>';
+fg.innerHTML = '<option value="">All Geometry</option>';
+fa.innerHTML = '<option value="">All Access</option>';
+
+l1Set.forEach(v=>{
+f1.innerHTML += `<option>${v}</option>`;
+});
+
+geoSet.forEach(v=>{
+fg.innerHTML += `<option>${v}</option>`;
+});
+
+accessSet.forEach(v=>{
+fa.innerHTML += `<option>${v}</option>`;
+});
+
+}
+
+function renderTable(data){
+
+const tb = document.getElementById('tableBody');
+
+if(data.length === 0){
+
+tb.innerHTML = `
+<tr>
+<td colspan="14" class="empty">
+No dataset found
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+tb.innerHTML = '';
+
+data.forEach(d=>{
+
+tb.innerHTML += `
+
+<tr>
+
+<td>${d.id}</td>
+
+<td>
+<strong>${d.file_name}</strong>
+</td>
+
+<td>${d.desc}</td>
+
+<td>${d.keywords}</td>
+
+<td>
+${d.l1}<br>
+${d.l2}<br>
+${d.l3}
+</td>
+
+<td>${d.extent}</td>
+
+<td>${d.crs}</td>
+
+<td>${d.geo_type}</td>
+
+<td>${d.scale}</td>
+
+<td>${d.data_source}</td>
+
+<td>${d.quality_accuracy}</td>
+
+<td>
+${accessBadge(d.access)}
+</td>
+
+<td>
+${d.author}<br>
+<span style="font-size:11px;color:#6b7280">
+${d.division}
+</span>
+</td>
+
+<td>
+<a
+class="link-btn"
+href="${d.file_link}"
+target="_blank"
+>
+Open
+</a>
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById('tableInfo').innerText =
+`${data.length} dataset loaded`;
+
+}
+
+function accessBadge(v){
+
+if(v.includes('Public')){
+return `<span class="badge badge-public">${v}</span>`;
+}
+
+if(v.includes('Internal')){
+return `<span class="badge badge-internal">${v}</span>`;
+}
+
+if(v.includes('Restricted')){
+return `<span class="badge badge-restricted">${v}</span>`;
+}
+
+if(v.includes('Confidential')){
+return `<span class="badge badge-confidential">${v}</span>`;
+}
+
+return v;
+
+}
+
+function updateStats(data){
+
+document.getElementById('statTotal').innerText =
+data.length;
+
+document.getElementById('statRaster').innerText =
+data.filter(d=>d.geo_type.includes('Raster')).length;
+
+document.getElementById('statVector').innerText =
+data.filter(d=>!d.geo_type.includes('Raster')).length;
+
+document.getElementById('statPublic').innerText =
+data.filter(d=>d.access.includes('Public')).length;
+
+}
+
+document.getElementById('searchInput')
+.addEventListener('input',applyFilters);
+
+document.getElementById('filterL1')
+.addEventListener('change',applyFilters);
+
+document.getElementById('filterGeo')
+.addEventListener('change',applyFilters);
+
+document.getElementById('filterAccess')
+.addEventListener('change',applyFilters);
+
+function applyFilters(){
+
+const q =
+document.getElementById('searchInput')
+.value
+.toLowerCase();
+
+const l1 =
+document.getElementById('filterL1').value;
+
+const geo =
+document.getElementById('filterGeo').value;
+
+const access =
+document.getElementById('filterAccess').value;
+
+const filtered = RAW_DATA.filter(d=>{
+
+const text = Object.values(d)
+.join(' ')
+.toLowerCase();
+
+const matchSearch =
+text.includes(q);
+
+const matchL1 =
+!l1 || d.l1 === l1;
+
+const matchGeo =
+!geo || d.geo_type === geo;
+
+const matchAccess =
+!access || d.access === access;
+
+return (
+matchSearch &&
+matchL1 &&
+matchGeo &&
+matchAccess
+);
+
+});
+
+renderTable(filtered);
+
+updateStats(filtered);
+
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
