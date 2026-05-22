@@ -12,10 +12,9 @@
 <style>
 
 :root{
---navy:#08245c;
---navy2:#113b8f;
 
---blue:#2563eb;
+--navy:#08245c;
+--navy2:#103a87;
 
 --gray-50:#f9fafb;
 --gray-100:#f3f4f6;
@@ -27,13 +26,16 @@
 --gray-700:#374151;
 --gray-900:#111827;
 
+--blue:#2563eb;
+
 --green:#15803d;
 --green-bg:#dcfce7;
 
---orange:#d97706;
---orange-bg:#fef3c7;
+--yellow:#d97706;
+--yellow-bg:#fef3c7;
 
 --radius:12px;
+
 }
 
 *{
@@ -44,18 +46,29 @@ box-sizing:border-box;
 
 body{
 font-family:'Inter',sans-serif;
-background:#f5f7fb;
+background:#f4f7fb;
 color:#111827;
 }
 
 header{
-height:72px;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
+
+height:76px;
+
+background:
+linear-gradient(
+90deg,
+var(--navy),
+var(--navy2)
+);
+
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:0 28px;
+
+padding:0 26px;
+
 color:white;
+
 }
 
 .header-left{
@@ -64,20 +77,16 @@ align-items:center;
 gap:14px;
 }
 
-.logo{
-width:42px;
+.logo-img{
 height:42px;
-border:2px solid white;
-border-radius:10px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:700;
+width:auto;
+object-fit:contain;
 }
 
 .title-wrap h1{
 font-size:18px;
 font-weight:700;
+margin-bottom:2px;
 }
 
 .title-wrap p{
@@ -85,7 +94,7 @@ font-size:13px;
 opacity:.9;
 }
 
-.login-link{
+.login-btn{
 cursor:pointer;
 font-size:14px;
 font-weight:600;
@@ -93,65 +102,121 @@ font-weight:600;
 
 .page{
 padding:28px;
-max-width:1500px;
+max-width:1550px;
 margin:auto;
 }
 
-.top-bar{
+.top-section{
+
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:24px;
+
+margin-bottom:22px;
+
 gap:20px;
+
 }
 
-.top-bar-left h2{
-font-size:22px;
-margin-bottom:5px;
+.top-left h2{
+font-size:32px;
+margin-bottom:4px;
 }
 
-.top-bar-left p{
-font-size:14px;
+.top-left p{
 color:var(--gray-600);
+font-size:15px;
 }
 
-.top-actions{
+.top-right{
 display:flex;
 gap:12px;
+align-items:center;
 }
 
 .search-box input{
-width:420px;
+
+width:450px;
 height:46px;
-padding:0 16px;
+
 border:1px solid var(--gray-300);
+
 border-radius:10px;
+
+padding:0 14px;
+
 font-size:14px;
+
+outline:none;
+
 }
 
-.filter-btn{
+.search-box input:focus{
+border-color:var(--blue);
+}
+
+.filter-select{
+
 height:46px;
+
+padding:0 14px;
+
+border-radius:10px;
+
+border:1px solid var(--gray-300);
+
+background:white;
+
+font-size:14px;
+
+}
+
+.add-btn{
+
+height:46px;
+
 padding:0 18px;
+
 border:none;
-background:white;
-border:1px solid var(--gray-300);
+
+background:
+linear-gradient(
+90deg,
+var(--navy),
+var(--navy2)
+);
+
+color:white;
+
 border-radius:10px;
-cursor:pointer;
+
 font-weight:600;
+
+cursor:pointer;
+
 }
 
-.table-container{
+.table-wrapper{
+
 background:white;
-border-radius:14px;
-overflow:hidden;
+
 border:1px solid var(--gray-200);
+
+border-radius:16px;
+
+overflow:hidden;
+
 }
 
-.table-header{
-padding:18px 24px;
+.table-top{
+
+padding:18px 22px;
+
 font-size:14px;
 font-weight:600;
+
 border-bottom:1px solid var(--gray-200);
+
 }
 
 table{
@@ -160,211 +225,318 @@ border-collapse:collapse;
 }
 
 thead{
-background:linear-gradient(90deg,var(--navy),var(--navy2));
+
+background:
+linear-gradient(
+90deg,
+var(--navy),
+var(--navy2)
+);
+
 color:white;
+
 }
 
 thead th{
+
 padding:16px;
+
 font-size:13px;
+
 text-align:left;
+
 font-weight:600;
+
 }
 
 tbody td{
+
 padding:18px 16px;
+
 border-bottom:1px solid var(--gray-200);
+
 vertical-align:top;
+
 font-size:13px;
+
 }
 
 .dataset-title{
+
 font-size:18px;
 font-weight:700;
+
 color:#1d4ed8;
+
 margin-bottom:6px;
+
 }
 
 .dataset-desc{
+
 color:var(--gray-600);
+
 line-height:1.6;
+
 margin-bottom:8px;
+
 }
 
 .keyword{
-color:#6b7280;
 font-size:12px;
+color:var(--gray-500);
 }
 
 .tag{
+
 display:inline-block;
-padding:4px 8px;
+
+padding:5px 9px;
+
 border-radius:8px;
+
 font-size:11px;
+
 font-weight:600;
+
 margin:2px;
+
 }
 
-.tag-blue{
+.blue-tag{
 background:#dbeafe;
 color:#1d4ed8;
 }
 
-.tag-green{
-background:#dcfce7;
-color:#166534;
+.green-tag{
+background:var(--green-bg);
+color:var(--green);
 }
 
-.tag-yellow{
-background:#fef3c7;
-color:#92400e;
+.yellow-tag{
+background:var(--yellow-bg);
+color:var(--yellow);
 }
 
-.actions{
+.action-group{
 display:flex;
 gap:8px;
 }
 
 .action-btn{
-width:38px;
-height:38px;
+
+padding:8px 12px;
+
 border-radius:8px;
+
 border:1px solid var(--gray-300);
+
 background:white;
+
 cursor:pointer;
-font-size:16px;
+
+font-size:12px;
+
+font-weight:600;
+
+transition:.15s;
+
 }
 
-.add-btn{
-margin:18px;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
-color:white;
-border:none;
-padding:14px 22px;
-border-radius:10px;
-font-weight:600;
-cursor:pointer;
+.action-btn:hover{
+background:#f3f4f6;
+}
+
+.footer{
+
+margin-top:18px;
+
+display:flex;
+justify-content:space-between;
+
+font-size:12px;
+
+color:var(--gray-500);
+
 }
 
 .modal{
+
 position:fixed;
 inset:0;
+
 background:rgba(0,0,0,.45);
+
 display:none;
+
 align-items:center;
 justify-content:center;
+
 z-index:999;
+
 }
 
 .modal-content{
+
 background:white;
+
 width:760px;
 max-width:95%;
-border-radius:16px;
+
+border-radius:18px;
+
 padding:28px;
+
 max-height:90vh;
+
 overflow:auto;
+
 }
 
-.modal h3{
-font-size:24px;
-margin-bottom:18px;
+.modal-content h3{
+font-size:26px;
+margin-bottom:22px;
 }
 
 .meta-grid{
+
 display:grid;
+
 grid-template-columns:180px 1fr;
+
 gap:12px;
+
 margin-bottom:14px;
+
 font-size:14px;
+
 }
 
 .meta-label{
 font-weight:700;
-color:var(--gray-700);
 }
 
 .close-btn{
+
 margin-top:18px;
+
 padding:12px 18px;
+
 background:var(--navy);
+
 color:white;
+
 border:none;
+
 border-radius:10px;
+
 cursor:pointer;
+
 }
 
 .login-page{
+
 position:fixed;
 inset:0;
+
 background:#f5f7fb;
+
 display:none;
+
 z-index:2000;
+
 overflow:auto;
+
 }
 
 .login-wrapper{
-max-width:1100px;
+
+max-width:1000px;
+
 margin:100px auto;
+
 display:grid;
+
 grid-template-columns:1fr 1fr;
+
 gap:24px;
+
 }
 
 .login-card{
+
 background:white;
+
 border-radius:16px;
+
 padding:30px;
+
 border:1px solid var(--gray-200);
+
 }
 
-.account-item{
-border:1px solid var(--gray-300);
-border-radius:12px;
+.login-card h2{
+margin-bottom:22px;
+}
+
+.account-box{
+
 padding:18px;
-margin-bottom:14px;
-cursor:pointer;
-}
 
-.account-item.active{
+border-radius:12px;
+
 border:2px solid #2563eb;
+
 background:#eff6ff;
+
+margin-bottom:18px;
+
 }
 
 .login-input{
+
 width:100%;
-height:46px;
+height:48px;
+
 border:1px solid var(--gray-300);
+
 border-radius:10px;
+
 padding:0 14px;
+
 margin-top:10px;
-margin-bottom:18px;
+margin-bottom:20px;
+
+font-size:14px;
+
 }
 
 .sign-btn{
+
 width:100%;
 height:48px;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
-color:white;
+
 border:none;
+
 border-radius:10px;
+
+background:
+linear-gradient(
+90deg,
+var(--navy),
+var(--navy2)
+);
+
+color:white;
+
 font-weight:700;
+
 cursor:pointer;
-}
 
-.footer{
-margin-top:18px;
-display:flex;
-justify-content:space-between;
-font-size:12px;
-color:#6b7280;
-}
-
-.hidden{
-display:none;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -373,7 +545,10 @@ display:none;
 
 <div class="header-left">
 
-<div class="logo">GIS</div>
+<img
+src="data/cx_white.png"
+class="logo-img"
+>
 
 <div class="title-wrap">
 <h1>GIS DATA EXPLORER</h1>
@@ -382,78 +557,107 @@ display:none;
 
 </div>
 
-<div class="login-link" onclick="openLogin()">
-🔐 Sign In
+<div
+class="login-btn"
+onclick="openLogin()"
+>
+Login
 </div>
 
 </header>
 
 <div class="page">
 
-<div class="top-bar">
+<div class="top-section">
 
-<div class="top-bar-left">
+<div class="top-left">
 <h2>My Geospatial Datasets</h2>
 <p>Daftar seluruh data geospatial yang Anda miliki.</p>
 </div>
 
-<div class="top-actions">
+<div class="top-right">
 
 <div class="search-box">
+
 <input
 type="text"
 id="searchInput"
-placeholder="Search dataset title, keywords, or description..."
+placeholder="Search dataset..."
 >
+
 </div>
 
-<button class="filter-btn">
-Filter
+<select
+id="categoryFilter"
+class="filter-select"
+>
+<option value="">All Category</option>
+</select>
+
+<select
+id="geoFilter"
+class="filter-select"
+>
+<option value="">All Data Type</option>
+</select>
+
+<button class="add-btn">
+Add New Dataset
 </button>
 
 </div>
 
 </div>
 
-<div class="table-container">
+<div class="table-wrapper">
 
-<div class="table-header">
+<div class="table-top">
 Total <span id="totalDataset">0</span> datasets
 </div>
 
 <table>
 
 <thead>
+
 <tr>
+
 <th>No.</th>
 <th>Dataset Title</th>
 <th>Category</th>
-<th>Geographic Extent</th>
+<th>Extent</th>
 <th>Date Created</th>
 <th>Data Type</th>
 <th>Last Updated</th>
 <th>Actions</th>
+
 </tr>
+
 </thead>
 
 <tbody id="tableBody"></tbody>
 
 </table>
 
-<button class="add-btn">
-+ Add New Dataset
-</button>
-
 </div>
 
 <div class="footer">
-<div>CarbonX Team GIS Metadata System</div>
-<div>Simple • Clean • Academic</div>
+
+<div>
+CarbonX Team GIS Metadata System
+</div>
+
+<div>
+Simple • Clean • Academic
 </div>
 
 </div>
 
-<div class="modal" id="metadataModal">
+</div>
+
+<div
+class="modal"
+id="metadataModal"
+>
 
 <div class="modal-content">
 
@@ -461,7 +665,10 @@ Total <span id="totalDataset">0</span> datasets
 
 <div id="metaContent"></div>
 
-<button class="close-btn" onclick="closeMetadata()">
+<button
+class="close-btn"
+onclick="closeMetadata()"
+>
 Close
 </button>
 
@@ -469,13 +676,19 @@ Close
 
 </div>
 
-<div class="login-page" id="loginPage">
+<div
+class="login-page"
+id="loginPage"
+>
 
 <header>
 
 <div class="header-left">
 
-<div class="logo">GIS</div>
+<img
+src="data/cx_white.png"
+class="logo-img"
+>
 
 <div class="title-wrap">
 <h1>GIS DATA EXPLORER</h1>
@@ -484,8 +697,11 @@ Close
 
 </div>
 
-<div class="login-link" onclick="closeLogin()">
-✕ Close
+<div
+class="login-btn"
+onclick="closeLogin()"
+>
+Close
 </div>
 
 </header>
@@ -494,20 +710,22 @@ Close
 
 <div class="login-card">
 
-<h2 style="margin-bottom:24px;">
+<h2>
 1. Choose Your Account
 </h2>
 
-<div class="account-item active">
+<div class="account-box">
+
 <strong>Admin</strong><br>
 admin@carbonx.team
+
 </div>
 
 </div>
 
 <div class="login-card">
 
-<h2 style="margin-bottom:24px;">
+<h2>
 2. Enter Password
 </h2>
 
@@ -520,7 +738,10 @@ class="login-input"
 placeholder="Enter your password"
 >
 
-<button class="sign-btn" onclick="login()">
+<button
+class="sign-btn"
+onclick="login()"
+>
 Sign In
 </button>
 
@@ -542,11 +763,16 @@ localStorage.getItem('gis_login') === 'true';
 
 async function loadData(){
 
-const response = await fetch(SHEET_CSV);
+const response =
+await fetch(SHEET_CSV);
 
-const csv = await response.text();
+const csv =
+await response.text();
 
-RAW_DATA = csvToArray(csv);
+RAW_DATA =
+csvToArray(csv);
+
+populateFilters();
 
 renderData(RAW_DATA);
 
@@ -554,18 +780,22 @@ renderData(RAW_DATA);
 
 function csvToArray(str){
 
-const rows = str.trim().split('\n');
+const rows =
+str.trim().split('\n');
 
-const headers = rows[0].split(',');
+const headers =
+rows[0].split(',');
 
 return rows.slice(1).map(r=>{
 
-const values = splitCSV(r);
+const values =
+splitCSV(r);
 
 let obj = {};
 
 headers.forEach((h,i)=>{
-obj[h.trim()] = values[i] || '';
+obj[h.trim()] =
+values[i] || '';
 });
 
 return obj;
@@ -601,7 +831,53 @@ current += char;
 
 result.push(current);
 
-return result.map(v=>v.replace(/^"|"$/g,''));
+return result.map(v=>
+v.replace(/^"|"$/g,'')
+);
+
+}
+
+function populateFilters(){
+
+const categorySet =
+[
+...new Set(
+RAW_DATA.map(d=>d.l1).filter(Boolean)
+)
+];
+
+const geoSet =
+[
+...new Set(
+RAW_DATA.map(d=>d.geo_type).filter(Boolean)
+)
+];
+
+const categoryFilter =
+document.getElementById('categoryFilter');
+
+const geoFilter =
+document.getElementById('geoFilter');
+
+categorySet.forEach(v=>{
+
+categoryFilter.innerHTML += `
+<option value="${v}">
+${v}
+</option>
+`;
+
+});
+
+geoSet.forEach(v=>{
+
+geoFilter.innerHTML += `
+<option value="${v}">
+${v}
+</option>
+`;
+
+});
 
 }
 
@@ -641,13 +917,13 @@ ${d.keywords}
 
 <td>
 
-<span class="tag tag-blue">
+<span class="tag blue-tag">
 ${d.l1}
 </span>
 
 <br>
 
-<span class="tag tag-blue">
+<span class="tag blue-tag">
 ${d.l2}
 </span>
 
@@ -665,8 +941,8 @@ ${d.date_of_update}
 
 <span class="tag ${
 d.geo_type.includes('Raster')
-? 'tag-yellow'
-: 'tag-green'
+? 'yellow-tag'
+: 'green-tag'
 }">
 ${d.geo_type}
 </span>
@@ -680,27 +956,27 @@ by ${d.author}
 
 <td>
 
-<div class="actions">
+<div class="action-group">
 
 <button
 class="action-btn"
 onclick="showMetadata(${i})"
 >
-👁
+View
 </button>
 
 <button
 class="action-btn"
 onclick="editDataset(${i})"
 >
-✏️
+Edit
 </button>
 
 <button
 class="action-btn"
 onclick="deleteDataset(${i})"
 >
-🗑
+Delete
 </button>
 
 </div>
@@ -712,6 +988,53 @@ onclick="deleteDataset(${i})"
 `;
 
 });
+
+}
+
+function applyFilters(){
+
+const search =
+document
+.getElementById('searchInput')
+.value
+.toLowerCase();
+
+const category =
+document
+.getElementById('categoryFilter')
+.value;
+
+const geo =
+document
+.getElementById('geoFilter')
+.value;
+
+const filtered =
+RAW_DATA.filter(d=>{
+
+const text =
+Object.values(d)
+.join(' ')
+.toLowerCase();
+
+const matchSearch =
+text.includes(search);
+
+const matchCategory =
+!category || d.l1 === category;
+
+const matchGeo =
+!geo || d.geo_type === geo;
+
+return (
+matchSearch &&
+matchCategory &&
+matchGeo
+);
+
+});
+
+renderData(filtered);
 
 }
 
@@ -767,7 +1090,10 @@ document.getElementById('metaContent').innerHTML = `
 <div class="meta-grid">
 <div class="meta-label">Dataset Link</div>
 <div>
-<a href="${d.file_link}" target="_blank">
+<a
+href="${d.file_link}"
+target="_blank"
+>
 Open Folder / Dataset
 </a>
 </div>
@@ -808,7 +1134,10 @@ document.getElementById('passwordInput').value;
 
 if(pass === '1234'){
 
-localStorage.setItem('gis_login','true');
+localStorage.setItem(
+'gis_login',
+'true'
+);
 
 isLoggedIn = true;
 
@@ -837,7 +1166,10 @@ return;
 
 }
 
-alert('Edit dataset: ' + RAW_DATA[index].file_name);
+alert(
+'Edit dataset: ' +
+RAW_DATA[index].file_name
+);
 
 }
 
@@ -872,24 +1204,24 @@ renderData(RAW_DATA);
 
 document
 .getElementById('searchInput')
-.addEventListener('input',function(){
+.addEventListener(
+'input',
+applyFilters
+);
 
-const q =
-this.value.toLowerCase();
+document
+.getElementById('categoryFilter')
+.addEventListener(
+'change',
+applyFilters
+);
 
-const filtered =
-RAW_DATA.filter(d=>{
-
-return Object.values(d)
-.join(' ')
-.toLowerCase()
-.includes(q);
-
-});
-
-renderData(filtered);
-
-});
+document
+.getElementById('geoFilter')
+.addEventListener(
+'change',
+applyFilters
+);
 
 loadData();
 
