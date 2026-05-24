@@ -4,821 +4,686 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>GIS Data Explorer</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
 :root{
---navy:#08245c;
---navy2:#103a87;
---gray-50:#f9fafb;
---gray-100:#f3f4f6;
---gray-200:#e5e7eb;
---gray-300:#d1d5db;
---gray-400:#9ca3af;
---gray-500:#6b7280;
---gray-600:#4b5563;
---gray-700:#374151;
---gray-900:#111827;
---blue:#2563eb;
---green:#15803d;
---green-bg:#dcfce7;
---yellow:#d97706;
---yellow-bg:#fef3c7;
---red:#dc2626;
---radius:12px;
+  --navy:#08245c; --navy2:#103a87;
+  --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+  --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+  --gray-600:#4b5563; --gray-700:#374151; --gray-900:#111827;
+  --blue:#2563eb; --green:#15803d; --green-bg:#dcfce7;
+  --yellow:#d97706; --yellow-bg:#fef3c7; --red:#dc2626;
 }
-
 *{ margin:0; padding:0; box-sizing:border-box; }
-
-body{
-font-family:'Inter',sans-serif;
-background:#f4f7fb;
-color:#111827;
-}
+body{ font-family:'Inter',sans-serif; background:#f4f7fb; color:#111827; }
 
 header{
-height:76px;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:0 26px;
-color:white;
+  height:76px;
+  background:linear-gradient(90deg,var(--navy),var(--navy2));
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0 26px; color:white;
 }
-
 .header-left{ display:flex; align-items:center; gap:14px; }
 .logo-img{ height:42px; width:auto; object-fit:contain; }
 .title-wrap h1{ font-size:18px; font-weight:700; margin-bottom:2px; }
 .title-wrap p{ font-size:13px; opacity:.9; }
-
 .header-right{ display:flex; align-items:center; gap:12px; }
-
 .login-btn{
-cursor:pointer;
-font-size:14px;
-font-weight:600;
-padding:8px 16px;
-border-radius:8px;
-border:1px solid rgba(255,255,255,.35);
-transition:.15s;
+  cursor:pointer; font-size:14px; font-weight:600;
+  padding:8px 16px; border-radius:8px;
+  border:1px solid rgba(255,255,255,.35); transition:.15s;
 }
 .login-btn:hover{ background:rgba(255,255,255,.12); }
-
 .user-badge{ display:flex; align-items:center; gap:8px; }
 .user-avatar{
-width:34px; height:34px; border-radius:50%;
-background:rgba(255,255,255,.2);
-display:flex; align-items:center; justify-content:center;
-font-weight:700; font-size:14px;
+  width:34px; height:34px; border-radius:50%;
+  background:rgba(255,255,255,.2);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:14px;
 }
 .user-name{ font-weight:600; font-size:14px; }
 .user-role{ font-size:11px; opacity:.7; }
-
 .logout-btn{
-cursor:pointer; font-size:12px; padding:6px 12px;
-border-radius:6px; border:1px solid rgba(255,255,255,.3);
-opacity:.8; transition:.15s;
+  cursor:pointer; font-size:12px; padding:6px 12px;
+  border-radius:6px; border:1px solid rgba(255,255,255,.3);
+  opacity:.8; transition:.15s;
 }
 .logout-btn:hover{ opacity:1; background:rgba(255,255,255,.1); }
 
 .page{ padding:28px; max-width:1550px; margin:auto; }
-
 .top-section{
-display:flex; justify-content:space-between; align-items:center;
-margin-bottom:22px; gap:20px;
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:22px; gap:20px;
 }
 .top-left h2{ font-size:32px; margin-bottom:4px; }
 .top-left p{ color:var(--gray-600); font-size:15px; }
 .top-right{ display:flex; gap:12px; align-items:center; }
-
 .search-box input{
-width:450px; height:46px;
-border:1px solid var(--gray-300); border-radius:10px;
-padding:0 14px; font-size:14px; outline:none;
+  width:450px; height:46px; border:1px solid var(--gray-300);
+  border-radius:10px; padding:0 14px; font-size:14px; outline:none;
 }
 .search-box input:focus{ border-color:var(--blue); }
-
 .filter-select{
-height:46px; padding:0 14px; border-radius:10px;
-border:1px solid var(--gray-300); background:white; font-size:14px;
+  height:46px; padding:0 14px; border-radius:10px;
+  border:1px solid var(--gray-300); background:white; font-size:14px;
 }
-
 .add-btn{
-height:46px; padding:0 18px; border:none;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
-color:white; border-radius:10px; font-weight:600; cursor:pointer;
+  height:46px; padding:0 18px; border:none;
+  background:linear-gradient(90deg,var(--navy),var(--navy2));
+  color:white; border-radius:10px; font-weight:600; cursor:pointer;
 }
-
 .table-wrapper{
-background:white; border:1px solid var(--gray-200);
-border-radius:16px; overflow:hidden;
+  background:white; border:1px solid var(--gray-200);
+  border-radius:16px; overflow:hidden;
 }
 .table-top{
-padding:18px 22px; font-size:14px; font-weight:600;
-border-bottom:1px solid var(--gray-200);
+  padding:18px 22px; font-size:14px; font-weight:600;
+  border-bottom:1px solid var(--gray-200);
 }
-
 table{ width:100%; border-collapse:collapse; }
-thead{
-background:linear-gradient(90deg,var(--navy),var(--navy2));
-color:white;
-}
+thead{ background:linear-gradient(90deg,var(--navy),var(--navy2)); color:white; }
 thead th{ padding:16px; font-size:13px; text-align:left; font-weight:600; }
-tbody td{
-padding:18px 16px; border-bottom:1px solid var(--gray-200);
-vertical-align:top; font-size:13px;
-}
-
+tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-align:top; font-size:13px; }
 .dataset-title{ font-size:18px; font-weight:700; color:#1d4ed8; margin-bottom:6px; }
 .dataset-desc{ color:var(--gray-600); line-height:1.6; margin-bottom:8px; }
 .keyword{ font-size:12px; color:var(--gray-500); }
-
-.tag{
-display:inline-block; padding:5px 9px; border-radius:8px;
-font-size:11px; font-weight:600; margin:2px;
-}
+.tag{ display:inline-block; padding:5px 9px; border-radius:8px; font-size:11px; font-weight:600; margin:2px; }
 .blue-tag{ background:#dbeafe; color:#1d4ed8; }
 .green-tag{ background:var(--green-bg); color:var(--green); }
 .yellow-tag{ background:var(--yellow-bg); color:var(--yellow); }
-
 .action-group{ display:flex; gap:8px; flex-wrap:wrap; }
 .action-btn{
-padding:8px 12px; border-radius:8px; border:1px solid var(--gray-300);
-background:white; cursor:pointer; font-size:12px; font-weight:600; transition:.15s;
+  padding:8px 12px; border-radius:8px; border:1px solid var(--gray-300);
+  background:white; cursor:pointer; font-size:12px; font-weight:600; transition:.15s;
 }
 .action-btn:hover{ background:#f3f4f6; }
 .action-btn.danger{ border-color:#fca5a5; color:var(--red); }
 .action-btn.danger:hover{ background:#fef2f2; }
 .action-btn.primary{ border-color:#93c5fd; color:var(--blue); }
 .action-btn.primary:hover{ background:#eff6ff; }
-
-.footer{
-margin-top:18px; display:flex; justify-content:space-between;
-font-size:12px; color:var(--gray-500);
-}
+.footer{ margin-top:18px; display:flex; justify-content:space-between; font-size:12px; color:var(--gray-500); }
 
 .modal{
-position:fixed; inset:0; background:rgba(0,0,0,.45);
-display:none; align-items:center; justify-content:center; z-index:999;
+  position:fixed; inset:0; background:rgba(0,0,0,.45);
+  display:none; align-items:center; justify-content:center; z-index:999;
 }
 .modal-content{
-background:white; width:760px; max-width:95%;
-border-radius:18px; padding:28px; max-height:90vh; overflow:auto;
+  background:white; width:760px; max-width:95%;
+  border-radius:18px; padding:28px; max-height:90vh; overflow:auto;
 }
 .modal-content h3{ font-size:26px; margin-bottom:22px; }
-.meta-grid{
-display:grid; grid-template-columns:180px 1fr;
-gap:12px; margin-bottom:14px; font-size:14px;
-}
+.meta-grid{ display:grid; grid-template-columns:180px 1fr; gap:12px; margin-bottom:14px; font-size:14px; }
 .meta-label{ font-weight:700; }
 .close-btn{
-margin-top:18px; padding:12px 18px; background:var(--navy);
-color:white; border:none; border-radius:10px; cursor:pointer;
+  margin-top:18px; padding:12px 18px; background:var(--navy);
+  color:white; border:none; border-radius:10px; cursor:pointer;
 }
 
 .login-modal{
-position:fixed; inset:0; background:rgba(0,0,0,.5);
-display:none; align-items:center; justify-content:center; z-index:2000;
+  position:fixed; inset:0; background:rgba(0,0,0,.5);
+  display:none; align-items:center; justify-content:center; z-index:2000;
 }
 .login-modal.active{ display:flex; }
-
 .login-card{
-background:white; border-radius:20px; padding:36px;
-width:420px; max-width:95%;
-box-shadow:0 20px 60px rgba(0,0,0,.2);
+  background:white; border-radius:20px; padding:36px; width:420px; max-width:95%;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
 }
-.login-card-header{
-display:flex; flex-direction:column; align-items:center; margin-bottom:24px;
-}
+.login-card-header{ display:flex; flex-direction:column; align-items:center; margin-bottom:24px; }
 .login-logo{
-width:56px; height:56px; border-radius:16px;
-background:linear-gradient(135deg,var(--navy),var(--navy2));
-display:flex; align-items:center; justify-content:center;
-color:white; font-weight:800; font-size:20px; margin-bottom:12px;
+  width:56px; height:56px; border-radius:16px;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  display:flex; align-items:center; justify-content:center;
+  color:white; font-weight:800; font-size:20px; margin-bottom:12px;
 }
 .login-card h2{ font-size:20px; margin-bottom:4px; text-align:center; }
 .login-card-header p{ color:var(--gray-500); font-size:13px; text-align:center; }
-
-.user-selector{
-display:grid; grid-template-columns:1fr 1fr 1fr;
-gap:8px; margin-bottom:20px;
-}
+.user-selector{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:20px; }
 .user-option{
-border:2px solid var(--gray-200); border-radius:12px;
-padding:10px 8px; cursor:pointer; transition:.15s;
-display:flex; flex-direction:column; align-items:center; gap:6px;
-text-align:center;
+  border:2px solid var(--gray-200); border-radius:12px; padding:10px 8px;
+  cursor:pointer; transition:.15s; display:flex; flex-direction:column;
+  align-items:center; gap:6px; text-align:center;
 }
 .user-option:hover{ border-color:var(--blue); background:#eff6ff; }
 .user-option.selected{ border-color:var(--blue); background:#eff6ff; }
 .user-option-avatar{
-width:36px; height:36px; border-radius:10px;
-background:linear-gradient(135deg,var(--navy),var(--navy2));
-color:white; display:flex; align-items:center; justify-content:center;
-font-weight:700; font-size:13px;
+  width:36px; height:36px; border-radius:10px;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  color:white; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:13px;
 }
 .user-option-name{ font-weight:600; font-size:11px; line-height:1.3; }
 .user-option-role{ font-size:10px; color:var(--gray-500); }
-
-.login-label{
-font-size:12px; font-weight:600; color:var(--gray-600);
-margin-bottom:6px; display:block;
-}
+.login-label{ font-size:12px; font-weight:600; color:var(--gray-600); margin-bottom:6px; display:block; }
 .login-input{
-width:100%; height:46px; border:1px solid var(--gray-300);
-border-radius:10px; padding:0 14px; font-size:14px;
-margin-bottom:12px; outline:none; font-family:'Inter',sans-serif;
+  width:100%; height:46px; border:1px solid var(--gray-300);
+  border-radius:10px; padding:0 14px; font-size:14px;
+  margin-bottom:12px; outline:none; font-family:'Inter',sans-serif;
 }
-.login-input:focus{
-border-color:var(--blue);
-box-shadow:0 0 0 3px rgba(37,99,235,.1);
-}
+.login-input:focus{ border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
 .sign-btn{
-width:100%; height:46px; border:none; border-radius:10px;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
-color:white; font-weight:700; font-size:14px; cursor:pointer;
-font-family:'Inter',sans-serif; transition:.15s;
+  width:100%; height:46px; border:none; border-radius:10px;
+  background:linear-gradient(90deg,var(--navy),var(--navy2));
+  color:white; font-weight:700; font-size:14px; cursor:pointer;
+  font-family:'Inter',sans-serif; transition:.15s;
 }
 .sign-btn:hover{ opacity:.9; }
 .login-error{
-color:var(--red); font-size:13px; margin-bottom:10px; display:none;
-background:#fef2f2; border:1px solid #fecaca;
-padding:8px 12px; border-radius:8px;
+  color:var(--red); font-size:13px; margin-bottom:10px; display:none;
+  background:#fef2f2; border:1px solid #fecaca; padding:8px 12px; border-radius:8px;
 }
-.cancel-login{
-display:block; text-align:center; margin-top:12px;
-font-size:13px; color:var(--gray-500); cursor:pointer;
-}
+.cancel-login{ display:block; text-align:center; margin-top:12px; font-size:13px; color:var(--gray-500); cursor:pointer; }
 .cancel-login:hover{ color:var(--gray-900); }
 
 .edit-modal{
-position:fixed; inset:0; background:rgba(0,0,0,.55);
-display:none; align-items:flex-start; justify-content:center;
-z-index:1800; overflow-y:auto; padding:32px 16px;
+  position:fixed; inset:0; background:rgba(0,0,0,.55);
+  display:none; align-items:flex-start; justify-content:center;
+  z-index:1800; overflow-y:auto; padding:32px 16px;
 }
 .edit-modal.active{ display:flex; }
-
 .edit-modal-card{
-background:white; border-radius:20px; width:900px; max-width:98%;
-box-shadow:0 24px 80px rgba(0,0,0,.25);
-overflow:hidden;
-margin:auto;
+  background:white; border-radius:20px; width:900px; max-width:98%;
+  box-shadow:0 24px 80px rgba(0,0,0,.25); overflow:hidden; margin:auto;
 }
-
 .edit-modal-header{
-padding:18px 28px;
-background:linear-gradient(90deg,var(--navy),var(--navy2));
-color:white;
-display:flex; align-items:center; gap:14px;
+  padding:18px 28px;
+  background:linear-gradient(90deg,var(--navy),var(--navy2));
+  color:white; display:flex; align-items:center; gap:14px;
 }
 .edit-modal-header-info{ flex:1; }
 .edit-modal-header-title{ font-size:16px; font-weight:700; }
 .edit-modal-header-sub{ font-size:12px; opacity:.65; margin-top:2px; }
-
 .edit-modal-topbar{
-padding:10px 24px; background:#f8fafc;
-border-bottom:1px solid var(--gray-200);
-display:flex; gap:20px; flex-wrap:wrap; align-items:center;
+  padding:10px 24px; background:#f8fafc;
+  border-bottom:1px solid var(--gray-200);
+  display:flex; gap:20px; flex-wrap:wrap; align-items:center;
 }
 .etb-field{ display:flex; align-items:center; gap:8px; }
 .etb-label{ font-size:11px; font-weight:600; color:var(--gray-600); }
 .etb-input{
-padding:5px 10px; background:white; border:1px solid var(--gray-200);
-border-radius:6px; font-size:12px; font-family:'Inter',sans-serif;
+  padding:5px 10px; background:white; border:1px solid var(--gray-200);
+  border-radius:6px; font-size:12px; font-family:'Inter',sans-serif;
 }
-.etb-id{ width:280px; font-weight:600; font-size:12px; }
-
+.etb-id{ width:320px; font-weight:600; font-size:12px; }
 .edit-modal-body{ padding:24px; }
-.edit-grid{
-display:grid; grid-template-columns:1fr 1fr; gap:16px;
-}
-
-.edit-card{
-background:#fff; border:1px solid var(--gray-200);
-border-radius:8px; overflow:hidden;
-box-shadow:0 1px 3px rgba(0,0,0,.06);
-}
-.edit-card-head{
-padding:11px 16px; border-bottom:1px solid var(--gray-100);
-background:#fafafa;
-}
-.edit-card-head-title{
-font-size:13px; font-weight:600; color:var(--navy);
-}
+.edit-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.edit-card{ background:#fff; border:1px solid var(--gray-200); border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+.edit-card-head{ padding:11px 16px; border-bottom:1px solid var(--gray-100); background:#fafafa; }
+.edit-card-head-title{ font-size:13px; font-weight:600; color:var(--navy); }
 .edit-card-body{ padding:16px; display:grid; gap:10px; }
-
 .edit-field{ display:flex; flex-direction:column; gap:3px; }
 .edit-field label{ font-size:11px; font-weight:600; color:var(--gray-600); }
 .req{ color:var(--red); }
-
-.edit-field input,
-.edit-field select,
-.edit-field textarea{
-width:100%; padding:6px 9px; border:1px solid var(--gray-300);
-border-radius:6px; font:13px 'Inter',sans-serif; outline:none;
+.edit-field input, .edit-field select, .edit-field textarea{
+  width:100%; padding:6px 9px; border:1px solid var(--gray-300);
+  border-radius:6px; font:13px 'Inter',sans-serif; outline:none;
 }
-.edit-field input:focus,
-.edit-field select:focus,
-.edit-field textarea:focus{
-border-color:var(--blue);
-box-shadow:0 0 0 3px rgba(37,99,235,.1);
+.edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus{
+  border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1);
 }
 .edit-field textarea{ resize:vertical; }
 .edit-field .hint{ font-size:11px; color:var(--gray-400); }
-
 .fgcat{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-.ifield{
-display:flex; border:1px solid var(--gray-300);
-border-radius:6px; overflow:hidden;
-}
+.ifield{ display:flex; border:1px solid var(--gray-300); border-radius:6px; overflow:hidden; }
 .ifield input{ border:none; }
 .ifield-btn{
-padding:0 10px; display:grid; place-items:center;
-background:var(--gray-50); border-left:1px solid var(--gray-200);
-text-decoration:none; color:var(--gray-500); font-size:13px;
+  padding:0 10px; display:grid; place-items:center;
+  background:var(--gray-50); border-left:1px solid var(--gray-200);
+  text-decoration:none; color:var(--gray-500); font-size:13px;
 }
-
 .author-info-box{
-background:#f0f7ff; border:1px solid #bfdbfe;
-border-radius:8px; padding:12px 14px;
-display:flex; align-items:center; gap:12px;
+  background:#f0f7ff; border:1px solid #bfdbfe;
+  border-radius:8px; padding:12px 14px;
+  display:flex; align-items:center; gap:12px;
 }
 .aib-avatar{
-width:36px; height:36px; border-radius:9px; flex-shrink:0;
-background:linear-gradient(135deg,var(--navy),var(--navy2));
-color:white; display:flex; align-items:center; justify-content:center;
-font-weight:700; font-size:13px;
+  width:36px; height:36px; border-radius:9px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  color:white; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:13px;
 }
 .aib-name{ font-weight:600; font-size:13px; }
 .aib-email{ font-size:12px; color:var(--gray-500); }
-
 .edit-modal-footer{
-padding:14px 24px; border-top:1px solid var(--gray-200);
-background:#fafafa;
-display:flex; justify-content:space-between; align-items:center;
+  padding:14px 24px; border-top:1px solid var(--gray-200);
+  background:#fafafa; display:flex; justify-content:space-between; align-items:center;
 }
 .ef-brand{ font-size:11px; color:var(--gray-400); }
 .ef-btns{ display:flex; gap:8px; }
-.ef-btn{
-padding:8px 16px; border-radius:7px; font-size:13px;
-font-weight:500; cursor:pointer; font-family:'Inter',sans-serif; border:none;
-}
+.ef-btn{ padding:8px 16px; border-radius:7px; font-size:13px; font-weight:500; cursor:pointer; font-family:'Inter',sans-serif; border:none; }
 .ef-ghost{ background:white; border:1px solid var(--gray-300); }
 .ef-primary{ background:var(--navy); color:white; }
 .ef-primary:hover{ opacity:.9; }
-
 .warning-box{
-background:#fffbeb; border:1px solid #fde68a;
-border-radius:8px; padding:10px 14px; font-size:12px; color:#92400e;
-display:flex; gap:8px; align-items:flex-start; margin-top:14px;
-grid-column:1/-1;
+  background:#fffbeb; border:1px solid #fde68a; border-radius:8px;
+  padding:10px 14px; font-size:12px; color:#92400e;
+  display:flex; gap:8px; align-items:flex-start;
+  margin-top:4px; grid-column:1/-1;
 }
 
 .toast{
-position:fixed; left:50%; bottom:30px; transform:translateX(-50%);
-padding:9px 22px; border-radius:8px; color:#fff; background:var(--gray-900);
-opacity:0; transition:.25s; z-index:9999; font-size:13px; font-weight:500;
-pointer-events:none; white-space:nowrap;
+  position:fixed; left:50%; bottom:30px; transform:translateX(-50%);
+  padding:9px 22px; border-radius:8px; color:#fff; background:var(--gray-900);
+  opacity:0; transition:.25s; z-index:9999; font-size:13px; font-weight:500;
+  pointer-events:none; white-space:nowrap;
 }
 .toast.show{ opacity:1; }
 .toast.ok{ background:var(--green); }
 .toast.err{ background:var(--red); }
-
 </style>
 </head>
-
 <body>
 
 <header>
-<div class="header-left">
-<img src="data/cx_white.png" class="logo-img">
-<div class="title-wrap">
-<h1>GIS DATA EXPLORER</h1>
-<p>CarbonX Team - Geospatial Datasets</p>
-</div>
-</div>
-
-<div class="header-right">
-
-<div id="headerLoginBtn" class="login-btn" onclick="openLoginModal()">
-Login
-</div>
-
-<div id="headerUserArea" style="display:none;align-items:center;gap:12px;">
-<div class="user-badge">
-<div class="user-avatar" id="headerAvatar">A</div>
-<div>
-<div class="user-name" id="headerUserName">—</div>
-<div class="user-role" id="headerUserRole">GIS Team</div>
-</div>
-</div>
-<div class="logout-btn" onclick="logout()">Logout</div>
-</div>
-
-</div>
+  <div class="header-left">
+    <img src="data/cx_white.png" class="logo-img">
+    <div class="title-wrap">
+      <h1>GIS DATA EXPLORER</h1>
+      <p>CarbonX Team - My Geospatial Datasets</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div id="headerLoginBtn" class="login-btn" onclick="openLoginModal()">Login</div>
+    <div id="headerUserArea" style="display:none;align-items:center;gap:12px;">
+      <div class="user-badge">
+        <div class="user-avatar" id="headerAvatar">—</div>
+        <div>
+          <div class="user-name" id="headerUserName">—</div>
+          <div class="user-role">GIS Analyst</div>
+        </div>
+      </div>
+      <div class="logout-btn" onclick="logout()">Logout</div>
+    </div>
+  </div>
 </header>
 
 <div class="page">
+  <div class="top-section">
+    <div class="top-left">
+      <h2>My Geospatial Datasets</h2>
+      <p>Daftar seluruh data geospatial yang Anda miliki.</p>
+    </div>
+    <div class="top-right">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search dataset...">
+      </div>
+      <select id="categoryFilter" class="filter-select"><option value="">All Category</option></select>
+      <select id="geoFilter" class="filter-select"><option value="">All Data Type</option></select>
+      <button class="add-btn" onclick="openAddModal()">+ Add New Dataset</button>
+    </div>
+  </div>
 
-<div class="top-section">
-<div class="top-left">
+  <div class="table-wrapper">
+    <div class="table-top">Total <span id="totalDataset">0</span> datasets</div>
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th><th>Dataset Title</th><th>Category</th>
+          <th>Extent</th><th>Date Created</th><th>Data Type</th>
+          <th>Last Updated</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
 
-</div>
-<div class="top-right">
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="Search dataset...">
-</div>
-<select id="categoryFilter" class="filter-select">
-<option value="">All Category</option>
-</select>
-<select id="geoFilter" class="filter-select">
-<option value="">All Data Type</option>
-</select>
-<button class="add-btn" onclick="openAddModal()">+ Add New Dataset</button>
-</div>
-</div>
-
-<div class="table-wrapper">
-<div class="table-top">Total <span id="totalDataset">0</span> datasets</div>
-<table>
-<thead>
-<tr>
-<th>No.</th>
-<th>Dataset Title</th>
-<th>Category</th>
-<th>Extent</th>
-<th>Date Created</th>
-<th>Data Type</th>
-<th>Last Updated</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="tableBody"></tbody>
-</table>
-</div>
-
-<div class="footer">
-<div>CarbonX Team GIS Metadata System</div>
-<div>Simple • Clean • Academic</div>
-</div>
+  <div class="footer">
+    <div>CarbonX Team GIS Metadata System</div>
+    <div>Simple • Clean • Academic</div>
+  </div>
 </div>
 
 <div class="modal" id="metadataModal">
-<div class="modal-content">
-<h3 id="metaTitle"></h3>
-<div id="metaContent"></div>
-<button class="close-btn" onclick="closeMetadata()">Close</button>
-</div>
+  <div class="modal-content">
+    <h3 id="metaTitle"></h3>
+    <div id="metaContent"></div>
+    <button class="close-btn" onclick="closeMetadata()">Close</button>
+  </div>
 </div>
 
 <div class="login-modal" id="loginModal">
-<div class="login-card">
-
-<div class="login-card-header">
-<div class="login-logo">GIS</div>
-<h2>Sign In</h2>
-<p>CarbonX Team – GIS Data Explorer</p>
-</div>
-
-<div class="user-selector" id="userSelector">
-<div class="user-option selected" data-user="RS" onclick="selectUser('RS',this)">
-<div class="user-option-avatar">RS</div>
-<div class="user-option-name">Ridho Saifulhaq</div>
-<div class="user-option-role">GIS Analyst</div>
-</div>
-<div class="user-option" data-user="GA" onclick="selectUser('GA',this)">
-<div class="user-option-avatar">GA</div>
-<div class="user-option-name">Gemasakti Adzan</div>
-<div class="user-option-role">GIS Analyst</div>
-</div>
-<div class="user-option" data-user="AF" onclick="selectUser('AF',this)">
-<div class="user-option-avatar">AF</div>
-<div class="user-option-name">Abdillah Faruq</div>
-<div class="user-option-role">GIS Analyst</div>
-</div>
-</div>
-
-<label class="login-label">Password</label>
-<input
-  type="password" id="loginPasswordInput" class="login-input"
-  placeholder="Enter your password"
-  onkeydown="if(event.key==='Enter') doLogin()"
->
-
-<div class="login-error" id="loginError">Wrong password. Please try again.</div>
-
-<button class="sign-btn" onclick="doLogin()">Sign In</button>
-<span class="cancel-login" onclick="closeLoginModal()">Cancel</span>
-
-</div>
+  <div class="login-card">
+    <div class="login-card-header">
+      <div class="login-logo">GIS</div>
+      <h2>Sign In</h2>
+      <p>CarbonX Team – GIS Data Explorer</p>
+    </div>
+    <div class="user-selector" id="userSelector">
+      <div class="user-option selected" data-user="RS" onclick="selectUser('RS',this)">
+        <div class="user-option-avatar">RS</div>
+        <div class="user-option-name">Ridho Saifulhaq</div>
+        <div class="user-option-role">GIS Analyst</div>
+      </div>
+      <div class="user-option" data-user="GA" onclick="selectUser('GA',this)">
+        <div class="user-option-avatar">GA</div>
+        <div class="user-option-name">Gemasakti Adzan</div>
+        <div class="user-option-role">GIS Analyst</div>
+      </div>
+      <div class="user-option" data-user="AF" onclick="selectUser('AF',this)">
+        <div class="user-option-avatar">AF</div>
+        <div class="user-option-name">Abdillah Faruq</div>
+        <div class="user-option-role">GIS Analyst</div>
+      </div>
+    </div>
+    <label class="login-label">Password</label>
+    <input type="password" id="loginPasswordInput" class="login-input"
+      placeholder="Enter your password"
+      onkeydown="if(event.key==='Enter') doLogin()">
+    <div class="login-error" id="loginError">Wrong password. Please try again.</div>
+    <button class="sign-btn" onclick="doLogin()">Sign In</button>
+    <span class="cancel-login" onclick="closeLoginModal()">Cancel</span>
+  </div>
 </div>
 
 <div class="edit-modal" id="editModal">
-<div class="edit-modal-card">
+  <div class="edit-modal-card">
 
-  <div class="edit-modal-header">
-    <div class="edit-modal-header-info">
-      <div class="edit-modal-header-title" id="editModalTitle">Add New Dataset</div>
-      <div class="edit-modal-header-sub">CarbonX Team – Metadata Editor</div>
+    <div class="edit-modal-header">
+      <div class="edit-modal-header-info">
+        <div class="edit-modal-header-title" id="editModalTitle">Add New Dataset</div>
+        <div class="edit-modal-header-sub">CarbonX Team – Metadata Editor</div>
+      </div>
+      <button style="padding:7px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:transparent;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-right:6px;"
+        onclick="closeEditModal()">Cancel</button>
+      <button style="padding:7px 16px;border-radius:8px;border:none;background:white;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;"
+        onclick="saveEditMetadata()">☁ Save</button>
     </div>
-    <button style="
-      padding:7px 16px; border-radius:8px; border:1px solid rgba(255,255,255,.3);
-      background:transparent; color:white; font-size:13px; font-weight:600;
-      cursor:pointer; font-family:'Inter',sans-serif; margin-right:6px;
-    " onclick="closeEditModal()">Cancel</button>
-    <button style="
-      padding:7px 16px; border-radius:8px; border:none;
-      background:white; color:var(--navy); font-size:13px; font-weight:700;
-      cursor:pointer; font-family:'Inter',sans-serif;
-    " onclick="saveEditMetadata()">☁ Save</button>
-  </div>
 
-  <div class="edit-modal-topbar">
-    <div class="etb-field">
-      <span class="etb-label">Metadata ID</span>
-      <input type="text" id="editMetaId" class="etb-input etb-id" readonly>
+    <div class="edit-modal-topbar">
+      <div class="etb-field">
+        <span class="etb-label">Metadata ID</span>
+        <input type="text" id="editMetaId" class="etb-input etb-id" readonly>
+      </div>
+      <div class="etb-field" style="margin-left:auto;">
+        <span class="etb-label">Date Created</span>
+        <input type="date" id="editDateCreatedTop" class="etb-input">
+      </div>
     </div>
-    <div class="etb-field" style="margin-left:auto;">
-      <span class="etb-label">Date Created</span>
-      <input type="date" id="editDateCreatedTop" class="etb-input">
-    </div>
-  </div>
 
-  <div class="edit-modal-body">
-  <div class="edit-grid">
+    <div class="edit-modal-body">
+    <div class="edit-grid">
 
-    <div class="edit-card">
-      <div class="edit-card-head"><div class="edit-card-head-title">1. Identification</div></div>
-      <div class="edit-card-body">
-        <div class="edit-field">
-          <label>Dataset Title <span class="req">*</span></label>
-          <input type="text" id="editTitle">
-        </div>
-        <div class="edit-field">
-          <label>Abstract / Description <span class="req">*</span></label>
-          <textarea id="editAbstract" rows="3"></textarea>
-        </div>
-        <div class="edit-field">
-          <label>Keywords / Tags</label>
-          <input type="text" id="editKeywords">
-          <div class="hint">Separate with comma</div>
-        </div>
-        <div class="fgcat">
+      <div class="edit-card">
+        <div class="edit-card-head"><div class="edit-card-head-title">1. Identification</div></div>
+        <div class="edit-card-body">
           <div class="edit-field">
-            <label>Category Level 1 <span class="req">*</span></label>
-            <select id="editCat1" onchange="editUpdateCat2()">
-              <option value="">-- Select --</option>
-            </select>
+            <label>Dataset Title <span class="req">*</span></label>
+            <input type="text" id="editTitle">
           </div>
           <div class="edit-field">
-            <label>Category Level 2 <span class="req">*</span></label>
-            <select id="editCat2" onchange="editUpdateCat3()" disabled>
-              <option value="">-- Select --</option>
-            </select>
+            <label>Abstract / Description <span class="req">*</span></label>
+            <textarea id="editAbstract" rows="3"></textarea>
           </div>
-        </div>
-        <div class="edit-field">
-          <label>Category Level 3</label>
-          <select id="editCat3" disabled>
-            <option value="">-- Select --</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-card">
-      <div class="edit-card-head"><div class="edit-card-head-title">2. Spatial Information</div></div>
-      <div class="edit-card-body">
-        <div class="edit-field">
-          <label>Geographic Extent <span class="req">*</span></label>
-          <select id="editGeoExtent"></select>
-        </div>
-        <div class="edit-field">
-          <label>Coordinate Reference System (CRS)</label>
-          <input type="text" id="editCRS">
-          <select id="editCRSPreset" style="margin-top:4px;font-size:12px;padding:4px 8px;height:auto;font-family:'Inter',sans-serif;"></select>
-        </div>
-        <div class="edit-field">
-          <label>Spatial Resolution / Scale</label>
-          <input type="text" id="editResolution">
-        </div>
-        <div class="edit-field">
-          <label>Geometry Type</label>
-          <select id="editGeomType"></select>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-card">
-      <div class="edit-card-head"><div class="edit-card-head-title">3. Temporal Information</div></div>
-      <div class="edit-card-body">
-        <div class="edit-field">
-          <label>Date of Creation</label>
-          <input type="date" id="editDateCreated">
-        </div>
-        <div class="edit-field">
-          <label>Date of Update</label>
-          <input type="date" id="editDateUpdated">
-        </div>
-        <div class="edit-field">
-          <label>Time Period Covered</label>
-          <input type="text" id="editTimePeriod">
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-card">
-      <div class="edit-card-head"><div class="edit-card-head-title">4. Source &amp; Lineage</div></div>
-      <div class="edit-card-body">
-        <div class="edit-field">
-          <label>Data Source</label>
-          <input type="text" id="editDataSource">
-        </div>
-        <div class="edit-field">
-          <label>Lineage / Processing Steps</label>
-          <textarea id="editLineage" rows="3"></textarea>
-        </div>
-        <div class="edit-field">
-          <label>Data Quality / Accuracy</label>
-          <input type="text" id="editQuality">
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-card">
-      <div class="edit-card-head"><div class="edit-card-head-title">5. Access Information</div></div>
-      <div class="edit-card-body">
-        <div class="edit-field">
-          <label>Dataset Link / Folder</label>
-          <div class="ifield">
-            <input type="url" id="editFileLink">
-            <a href="#" target="_blank" id="editFileLinkOpen" class="ifield-btn">↗</a>
+          <div class="edit-field">
+            <label>Keywords / Tags</label>
+            <input type="text" id="editKeywords">
+            <div class="hint">Separate with comma</div>
           </div>
-        </div>
-        <div class="edit-field">
-          <label>Access Constraints</label>
-          <select id="editAccessConstraints"></select>
-        </div>
-        <div class="edit-field">
-          <label>License / Usage</label>
-          <select id="editLicense"></select>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-card">
-      <div class="edit-card-head"><div class="edit-card-head-title">6. Metadata Information</div></div>
-      <div class="edit-card-body">
-
-        <div class="edit-field">
-          <label>Author / Creator</label>
-          <div class="author-info-box" id="editAuthorBox">
-            <div class="aib-avatar" id="editAuthorAvatar">—</div>
-            <div>
-              <div class="aib-name" id="editAuthorName">—</div>
-              <div class="aib-email" id="editAuthorEmail">—</div>
+          <div class="fgcat">
+            <div class="edit-field">
+              <label>Category Level 1 <span class="req">*</span></label>
+              <select id="editCat1" onchange="editUpdateCat2()">
+                <option value="">-- Select --</option>
+              </select>
+            </div>
+            <div class="edit-field">
+              <label>Category Level 2 <span class="req">*</span></label>
+              <select id="editCat2" onchange="editUpdateCat3()" disabled>
+                <option value="">-- Select --</option>
+              </select>
             </div>
           </div>
+          <div class="edit-field">
+            <label>Category Level 3</label>
+            <select id="editCat3" onchange="refreshMetaId()" disabled>
+              <option value="">-- Select --</option>
+            </select>
+          </div>
         </div>
+      </div>
 
-        <div class="edit-field">
-          <label>Division</label>
-          <input type="text" id="editDivision" value="CarbonX GIS Team">
+      <div class="edit-card">
+        <div class="edit-card-head"><div class="edit-card-head-title">2. Spatial Information</div></div>
+        <div class="edit-card-body">
+          <div class="edit-field">
+            <label>Geographic Extent <span class="req">*</span></label>
+            <select id="editGeoExtent"></select>
+          </div>
+          <div class="edit-field">
+            <label>Coordinate Reference System (CRS)</label>
+            <input type="text" id="editCRS">
+            <select id="editCRSPreset" style="margin-top:4px;font-size:12px;padding:4px 8px;height:auto;font-family:'Inter',sans-serif;"></select>
+          </div>
+          <div class="edit-field">
+            <label>Spatial Resolution / Scale</label>
+            <input type="text" id="editResolution">
+          </div>
+          <div class="edit-field">
+            <label>Geometry Type</label>
+            <select id="editGeomType"></select>
+          </div>
         </div>
+      </div>
 
-        <div class="edit-field">
-          <label>Remarks</label>
-          <textarea id="editRemarks" rows="3"></textarea>
+      <div class="edit-card">
+        <div class="edit-card-head"><div class="edit-card-head-title">3. Temporal Information</div></div>
+        <div class="edit-card-body">
+          <div class="edit-field">
+            <label>Date of Creation</label>
+            <input type="date" id="editDateCreated">
+          </div>
+          <div class="edit-field">
+            <label>Date of Update</label>
+            <input type="date" id="editDateUpdated">
+          </div>
+          <div class="edit-field">
+            <label>Time Period Covered</label>
+            <input type="text" id="editTimePeriod">
+          </div>
         </div>
+      </div>
 
+      <div class="edit-card">
+        <div class="edit-card-head"><div class="edit-card-head-title">4. Source &amp; Lineage</div></div>
+        <div class="edit-card-body">
+          <div class="edit-field">
+            <label>Data Source</label>
+            <input type="text" id="editDataSource">
+          </div>
+          <div class="edit-field">
+            <label>Lineage / Processing Steps</label>
+            <textarea id="editLineage" rows="3"></textarea>
+          </div>
+          <div class="edit-field">
+            <label>Data Quality / Accuracy</label>
+            <input type="text" id="editQuality">
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-card">
+        <div class="edit-card-head"><div class="edit-card-head-title">5. Access Information</div></div>
+        <div class="edit-card-body">
+          <div class="edit-field">
+            <label>Dataset Link / Folder</label>
+            <div class="ifield">
+              <input type="url" id="editFileLink">
+              <a href="#" target="_blank" id="editFileLinkOpen" class="ifield-btn">↗</a>
+            </div>
+          </div>
+          <div class="edit-field">
+            <label>Access Constraints</label>
+            <select id="editAccessConstraints"></select>
+          </div>
+          <div class="edit-field">
+            <label>License / Usage</label>
+            <select id="editLicense"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-card">
+        <div class="edit-card-head"><div class="edit-card-head-title">6. Metadata Information</div></div>
+        <div class="edit-card-body">
+          <div class="edit-field">
+            <label>Author / Creator</label>
+            <div class="author-info-box">
+              <div class="aib-avatar" id="editAuthorAvatar">—</div>
+              <div>
+                <div class="aib-name" id="editAuthorName">—</div>
+                <div class="aib-email" id="editAuthorEmail">—</div>
+              </div>
+            </div>
+          </div>
+          <div class="edit-field">
+            <label>Division</label>
+            <input type="text" id="editDivision" value="CarbonX GIS Team">
+          </div>
+          <div class="edit-field">
+            <label>Remarks</label>
+            <textarea id="editRemarks" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        ⚠ Pastikan semua informasi sudah benar sebelum menyimpan. Perubahan akan disimpan ke Google Sheet.
+      </div>
+
+    </div>
+    </div>
+
+    <div class="edit-modal-footer">
+      <div class="ef-brand">v1.2026</div>
+      <div class="ef-btns">
+        <button class="ef-btn ef-ghost" onclick="resetEditForm()">↺ Reset</button>
+        <button class="ef-btn ef-primary" onclick="saveEditMetadata()">☁ Save Metadata</button>
       </div>
     </div>
 
-    <div class="warning-box">
-      ⚠ Pastikan semua informasi sudah benar sebelum menyimpan. Perubahan akan disimpan ke Google Sheet.
-    </div>
-
   </div>
-  </div>
-
-
-  <div class="edit-modal-footer">
-    <div class="ef-brand">v1.2026</div>
-    <div class="ef-btns">
-      <button class="ef-btn ef-ghost" onclick="resetEditForm()">↺ Reset</button>
-      <button class="ef-btn ef-ghost" onclick="saveEditDraft()">Save Draft</button>
-      <button class="ef-btn ef-primary" onclick="saveEditMetadata()">☁ Save Metadata</button>
-    </div>
-  </div>
-
 </div>
-</div>
-
 
 <div class="toast" id="toast"></div>
 
 <script>
 
-const SHEET_CSV =
-'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv';
-
-const APPS_SCRIPT_URL =
-'https://script.google.com/macros/s/AKfycbzEObl4-ZiQbbGCXjvpOoIH9uA5t80HtMn6MCsjp2jeNUmKJkXbc7eU_JWuz-3uz-pwGQ/exec';
+const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ9Y3-YBQQRduTeRSPp-YkamwugOq0lgpJpXf9OALahm8YaIzo9HaBx_ODZ0nDIjdwtw/exec';
 
 const USERS = {
-  RS:{ name:'Ridho Saifulhaq',  email:'gis@carbonxco.com',       password:'ridho',  division:'CarbonX GIS Team' },
-  GA:{ name:'Gemasakti Adzan',  email:'gema@carbonxco.com',      password:'gema',   division:'CarbonX GIS Team' },
-  AF:{ name:'Abdillah Faruq',   email:'faruq@sanggala.id',       password:'faruq',  division:'CarbonX GIS Team' }
+  RS:{ name:'Ridho Saifulhaq', email:'gis@carbonxco.com',  password:'ridho', division:'CarbonX GIS Team' },
+  GA:{ name:'Gemasakti Adzan', email:'gema@carbonxco.com', password:'gema',  division:'CarbonX GIS Team' },
+  AF:{ name:'Abdillah Faruq',  email:'faruq@sanggala.id',  password:'faruq', division:'CarbonX GIS Team' }
 };
 
-const EDIT_OPTIONS = {
-  geoExtent:[
-    'Project Area','Project Zone','Indonesia',
-    'Kalimantan Barat','Kabupaten Sanggau','Kabupaten Landak','Other'
-  ],
-  geomType:['Point','Line / Polyline','Polygon','Raster'],
-  access:['Public','Internal Use Only','Restricted','Confidential'],
-  license:['CC BY 4.0','Internal Use Only','Proprietary'],
-  crs:[
-    'EPSG:4326 - WGS 84','EPSG:32750 - UTM Zone 50S',
-    'EPSG:32650 - UTM Zone 50N','EPSG:32749 - UTM Zone 49S',
-    'EPSG:32649 - UTM Zone 49N','EPSG:3857 - Web Mercator','EPSG:4755 - DGN95'
-  ]
+const OPTS = {
+  geoExtent:['Project Area','Project Zone','Indonesia','Kalimantan Barat','Kabupaten Sanggau','Kabupaten Landak','Other'],
+  geomType: ['Point','Line / Polyline','Polygon','Raster'],
+  access:   ['Public','Internal Use Only','Restricted','Confidential'],
+  license:  ['CC BY 4.0','Internal Use Only','Proprietary'],
+  crs:      ['EPSG:4326 - WGS 84','EPSG:32750 - UTM Zone 50S','EPSG:32650 - UTM Zone 50N',
+             'EPSG:32749 - UTM Zone 49S','EPSG:32649 - UTM Zone 49N','EPSG:3857 - Web Mercator','EPSG:4755 - DGN95']
 };
 
 const CAT = {
-  "01":{ label:"01. Admin", sub:{
-    "SOP":{ label:"01. SOP", l3:["Workflow","QAQC","Metadata Standard","Naming Convention"] }
+  "01":{ label:"01. Admin",   code:"01", sub:{
+    "SOP":{ label:"01. SOP", code:"SOP", l3:["Workflow","QAQC","Metadata Standard","Naming Convention"] }
   }},
-  "02":{ label:"02. Basemap", sub:{
-    "01":{ label:"01. Administrasi", l3:["Province","District","Village"] },
-    "02":{ label:"02. Jalan",        l3:["Primary Road","Secondary Road","Trail"] },
-    "03":{ label:"03. Hidrologi",    l3:["River","Watershed","Wetland"] },
-    "04":{ label:"04. DEM",          l3:["DEM","DSM","DTM","Contour"] },
-    "05":{ label:"05. Citra",        l3:["Landsat","Sentinel","Drone"] }
+  "02":{ label:"02. Basemap", code:"02", sub:{
+    "01":{ label:"01. Administrasi", code:"01", l3:["Province","District","Village"] },
+    "02":{ label:"02. Jalan",        code:"02", l3:["Primary Road","Secondary Road","Trail"] },
+    "03":{ label:"03. Hidrologi",    code:"03", l3:["River","Watershed","Wetland"] },
+    "04":{ label:"04. DEM",          code:"04", l3:["DEM","DSM","DTM","Contour"] },
+    "05":{ label:"05. Citra",        code:"05", l3:["Landsat","Sentinel","Drone"] }
   }}
 };
 
-let RAW_DATA       = [];
-let currentUserCode= localStorage.getItem('gis_user') || null;
-let isLoggedIn     = localStorage.getItem('gis_login') === 'true';
+let RAW_DATA        = [];
+let currentUserCode = localStorage.getItem('gis_user') || null;
+let isLoggedIn      = localStorage.getItem('gis_login') === 'true';
 let selectedLoginUser = 'RS';
-let editMode       = 'add';
-let editIndex      = -1;
-let editCounter    = parseInt(localStorage.getItem('editCounter')) || 1;
+let editMode        = 'add';
+let editIndex       = -1;
+let editCounter     = parseInt(localStorage.getItem('editCounter')) || 1;
+  
+const $  = id => document.getElementById(id);
+const fv = id => ($( id)?.value || '').trim();
+const today = () => new Date().toISOString().split('T')[0];
+
+function slugify(t){ return t.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,''); }
+
+function setOpts(id, arr, ph='-- Select --'){
+  $(id).innerHTML = `<option value="">${ph}</option>` +
+    arr.map(v=>`<option value="${v}">${v}</option>`).join('');
+}
+
+function setVal(id, val){ const el=$(id); if(el) el.value = val||''; }
+
+function refreshMetaId(){
+  const d   = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dd  = pad(d.getDate()), mm = pad(d.getMonth()+1), yy = String(d.getFullYear()).slice(-2);
+
+  const k1 = fv('editCat1');
+  const k2 = fv('editCat2');
+  const k3 = fv('editCat3');
+
+  const c1 = k1 || '00';
+  const c2 = k2 || '00';
+
+  const c3 = k3 ? slugify(k3) : (k2 ? slugify(k2) : '000');
+
+  const auth = currentUserCode || 'XX';
+  const num  = String(editCounter).padStart(4,'0');
+
+  $('editMetaId').value = `${dd}${mm}${yy}-${c1}/${c2}/${c3}-${auth}-${num}`;
+}
+
 
 async function loadData(){
   try{
-    const response = await fetch(SHEET_CSV);
-    const csv = await response.text();
-    RAW_DATA = csvToArray(csv);
+    const res = await fetch(SHEET_CSV);
+    const csv = await res.text();
+    RAW_DATA  = csvToArray(csv);
     populateFilters();
     renderData(RAW_DATA);
-  } catch(e){
-    console.error('Failed to load data', e);
-  }
+  } catch(e){ console.error('Load failed',e); }
 }
 
 function csvToArray(str){
   const rows = str.trim().split('\n');
   const headers = rows[0].split(',');
   return rows.slice(1).map(r=>{
-    const values = splitCSV(r);
-    let obj = {};
-    headers.forEach((h,i)=>{ obj[h.trim()] = (values[i]||'').trim(); });
+    const vals = splitCSV(r);
+    const obj  = {};
+    headers.forEach((h,i)=>{ obj[h.trim()] = (vals[i]||'').trim(); });
     return obj;
   });
 }
 
 function splitCSV(row){
-  let result=[], current='', inQ=false;
-  for(let i=0;i<row.length;i++){
-    const c=row[i];
+  let res=[], cur='', inQ=false;
+  for(const c of row){
     if(c==='"'){ inQ=!inQ; }
-    else if(c===','&&!inQ){ result.push(current); current=''; }
-    else{ current+=c; }
+    else if(c===','&&!inQ){ res.push(cur); cur=''; }
+    else{ cur+=c; }
   }
-  result.push(current);
-  return result.map(v=>v.replace(/^"|"$/g,''));
+  res.push(cur);
+  return res.map(v=>v.replace(/^"|"$/g,''));
 }
 
 function populateFilters(){
-  const catSet = [...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
-  const geoSet = [...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
-  const cf=document.getElementById('categoryFilter');
-  const gf=document.getElementById('geoFilter');
-  catSet.forEach(v=>{ cf.innerHTML+=`<option value="${v}">${v}</option>`; });
-  geoSet.forEach(v=>{ gf.innerHTML+=`<option value="${v}">${v}</option>`; });
+  const cats = [...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
+  const geos = [...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
+  cats.forEach(v=>{ $('categoryFilter').innerHTML+=`<option value="${v}">${v}</option>`; });
+  geos.forEach(v=>{ $('geoFilter').innerHTML+=`<option value="${v}">${v}</option>`; });
 }
 
 function renderData(data){
-  document.getElementById('totalDataset').innerText = data.length;
-  const tbody = document.getElementById('tableBody');
+  $('totalDataset').innerText = data.length;
+  const tbody = $('tableBody');
   tbody.innerHTML = '';
   data.forEach((d,i)=>{
     const idx = RAW_DATA.indexOf(d);
@@ -826,22 +691,18 @@ function renderData(data){
       <tr>
         <td>${i+1}</td>
         <td>
-          <div class="dataset-title">${d.file_name||''}</div>
-          <div class="dataset-desc">${d.desc||''}</div>
+          <div class="dataset-title">${d.file_name||d.title||''}</div>
+          <div class="dataset-desc">${d.desc||d.abstract||''}</div>
           <div class="keyword">${d.keywords||''}</div>
         </td>
         <td>
-          <span class="tag blue-tag">${d.l1||''}</span><br>
-          <span class="tag blue-tag">${d.l2||''}</span>
+          <span class="tag blue-tag">${d.l1||d.cat1_label||''}</span><br>
+          <span class="tag blue-tag">${d.l2||d.cat2_label||''}</span>
         </td>
-        <td>${d.extent||''}</td>
-        <td>${d.date_of_update||''}</td>
-        <td>
-          <span class="tag ${(d.geo_type||'').includes('Raster')?'yellow-tag':'green-tag'}">
-            ${d.geo_type||''}
-          </span>
-        </td>
-        <td>${d.date_of_update||''}<br>by ${d.author||''}</td>
+        <td>${d.extent||d.geoExtent||''}</td>
+        <td>${d.date_of_update||d.dateCreated||''}</td>
+        <td><span class="tag ${(d.geo_type||d.geomType||'').includes('Raster')?'yellow-tag':'green-tag'}">${d.geo_type||d.geomType||''}</span></td>
+        <td>${d.date_of_update||d.dateUpdated||''}<br>by ${d.author||d.creator||''}</td>
         <td>
           <div class="action-group">
             <button class="action-btn primary" onclick="showMetadata(${idx})">View</button>
@@ -856,72 +717,68 @@ function renderData(data){
 }
 
 function applyFilters(){
-  const s = document.getElementById('searchInput').value.toLowerCase();
-  const c = document.getElementById('categoryFilter').value;
-  const g = document.getElementById('geoFilter').value;
+  const s = $('searchInput').value.toLowerCase();
+  const c = $('categoryFilter').value;
+  const g = $('geoFilter').value;
   renderData(RAW_DATA.filter(d=>{
     const txt = Object.values(d).join(' ').toLowerCase();
-    return txt.includes(s) && (!c||d.l1===c) && (!g||d.geo_type===g);
+    const l1  = d.l1||d.cat1_label||'';
+    const geo = d.geo_type||d.geomType||'';
+    return txt.includes(s) && (!c||l1===c) && (!g||geo===g);
   }));
 }
 
 function showMetadata(index){
   const d = RAW_DATA[index];
-  document.getElementById('metaTitle').innerText = d.file_name||'';
-  document.getElementById('metaContent').innerHTML = `
-    <div class="meta-grid"><div class="meta-label">Description</div><div>${d.desc||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Category</div><div>${d.l1||''} / ${d.l2||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Geometry Type</div><div>${d.geo_type||''}</div></div>
+  $('metaTitle').innerText = d.file_name||d.title||'';
+  $('metaContent').innerHTML = `
+    <div class="meta-grid"><div class="meta-label">Description</div><div>${d.desc||d.abstract||''}</div></div>
+    <div class="meta-grid"><div class="meta-label">Category</div><div>${d.l1||d.cat1_label||''} / ${d.l2||d.cat2_label||''}</div></div>
+    <div class="meta-grid"><div class="meta-label">Geometry Type</div><div>${d.geo_type||d.geomType||''}</div></div>
     <div class="meta-grid"><div class="meta-label">CRS</div><div>${d.crs||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Extent</div><div>${d.extent||''}</div></div>
+    <div class="meta-grid"><div class="meta-label">Extent</div><div>${d.extent||d.geoExtent||''}</div></div>
     <div class="meta-grid"><div class="meta-label">Keywords</div><div>${d.keywords||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Author</div><div>${d.author||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Division</div><div>${d.division||''}</div></div>
+    <div class="meta-grid"><div class="meta-label">Author</div><div>${d.author||d.creator||''}</div></div>
+    <div class="meta-grid"><div class="meta-label">Division</div><div>${d.division||d.organization||''}</div></div>
     <div class="meta-grid"><div class="meta-label">Dataset Link</div>
-      <div><a href="${d.file_link||'#'}" target="_blank">Open Folder / Dataset</a></div>
+      <div><a href="${d.file_link||d.fileLink||d.dropboxLink||'#'}" target="_blank">Open Folder / Dataset</a></div>
     </div>`;
-  document.getElementById('metadataModal').style.display = 'flex';
+  $('metadataModal').style.display = 'flex';
 }
-
-function closeMetadata(){
-  document.getElementById('metadataModal').style.display = 'none';
-}
+function closeMetadata(){ $('metadataModal').style.display='none'; }
 
 function selectUser(code, el){
   selectedLoginUser = code;
   document.querySelectorAll('.user-option').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
-  document.getElementById('loginPasswordInput').value = '';
-  document.getElementById('loginError').style.display = 'none';
+  $('loginPasswordInput').value = '';
+  $('loginError').style.display = 'none';
 }
 
 function openLoginModal(){
-  document.getElementById('loginModal').classList.add('active');
-  document.getElementById('loginPasswordInput').value = '';
-  document.getElementById('loginError').style.display = 'none';
-  setTimeout(()=>document.getElementById('loginPasswordInput').focus(),100);
+  $('loginModal').classList.add('active');
+  $('loginPasswordInput').value = '';
+  $('loginError').style.display = 'none';
+  setTimeout(()=>$('loginPasswordInput').focus(), 100);
 }
-
-function closeLoginModal(){
-  document.getElementById('loginModal').classList.remove('active');
-}
+function closeLoginModal(){ $('loginModal').classList.remove('active'); }
 
 function doLogin(){
-  const pass = document.getElementById('loginPasswordInput').value;
+  const pass = $('loginPasswordInput').value;
   const user = USERS[selectedLoginUser];
   if(user && pass === user.password){
     localStorage.setItem('gis_login','true');
     localStorage.setItem('gis_user', selectedLoginUser);
-    isLoggedIn = true;
+    isLoggedIn      = true;
     currentUserCode = selectedLoginUser;
     updateHeaderAuth();
     closeLoginModal();
     renderData(RAW_DATA);
-    showToast(`Welcome, ${user.name.split(' ')[0]}!`, 'ok');
+    showToast(`Welcome, ${user.name.split(' ')[0]}!`,'ok');
   } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('loginPasswordInput').value = '';
-    document.getElementById('loginPasswordInput').focus();
+    $('loginError').style.display = 'block';
+    $('loginPasswordInput').value = '';
+    $('loginPasswordInput').focus();
   }
 }
 
@@ -929,217 +786,214 @@ function logout(){
   if(!confirm('Are you sure you want to logout?')) return;
   localStorage.setItem('gis_login','false');
   localStorage.removeItem('gis_user');
-  isLoggedIn = false;
-  currentUserCode = null;
+  isLoggedIn = false; currentUserCode = null;
   updateHeaderAuth();
   renderData(RAW_DATA);
   showToast('Logged out');
 }
 
 function updateHeaderAuth(){
-  const loginBtn  = document.getElementById('headerLoginBtn');
-  const userArea  = document.getElementById('headerUserArea');
   if(isLoggedIn && currentUserCode && USERS[currentUserCode]){
     const u = USERS[currentUserCode];
-    loginBtn.style.display = 'none';
-    userArea.style.display = 'flex';
-    document.getElementById('headerAvatar').innerText    = currentUserCode;
-    document.getElementById('headerUserName').innerText  = u.name;
-    document.getElementById('headerUserRole').innerText  = 'GIS Analyst';
+    $('headerLoginBtn').style.display = 'none';
+    $('headerUserArea').style.display = 'flex';
+    $('headerAvatar').innerText   = currentUserCode;
+    $('headerUserName').innerText = u.name;
   } else {
-    loginBtn.style.display = 'block';
-    userArea.style.display = 'none';
+    $('headerLoginBtn').style.display = 'block';
+    $('headerUserArea').style.display = 'none';
   }
 }
 
-function setOpts(id, data, ph='-- Select --'){
-  document.getElementById(id).innerHTML =
-    `<option value="">${ph}</option>` +
-    data.map(v=>`<option value="${v}">${v}</option>`).join('');
-}
-
-function initEditOptions(){
-  setOpts('editGeoExtent',        EDIT_OPTIONS.geoExtent);
-  setOpts('editGeomType',         EDIT_OPTIONS.geomType);
-  setOpts('editAccessConstraints',EDIT_OPTIONS.access);
-  setOpts('editLicense',          EDIT_OPTIONS.license);
-
-  document.getElementById('editCRSPreset').innerHTML =
-    '<option value="">Quick select CRS…</option>' +
-    EDIT_OPTIONS.crs.map(v=>`<option value="${v}">${v}</option>`).join('');
-
-  document.getElementById('editCat1').innerHTML =
-    '<option value="">-- Select --</option>' +
+function initEditCat1(){
+  $('editCat1').innerHTML = '<option value="">-- Select --</option>' +
     Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
-
-  ['editCat2','editCat3'].forEach(id=>{
-    document.getElementById(id).innerHTML = '<option value="">-- Select --</option>';
-    document.getElementById(id).disabled = true;
-  });
+  $('editCat2').innerHTML = '<option value="">-- Select --</option>';
+  $('editCat3').innerHTML = '<option value="">-- Select --</option>';
+  $('editCat2').disabled = true;
+  $('editCat3').disabled = true;
 }
 
 function editUpdateCat2(){
-  const k1 = document.getElementById('editCat1').value;
-  const s2 = document.getElementById('editCat2');
-  const s3 = document.getElementById('editCat3');
+  const k1 = fv('editCat1');
+  const s2 = $('editCat2'), s3 = $('editCat3');
   s2.innerHTML = '<option value="">-- Select --</option>';
   s3.innerHTML = '<option value="">-- Select --</option>';
   s2.disabled = true; s3.disabled = true;
-  if(!CAT[k1]) return;
-  Object.entries(CAT[k1].sub).forEach(([k,v])=>{
-    s2.innerHTML += `<option value="${k}">${v.label}</option>`;
-  });
-  s2.disabled = false;
+  if(CAT[k1]){
+    Object.entries(CAT[k1].sub).forEach(([k,v])=>{
+      s2.innerHTML += `<option value="${k}">${v.label}</option>`;
+    });
+    s2.disabled = false;
+  }
   refreshMetaId();
 }
 
 function editUpdateCat3(){
-  const k1 = document.getElementById('editCat1').value;
-  const k2 = document.getElementById('editCat2').value;
-  const s3 = document.getElementById('editCat3');
+  const k1 = fv('editCat1'), k2 = fv('editCat2');
+  const s3 = $('editCat3');
   s3.innerHTML = '<option value="">-- Select --</option>';
   const l3 = CAT[k1]?.sub[k2]?.l3 || [];
-  s3.innerHTML += l3.map(v=>`<option>${v}</option>`).join('');
+  l3.forEach(v=>{ s3.innerHTML += `<option value="${v}">${v}</option>`; });
   s3.disabled = !l3.length;
   refreshMetaId();
 }
 
-function refreshMetaId(){
-  const d   = new Date();
-  const pad = n=>String(n).padStart(2,'0');
-  const dd  = pad(d.getDate());
-  const mm  = pad(d.getMonth()+1);
-  const yy  = String(d.getFullYear()).slice(-2);
-  const cat1 = document.getElementById('editCat1').value || '00';
-  const cat2 = document.getElementById('editCat2').value || '00';
-  const cat3raw = document.getElementById('editCat3').value || 'uncategorized';
-  const cat3 = cat3raw.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-  const auth = currentUserCode || 'XX';
-  const num  = String(editCounter).padStart(4,'0');
-  document.getElementById('editMetaId').value =
-    `${dd}${mm}${yy}-${cat1}/${cat2}/${cat3}-${auth}-${num}`;
+function setCatValues(k1, k2, k3){
+
+  setVal('editCat1', k1);
+
+  const s2 = $('editCat2');
+  s2.innerHTML = '<option value="">-- Select --</option>';
+  s2.disabled  = true;
+  if(k1 && CAT[k1]){
+    Object.entries(CAT[k1].sub).forEach(([k,v])=>{
+      s2.innerHTML += `<option value="${k}">${v.label}</option>`;
+    });
+    s2.disabled = false;
+    s2.value = k2 || '';
+  }
+
+  const s3 = $('editCat3');
+  s3.innerHTML = '<option value="">-- Select --</option>';
+  s3.disabled  = true;
+  if(k1 && k2 && CAT[k1]?.sub[k2]){
+    const l3 = CAT[k1].sub[k2].l3 || [];
+    l3.forEach(v=>{ s3.innerHTML += `<option value="${v}">${v}</option>`; });
+    s3.disabled = !l3.length;
+    s3.value = k3 || '';
+  }
+}
+
+function initEditOptions(){
+  setOpts('editGeoExtent',         OPTS.geoExtent);
+  setOpts('editGeomType',          OPTS.geomType);
+  setOpts('editAccessConstraints', OPTS.access);
+  setOpts('editLicense',           OPTS.license);
+  $('editCRSPreset').innerHTML =
+    '<option value="">Quick select CRS…</option>' +
+    OPTS.crs.map(v=>`<option value="${v}">${v}</option>`).join('');
+  initEditCat1();
 }
 
 function fillAuthorBox(){
   const u = USERS[currentUserCode];
   if(!u) return;
-  document.getElementById('editAuthorAvatar').innerText = currentUserCode;
-  document.getElementById('editAuthorName').innerText   = u.name;
-  document.getElementById('editAuthorEmail').innerText  = u.email;
-  document.getElementById('editDivision').value         = u.division;
-}
-
-function collectEditData(){
-  const k1 = document.getElementById('editCat1').value;
-  const k2 = document.getElementById('editCat2').value;
-  const u  = USERS[currentUserCode] || {};
-  return {
-    id:            document.getElementById('editMetaId').value,
-    title:         document.getElementById('editTitle').value.trim(),
-    abstract:      document.getElementById('editAbstract').value.trim(),
-    keywords:      document.getElementById('editKeywords').value.trim(),
-    cat1_key:      k1,
-    cat1_label:    CAT[k1]?.label || '',
-    cat2_key:      k2,
-    cat2_label:    CAT[k1]?.sub[k2]?.label || '',
-    cat3:          document.getElementById('editCat3').value,
-    geoExtent:     document.getElementById('editGeoExtent').value,
-    crs:           document.getElementById('editCRS').value.trim(),
-    resolution:    document.getElementById('editResolution').value.trim(),
-    geomType:      document.getElementById('editGeomType').value,
-    dateCreated:   document.getElementById('editDateCreated').value,
-    dateUpdated:   document.getElementById('editDateUpdated').value,
-    timePeriod:    document.getElementById('editTimePeriod').value.trim(),
-    dataSource:    document.getElementById('editDataSource').value.trim(),
-    lineage:       document.getElementById('editLineage').value.trim(),
-    qualityAccuracy: document.getElementById('editQuality').value.trim(),
-    fileLink:      document.getElementById('editFileLink').value.trim(),
-    accessConstraints: document.getElementById('editAccessConstraints').value,
-    license:       document.getElementById('editLicense').value,
-    creator:       u.name   || '',
-    creatorCode:   currentUserCode || '',
-    organization:  document.getElementById('editDivision').value.trim(),
-    email:         u.email  || '',
-    remarks:       document.getElementById('editRemarks').value.trim(),
-    mode:          editMode,
-    timestamp:     new Date().toISOString()
-  };
+  $('editAuthorAvatar').innerText = currentUserCode;
+  $('editAuthorName').innerText   = u.name;
+  $('editAuthorEmail').innerText  = u.email;
+  setVal('editDivision', u.division);
 }
 
 function openAddModal(){
   if(!isLoggedIn){ openLoginModal(); return; }
-  editMode  = 'add';
-  editIndex = -1;
-  document.getElementById('editModalTitle').innerText = 'Add New Dataset';
+  editMode = 'add'; editIndex = -1;
+  $('editModalTitle').innerText = 'Add New Dataset';
   initEditOptions();
-  clearEditFields();
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('editDateCreated').value    = today;
-  document.getElementById('editDateUpdated').value    = today;
-  document.getElementById('editDateCreatedTop').value = today;
+
+  document.querySelectorAll('#editModal input:not([readonly]),#editModal select,#editModal textarea')
+    .forEach(el=>{ el.tagName==='SELECT' ? el.selectedIndex=0 : el.value=''; });
+  setVal('editDivision','CarbonX GIS Team');
+  setVal('editDateCreated', today());
+  setVal('editDateUpdated', today());
+  setVal('editDateCreatedTop', today());
   fillAuthorBox();
   refreshMetaId();
-  document.getElementById('editModal').classList.add('active');
-  document.getElementById('editModal').scrollTop = 0;
+  $('editModal').classList.add('active');
+  $('editModal').scrollTop = 0;
 }
 
 function openEditModal(index){
   if(!isLoggedIn){ openLoginModal(); return; }
-  editMode  = 'edit';
-  editIndex = index;
-  document.getElementById('editModalTitle').innerText = 'Edit Metadata';
+  editMode = 'edit'; editIndex = index;
+  $('editModalTitle').innerText = 'Edit Metadata';
   initEditOptions();
-  clearEditFields();
 
   const d = RAW_DATA[index];
-  document.getElementById('editTitle').value     = d.file_name  || '';
-  document.getElementById('editAbstract').value  = d.desc       || '';
-  document.getElementById('editKeywords').value  = d.keywords   || '';
-  document.getElementById('editGeoExtent').value = d.extent     || '';
-  document.getElementById('editCRS').value       = d.crs        || '';
-  document.getElementById('editGeomType').value  = d.geo_type   || '';
-  document.getElementById('editDateUpdated').value = d.date_of_update || '';
-  document.getElementById('editDataSource').value  = d.source   || '';
-  document.getElementById('editLineage').value     = d.lineage  || '';
-  document.getElementById('editFileLink').value    = d.file_link|| '';
-  document.getElementById('editDivision').value    = d.division || 'CarbonX GIS Team';
-  document.getElementById('editRemarks').value     = d.remarks  || '';
 
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('editDateCreatedTop').value = today;
-  document.getElementById('editDateCreated').value    = d.date_created || today;
 
-  const existingId = d.id || '';
-  document.getElementById('editMetaId').value = existingId || (() => { refreshMetaId(); return document.getElementById('editMetaId').value; })();
+  setVal('editTitle',      d.title      || d.file_name   || '');
+  setVal('editAbstract',   d.abstract   || d.desc        || '');
+  setVal('editKeywords',   d.keywords   || '');
+  setVal('editGeoExtent',  d.geoExtent  || d.extent      || '');
+  setVal('editCRS',        d.crs        || '');
+  setVal('editResolution', d.resolution || '');
+  setVal('editGeomType',   d.geomType   || d.geo_type    || '');
+  setVal('editDateCreated',d.dateCreated|| d.date_created|| today());
+  setVal('editDateUpdated',d.dateUpdated|| d.date_of_update|| today());
+  setVal('editTimePeriod', d.timePeriod || d.time_period || '');
+  setVal('editDataSource', d.dataSource || d.source      || '');
+  setVal('editLineage',    d.lineage    || '');
+  setVal('editQuality',    d.qualityAccuracy || '');
+  setVal('editFileLink',   d.dropboxLink|| d.file_link   || d.fileLink || '');
+  setVal('editAccessConstraints', d.accessConstraints || d.access_constraints || '');
+  setVal('editLicense',    d.license    || '');
+  setVal('editDivision',   d.organization||d.division    || 'CarbonX GIS Team');
+  setVal('editRemarks',    d.remarks    || '');
+  setVal('editDateCreatedTop', today());
+
+  const k1 = d.cat1_key || d.l1_key || '';
+  const k2 = d.cat2_key || d.l2_key || '';
+  const k3 = d.cat3     || '';
+  setCatValues(k1, k2, k3);
+
+  $('editMetaId').value = d.id || (() => { refreshMetaId(); return $('editMetaId').value; })();
 
   fillAuthorBox();
-  document.getElementById('editModal').classList.add('active');
-  document.getElementById('editModal').scrollTop = 0;
+  $('editFileLinkOpen').href = $('editFileLink').value || '#';
+  $('editModal').classList.add('active');
+  $('editModal').scrollTop = 0;
 }
 
-function closeEditModal(){
-  document.getElementById('editModal').classList.remove('active');
-}
-
-function clearEditFields(){
-  document.querySelectorAll(
-    '#editModal input:not([readonly]), #editModal select, #editModal textarea'
-  ).forEach(el=>{
-    if(el.tagName==='SELECT') el.selectedIndex=0;
-    else el.value='';
-  });
-  document.getElementById('editDivision').value = 'CarbonX GIS Team';
-}
+function closeEditModal(){ $('editModal').classList.remove('active'); }
 
 function resetEditForm(){
   if(!confirm('Reset all fields?')) return;
-  clearEditFields();
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('editDateCreated').value    = today;
-  document.getElementById('editDateUpdated').value    = today;
-  document.getElementById('editDateCreatedTop').value = today;
+  if(editMode==='edit'){ openEditModal(editIndex); return; } 
+
+  document.querySelectorAll('#editModal input:not([readonly]),#editModal select,#editModal textarea')
+    .forEach(el=>{ el.tagName==='SELECT' ? el.selectedIndex=0 : el.value=''; });
+  setVal('editDivision','CarbonX GIS Team');
+  setVal('editDateCreated', today());
+  setVal('editDateUpdated', today());
+  setVal('editDateCreatedTop', today());
   fillAuthorBox();
+  initEditCat1();
   refreshMetaId();
+}
+
+function collectEditData(){
+  const u = USERS[currentUserCode] || {};
+  return {
+    id:               fv('editMetaId'),
+    timestamp:        new Date().toISOString(),
+    title:            fv('editTitle'),
+    abstract:         fv('editAbstract'),
+    keywords:         fv('editKeywords'),
+    cat1_key:         fv('editCat1'),
+    cat1_label:       CAT[fv('editCat1')]?.label || '',
+    cat2_key:         fv('editCat2'),
+    cat2_label:       CAT[fv('editCat1')]?.sub[fv('editCat2')]?.label || '',
+    cat3:             fv('editCat3'),
+    geoExtent:        fv('editGeoExtent'),
+    crs:              fv('editCRS'),
+    resolution:       fv('editResolution'),
+    geomType:         fv('editGeomType'),
+    dateCreated:      fv('editDateCreated'),
+    dateUpdated:      fv('editDateUpdated'),
+    timePeriod:       fv('editTimePeriod'),
+    dataSource:       fv('editDataSource'),
+    lineage:          fv('editLineage'),
+    qualityAccuracy:  fv('editQuality'),
+    dropboxLink:      fv('editFileLink'),
+    accessConstraints:fv('editAccessConstraints'),
+    license:          fv('editLicense'),
+    creator:          u.name     || '',
+    organization:     fv('editDivision'),
+    email:            u.email    || '',
+    remarks:          fv('editRemarks'),
+    action:           editMode==='edit' ? 'update' : 'insert'
+  };
 }
 
 async function saveEditMetadata(){
@@ -1147,46 +1001,53 @@ async function saveEditMetadata(){
   if(!data.title)    return showToast('Dataset title required','err');
   if(!data.abstract) return showToast('Abstract required','err');
 
-  const payload = { ...data, action: editMode==='edit' ? 'update' : 'insert' };
-
   try{
-    const res = await fetch(APPS_SCRIPT_URL,{ method:'POST', body:JSON.stringify(payload) });
+    const res = await fetch(APPS_SCRIPT_URL,{ method:'POST', body:JSON.stringify(data) });
     const txt = await res.text();
     let result;
     try{ result=JSON.parse(txt); } catch{ return showToast('Invalid server response','err'); }
 
     if(result.success){
-      showToast(editMode==='edit'?'Metadata updated':'Metadata saved','ok');
+      showToast(editMode==='edit'?'Metadata updated ✓':'Metadata saved ✓','ok');
 
-      const newRow = {
-        file_name:      data.title,
-        desc:           data.abstract,
-        keywords:       data.keywords,
-        l1:             data.cat1_label,
-        l2:             data.cat2_label,
-        extent:         data.geoExtent,
-        crs:            data.crs,
-        geo_type:       data.geomType,
-        date_of_update: data.dateUpdated,
-        date_created:   data.dateCreated,
-        author:         data.creator,
-        division:       data.organization,
-        file_link:      data.fileLink,
-        source:         data.dataSource,
-        lineage:        data.lineage,
-        remarks:        data.remarks,
-        id:             data.id
+      const row = {
+        ...( editMode==='edit' ? RAW_DATA[editIndex] : {} ),
+        id:           data.id,
+        title:        data.title,       file_name:  data.title,
+        abstract:     data.abstract,    desc:       data.abstract,
+        keywords:     data.keywords,
+        cat1_key:     data.cat1_key,    l1:         data.cat1_label,
+        cat1_label:   data.cat1_label,
+        cat2_key:     data.cat2_key,    l2:         data.cat2_label,
+        cat2_label:   data.cat2_label,
+        cat3:         data.cat3,
+        geoExtent:    data.geoExtent,   extent:     data.geoExtent,
+        crs:          data.crs,
+        resolution:   data.resolution,
+        geomType:     data.geomType,    geo_type:   data.geomType,
+        dateCreated:  data.dateCreated, date_created: data.dateCreated,
+        dateUpdated:  data.dateUpdated, date_of_update: data.dateUpdated,
+        timePeriod:   data.timePeriod,
+        dataSource:   data.dataSource,  source:     data.dataSource,
+        lineage:      data.lineage,
+        qualityAccuracy: data.qualityAccuracy,
+        dropboxLink:  data.dropboxLink, file_link:  data.dropboxLink,
+        accessConstraints: data.accessConstraints,
+        license:      data.license,
+        creator:      data.creator,     author:     data.creator,
+        organization: data.organization,division:   data.organization,
+        email:        data.email,
+        remarks:      data.remarks
       };
 
       if(editMode==='edit' && editIndex>=0){
-        RAW_DATA[editIndex] = { ...RAW_DATA[editIndex], ...newRow };
+        RAW_DATA[editIndex] = row;
       } else {
-        RAW_DATA.unshift(newRow);
+        RAW_DATA.unshift(row);
         editCounter++;
         localStorage.setItem('editCounter', editCounter);
       }
 
-      saveEditJSON(data);
       renderData(RAW_DATA);
       closeEditModal();
 
@@ -1196,70 +1057,74 @@ async function saveEditMetadata(){
 
   } catch(err){
     console.error(err);
-    showToast('Apps Script connection failed — saved locally','err');
-    saveEditJSON(data);
+    showToast('Connection failed','err');
   }
 }
 
-function saveEditDraft(){
-  const data = collectEditData();
-  localStorage.setItem('geometa_draft', JSON.stringify(data));
-  saveEditJSON(data);
-  showToast('Draft saved','ok');
+async function deleteDataset(index){
+  const d = RAW_DATA[index];
+  const name = d.file_name || d.title || 'this dataset';
+  if(!confirm(`Delete "${name}"?\n\nThis will also remove it from Google Sheet.`)) return;
+
+  if(d.id){
+    try{
+      const res = await fetch(APPS_SCRIPT_URL,{
+        method:'POST',
+        body: JSON.stringify({ action:'delete', id: d.id })
+      });
+      const txt = await res.text();
+      let result;
+      try{ result=JSON.parse(txt); } catch{ result={success:false}; }
+      if(!result.success){
+        showToast('Sheet delete failed: '+(result.error||'unknown'),'err');
+        return;
+      }
+    } catch(e){
+      showToast('Connection failed — not deleted','err');
+      return;
+    }
+  }
+
+  RAW_DATA.splice(index,1);
+  renderData(RAW_DATA);
+  showToast('Dataset deleted','ok');
 }
 
-function saveEditJSON(data){
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(
-    new Blob([JSON.stringify(data,null,2)],{type:'application/json'})
-  );
-  a.download = `metadata_${data.id||'draft'}.json`;
-  a.click();
-}
-
-
-function deleteDataset(index){
-  const yes = confirm('Delete dataset "'+RAW_DATA[index].file_name+'" ?');
-  if(yes){ RAW_DATA.splice(index,1); renderData(RAW_DATA); showToast('Dataset deleted'); }
-}
-
-function showToast(msg,type=''){
-  const t = document.getElementById('toast');
+function showToast(msg, type=''){
+  const t = $('toast');
   t.textContent = msg;
   t.className = `toast ${type} show`;
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
-document.getElementById('searchInput').addEventListener('input',applyFilters);
-document.getElementById('categoryFilter').addEventListener('change',applyFilters);
-document.getElementById('geoFilter').addEventListener('change',applyFilters);
+$('searchInput').addEventListener('input', applyFilters);
+$('categoryFilter').addEventListener('change', applyFilters);
+$('geoFilter').addEventListener('change', applyFilters);
 
-document.getElementById('editCRSPreset').addEventListener('change',e=>{
-  document.getElementById('editCRS').value = e.target.value;
+$('editCRSPreset').addEventListener('change', e=>{
+  $('editCRS').value = e.target.value;
   e.target.value = '';
 });
 
-document.getElementById('editFileLink').addEventListener('input',e=>{
-  document.getElementById('editFileLinkOpen').href = e.target.value||'#';
+$('editFileLink').addEventListener('input', e=>{
+  $('editFileLinkOpen').href = e.target.value || '#';
 });
 
-document.getElementById('loginModal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('loginModal')) closeLoginModal();
+$('loginModal').addEventListener('click', e=>{
+  if(e.target===$('loginModal')) closeLoginModal();
 });
-document.getElementById('metadataModal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('metadataModal')) closeMetadata();
+$('metadataModal').addEventListener('click', e=>{
+  if(e.target===$('metadataModal')) closeMetadata();
 });
-document.getElementById('editModal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('editModal')) closeEditModal();
+$('editModal').addEventListener('click', e=>{
+  if(e.target===$('editModal')) closeEditModal();
 });
 
 if(isLoggedIn && localStorage.getItem('gis_user')){
   currentUserCode = localStorage.getItem('gis_user');
 }
-
 updateHeaderAuth();
 loadData();
-
 </script>
 </body>
 </html>
