@@ -34,6 +34,8 @@
 --yellow:#d97706;
 --yellow-bg:#fef3c7;
 
+--red:#dc2626;
+
 --radius:12px;
 
 }
@@ -94,10 +96,68 @@ font-size:13px;
 opacity:.9;
 }
 
+.header-right{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
 .login-btn{
 cursor:pointer;
 font-size:14px;
 font-weight:600;
+padding:8px 16px;
+border-radius:8px;
+border:1px solid rgba(255,255,255,.35);
+transition:.15s;
+}
+
+.login-btn:hover{
+background:rgba(255,255,255,.12);
+}
+
+.user-badge{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:13px;
+}
+
+.user-avatar{
+width:34px;
+height:34px;
+border-radius:50%;
+background:rgba(255,255,255,.2);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+font-size:14px;
+}
+
+.user-name{
+font-weight:600;
+font-size:14px;
+}
+
+.user-role{
+font-size:11px;
+opacity:.7;
+}
+
+.logout-btn{
+cursor:pointer;
+font-size:12px;
+padding:6px 12px;
+border-radius:6px;
+border:1px solid rgba(255,255,255,.3);
+opacity:.8;
+transition:.15s;
+}
+
+.logout-btn:hover{
+opacity:1;
+background:rgba(255,255,255,.1);
 }
 
 .page{
@@ -321,6 +381,7 @@ color:var(--yellow);
 .action-group{
 display:flex;
 gap:8px;
+flex-wrap:wrap;
 }
 
 .action-btn{
@@ -347,6 +408,24 @@ transition:.15s;
 background:#f3f4f6;
 }
 
+.action-btn.danger{
+border-color:#fca5a5;
+color:var(--red);
+}
+
+.action-btn.danger:hover{
+background:#fef2f2;
+}
+
+.action-btn.primary{
+border-color:#93c5fd;
+color:var(--blue);
+}
+
+.action-btn.primary:hover{
+background:#eff6ff;
+}
+
 .footer{
 
 margin-top:18px;
@@ -359,6 +438,8 @@ font-size:12px;
 color:var(--gray-500);
 
 }
+
+/* ---- METADATA VIEW MODAL ---- */
 
 .modal{
 
@@ -434,69 +515,130 @@ cursor:pointer;
 
 }
 
-.login-page{
+/* ---- LOGIN MODAL ---- */
+
+.login-modal{
 
 position:fixed;
 inset:0;
 
-background:#f5f7fb;
+background:rgba(0,0,0,.5);
 
 display:none;
 
-z-index:2000;
+align-items:center;
+justify-content:center;
 
-overflow:auto;
+z-index:2000;
 
 }
 
-.login-wrapper{
-
-max-width:1000px;
-
-margin:100px auto;
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:24px;
-
+.login-modal.active{
+display:flex;
 }
 
 .login-card{
 
 background:white;
 
+border-radius:20px;
+
+padding:36px;
+
+width:420px;
+
+max-width:95%;
+
+box-shadow:0 20px 60px rgba(0,0,0,.2);
+
+}
+
+.login-card-header{
+display:flex;
+flex-direction:column;
+align-items:center;
+margin-bottom:28px;
+}
+
+.login-logo{
+width:56px;
+height:56px;
 border-radius:16px;
-
-padding:30px;
-
-border:1px solid var(--gray-200);
-
+background:linear-gradient(135deg,var(--navy),var(--navy2));
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-weight:800;
+font-size:20px;
+margin-bottom:12px;
 }
 
 .login-card h2{
-margin-bottom:22px;
+font-size:20px;
+margin-bottom:4px;
+text-align:center;
 }
 
-.account-box{
+.login-card p{
+color:var(--gray-500);
+font-size:13px;
+text-align:center;
+}
 
-padding:18px;
-
+.account-select-box{
+border:2px solid var(--gray-200);
 border-radius:12px;
-
-border:2px solid #2563eb;
-
-background:#eff6ff;
-
+padding:14px 16px;
 margin-bottom:18px;
+cursor:pointer;
+transition:.15s;
+display:flex;
+align-items:center;
+gap:12px;
+}
 
+.account-select-box.selected{
+border-color:var(--blue);
+background:#eff6ff;
+}
+
+.account-avatar{
+width:38px;
+height:38px;
+border-radius:10px;
+background:linear-gradient(135deg,var(--navy),var(--navy2));
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+font-size:14px;
+flex-shrink:0;
+}
+
+.account-info-name{
+font-weight:600;
+font-size:14px;
+}
+
+.account-info-email{
+font-size:12px;
+color:var(--gray-500);
+}
+
+.login-label{
+font-size:12px;
+font-weight:600;
+color:var(--gray-600);
+margin-bottom:6px;
+display:block;
 }
 
 .login-input{
 
 width:100%;
-height:48px;
+height:46px;
 
 border:1px solid var(--gray-300);
 
@@ -504,17 +646,25 @@ border-radius:10px;
 
 padding:0 14px;
 
-margin-top:10px;
-margin-bottom:20px;
-
 font-size:14px;
 
+margin-bottom:16px;
+
+outline:none;
+
+font-family:'Inter',sans-serif;
+
+}
+
+.login-input:focus{
+border-color:var(--blue);
+box-shadow:0 0 0 3px rgba(37,99,235,.1);
 }
 
 .sign-btn{
 
 width:100%;
-height:48px;
+height:46px;
 
 border:none;
 
@@ -531,9 +681,473 @@ color:white;
 
 font-weight:700;
 
+font-size:14px;
+
 cursor:pointer;
 
+font-family:'Inter',sans-serif;
+
+transition:.15s;
+
 }
+
+.sign-btn:hover{
+opacity:.9;
+}
+
+.login-error{
+color:var(--red);
+font-size:13px;
+margin-bottom:12px;
+display:none;
+}
+
+.cancel-login{
+display:block;
+text-align:center;
+margin-top:14px;
+font-size:13px;
+color:var(--gray-500);
+cursor:pointer;
+}
+
+.cancel-login:hover{
+color:var(--gray-900);
+}
+
+/* ---- EDIT / ADD PAGE ---- */
+
+.edit-page{
+
+position:fixed;
+inset:0;
+
+background:#f4f7fb;
+
+display:none;
+
+overflow:auto;
+
+z-index:1500;
+
+}
+
+.edit-page.active{
+display:block;
+}
+
+.edit-header{
+
+height:64px;
+padding:0 32px;
+background:linear-gradient(90deg,var(--navy),var(--navy2));
+color:#fff;
+display:flex;
+align-items:center;
+gap:16px;
+position:sticky;
+top:0;
+z-index:100;
+box-shadow:0 2px 10px rgba(0,0,0,.25);
+
+}
+
+.edit-header-left{
+display:flex;
+align-items:center;
+gap:12px;
+flex:1;
+}
+
+.back-btn{
+cursor:pointer;
+font-size:13px;
+padding:7px 14px;
+border-radius:8px;
+border:1px solid rgba(255,255,255,.3);
+transition:.15s;
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.back-btn:hover{
+background:rgba(255,255,255,.12);
+}
+
+.edit-header-title{
+font-size:16px;
+font-weight:700;
+}
+
+.edit-header-sub{
+font-size:12px;
+opacity:.65;
+}
+
+.edit-header-center{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:13px;
+}
+
+.save-status{
+display:flex;
+align-items:center;
+gap:6px;
+font-size:13px;
+opacity:.85;
+}
+
+.save-dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#22c55e;
+}
+
+.edit-header-right{
+display:flex;
+gap:10px;
+}
+
+.btn-cancel-edit{
+padding:8px 18px;
+border-radius:8px;
+border:1px solid rgba(255,255,255,.35);
+background:transparent;
+color:white;
+font-size:13px;
+font-weight:600;
+cursor:pointer;
+font-family:'Inter',sans-serif;
+}
+
+.btn-save-edit{
+padding:8px 20px;
+border-radius:8px;
+border:none;
+background:white;
+color:var(--navy);
+font-size:13px;
+font-weight:700;
+cursor:pointer;
+font-family:'Inter',sans-serif;
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.edit-topbar{
+padding:10px 32px;
+background:#fff;
+border-bottom:1px solid var(--gray-200);
+display:flex;
+gap:24px;
+flex-wrap:wrap;
+align-items:center;
+}
+
+.tb-field{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.tb-label{
+font-size:12px;
+font-weight:600;
+color:var(--gray-600);
+}
+
+.tb-input{
+padding:6px 12px;
+background:var(--gray-50);
+border:1px solid var(--gray-200);
+border-radius:6px;
+font-size:13px;
+font-family:'Inter',sans-serif;
+}
+
+.tb-id-input{
+width:360px;
+font-weight:600;
+}
+
+.edit-body{
+max-width:1240px;
+margin:auto;
+padding:24px 32px 90px;
+}
+
+.edit-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.edit-card{
+background:#fff;
+border:1px solid var(--gray-200);
+border-radius:8px;
+overflow:hidden;
+box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+
+.edit-card-head{
+padding:14px 20px;
+border-bottom:1px solid var(--gray-100);
+}
+
+.edit-card-head-title{
+font-size:14px;
+font-weight:600;
+color:var(--navy);
+}
+
+.edit-card-body{
+padding:20px;
+display:grid;
+gap:12px;
+}
+
+.edit-field{
+display:flex;
+flex-direction:column;
+gap:4px;
+}
+
+.edit-field label{
+font-size:12px;
+font-weight:600;
+color:var(--gray-600);
+}
+
+.req{color:var(--red);}
+
+.edit-field input,
+.edit-field select,
+.edit-field textarea{
+width:100%;
+padding:7px 10px;
+border:1px solid var(--gray-300);
+border-radius:6px;
+font:13px 'Inter',sans-serif;
+outline:none;
+}
+
+.edit-field input:focus,
+.edit-field select:focus,
+.edit-field textarea:focus{
+border-color:var(--blue);
+box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+.edit-field textarea{
+resize:vertical;
+}
+
+.edit-field .hint{
+font-size:11px;
+color:var(--gray-400);
+}
+
+.fgcat{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.ifield{
+display:flex;
+border:1px solid var(--gray-300);
+border-radius:6px;
+overflow:hidden;
+}
+
+.ifield input{
+border:none;
+}
+
+.ifield-btn{
+padding:0 11px;
+display:grid;
+place-items:center;
+background:var(--gray-50);
+border-left:1px solid var(--gray-200);
+text-decoration:none;
+color:var(--gray-500);
+font-size:14px;
+}
+
+/* Sidebar summary */
+.edit-with-sidebar{
+display:grid;
+grid-template-columns:1fr 300px;
+gap:24px;
+}
+
+.sidebar-col{
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.sidebar-card{
+background:#fff;
+border:1px solid var(--gray-200);
+border-radius:8px;
+overflow:hidden;
+box-shadow:0 1px 3px rgba(0,0,0,.08);
+position:sticky;
+top:80px;
+}
+
+.sidebar-card-head{
+padding:12px 16px;
+border-bottom:1px solid var(--gray-100);
+font-size:13px;
+font-weight:700;
+color:var(--navy);
+}
+
+.sidebar-card-body{
+padding:14px 16px;
+}
+
+.summary-row{
+display:flex;
+flex-direction:column;
+gap:3px;
+margin-bottom:12px;
+}
+
+.summary-label{
+font-size:11px;
+color:var(--gray-500);
+font-weight:600;
+text-transform:uppercase;
+letter-spacing:.04em;
+}
+
+.summary-value{
+font-size:13px;
+font-weight:500;
+}
+
+.history-item{
+margin-bottom:12px;
+padding-bottom:12px;
+border-bottom:1px solid var(--gray-100);
+font-size:12px;
+}
+
+.history-item:last-child{
+border-bottom:none;
+margin-bottom:0;
+padding-bottom:0;
+}
+
+.history-date{
+font-weight:600;
+color:var(--gray-700);
+margin-bottom:4px;
+}
+
+.history-changes{
+color:var(--gray-600);
+line-height:1.6;
+}
+
+.warning-card{
+background:#fffbeb;
+border:1px solid #fde68a;
+border-radius:8px;
+padding:14px 16px;
+font-size:12px;
+color:#92400e;
+display:flex;
+gap:8px;
+align-items:flex-start;
+}
+
+.warning-icon{
+font-size:16px;
+flex-shrink:0;
+}
+
+/* Edit footer */
+.edit-footer{
+position:fixed;
+left:0;
+right:0;
+bottom:0;
+padding:12px 32px;
+background:#fff;
+border-top:1px solid var(--gray-200);
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:100;
+}
+
+.edit-footer-brand{
+font-size:12px;
+color:var(--gray-400);
+}
+
+.edit-footer-btns{
+display:flex;
+gap:10px;
+}
+
+.ef-btn{
+padding:8px 18px;
+border:none;
+border-radius:6px;
+font-size:13px;
+font-weight:500;
+cursor:pointer;
+font-family:'Inter',sans-serif;
+}
+
+.ef-btn-ghost{
+background:#fff;
+border:1px solid var(--gray-300);
+}
+
+.ef-btn-outline{
+background:#fff;
+border:1px solid var(--gray-300);
+}
+
+.ef-btn-primary{
+background:var(--navy);
+color:#fff;
+}
+
+/* Toast */
+.toast{
+position:fixed;
+left:50%;
+bottom:76px;
+transform:translateX(-50%);
+padding:9px 22px;
+border-radius:8px;
+color:#fff;
+background:var(--gray-900);
+opacity:0;
+transition:.25s;
+z-index:9999;
+font-size:13px;
+font-weight:500;
+pointer-events:none;
+}
+
+.toast.show{opacity:1;}
+.toast.ok{background:var(--green);}
+.toast.err{background:var(--red);}
 
 </style>
 
@@ -541,6 +1155,7 @@ cursor:pointer;
 
 <body>
 
+<!-- ========== MAIN HEADER ========== -->
 <header>
 
 <div class="header-left">
@@ -557,15 +1172,45 @@ class="logo-img"
 
 </div>
 
+<div class="header-right">
+
+<!-- Before login -->
 <div
+id="headerLoginBtn"
 class="login-btn"
-onclick="openLogin()"
+onclick="openLoginModal()"
 >
 Login
 </div>
 
+<!-- After login (hidden by default) -->
+<div
+id="headerUserArea"
+style="display:none;align-items:center;gap:12px;display:none;"
+>
+
+<div class="user-badge">
+<div class="user-avatar" id="headerAvatar">A</div>
+<div>
+<div class="user-name" id="headerUserName">Admin</div>
+<div class="user-role">Administrator</div>
+</div>
+</div>
+
+<div
+class="logout-btn"
+onclick="logout()"
+>
+Logout
+</div>
+
+</div>
+
+</div>
+
 </header>
 
+<!-- ========== MAIN PAGE ========== -->
 <div class="page">
 
 <div class="top-section">
@@ -601,8 +1246,8 @@ class="filter-select"
 <option value="">All Data Type</option>
 </select>
 
-<button class="add-btn">
-Add New Dataset
+<button class="add-btn" onclick="openAddPage()">
++ Add New Dataset
 </button>
 
 </div>
@@ -654,6 +1299,7 @@ Simple • Clean • Academic
 
 </div>
 
+<!-- ========== METADATA VIEW MODAL ========== -->
 <div
 class="modal"
 id="metadataModal"
@@ -676,553 +1322,1013 @@ Close
 
 </div>
 
-<div
-class="login-page"
-id="loginPage"
->
-
-<header>
-
-<div class="header-left">
-
-<img
-src="data/cx_white.png"
-class="logo-img"
->
-
-<div class="title-wrap">
-<h1>GIS DATA EXPLORER</h1>
-<p>CarbonX Team - Geospatial Data Management</p>
-</div>
-
-</div>
-
-<div
-class="login-btn"
-onclick="closeLogin()"
->
-Close
-</div>
-
-</header>
-
-<div class="login-wrapper">
+<!-- ========== LOGIN MODAL ========== -->
+<div class="login-modal" id="loginModal">
 
 <div class="login-card">
 
-<h2>
-1. Choose Your Account
-</h2>
-
-<div class="account-box">
-
-<strong>Admin</strong><br>
-admin@carbonx.team
-
+<div class="login-card-header">
+<div class="login-logo">GIS</div>
+<h2>Sign In</h2>
+<p>CarbonX Team – GIS Data Explorer</p>
 </div>
 
+<div
+class="account-select-box selected"
+id="accountBox"
+>
+<div class="account-avatar">A</div>
+<div>
+<div class="account-info-name">Admin</div>
+<div class="account-info-email">admin@carbonx.team</div>
+</div>
 </div>
 
-<div class="login-card">
-
-<h2>
-2. Enter Password
-</h2>
-
-<label>Password</label>
+<label class="login-label">Password</label>
 
 <input
 type="password"
-id="passwordInput"
+id="loginPasswordInput"
 class="login-input"
 placeholder="Enter your password"
+onkeydown="if(event.key==='Enter') doLogin()"
 >
+
+<div class="login-error" id="loginError">
+Wrong password. Please try again.
+</div>
 
 <button
 class="sign-btn"
-onclick="login()"
+onclick="doLogin()"
 >
 Sign In
 </button>
 
-</div>
+<span class="cancel-login" onclick="closeLoginModal()">
+Cancel
+</span>
 
 </div>
 
 </div>
+
+<!-- ========== EDIT / ADD PAGE ========== -->
+<div class="edit-page" id="editPage">
+
+<div class="edit-header">
+
+<div class="edit-header-left">
+
+<div
+class="back-btn"
+onclick="closeEditPage()"
+>
+← Back to My Datasets
+</div>
+
+<div>
+<div class="edit-header-title" id="editPageTitle">Edit Metadata</div>
+<div class="edit-header-sub">CarbonX Team – Metadata Editor</div>
+</div>
+
+</div>
+
+<div class="edit-header-center">
+<div class="save-status" id="editSaveStatus" style="display:none;">
+<div class="save-dot"></div>
+All changes saved locally
+</div>
+</div>
+
+<div class="edit-header-right">
+<button class="btn-cancel-edit" onclick="closeEditPage()">Cancel</button>
+<button class="btn-save-edit" onclick="saveEditMetadata()">☁ Save Changes</button>
+</div>
+
+</div>
+
+<div class="edit-topbar">
+
+<div class="tb-field">
+<span class="tb-label">Metadata ID</span>
+<input type="text" id="editMetaId" class="tb-input tb-id-input" readonly>
+</div>
+
+<div class="tb-field" style="margin-left:auto">
+<span class="tb-label">Date Created</span>
+<input type="date" id="editDateCreatedTop" class="tb-input">
+</div>
+
+</div>
+
+<div class="edit-body">
+
+<div class="edit-with-sidebar">
+
+<!-- Main form -->
+<div class="edit-grid" id="editFormGrid">
+
+<!-- Section 1 -->
+<div class="edit-card">
+<div class="edit-card-head">
+<div class="edit-card-head-title">1. Identification</div>
+</div>
+<div class="edit-card-body">
+
+<div class="edit-field">
+<label>Dataset Title <span class="req">*</span></label>
+<input type="text" id="editTitle">
+</div>
+
+<div class="edit-field">
+<label>Abstract / Description <span class="req">*</span></label>
+<textarea id="editAbstract" rows="3"></textarea>
+</div>
+
+<div class="edit-field">
+<label>Keywords / Tags</label>
+<input type="text" id="editKeywords">
+<div class="hint">Separate with comma</div>
+</div>
+
+<div class="fgcat">
+<div class="edit-field">
+<label>Category Level 1 <span class="req">*</span></label>
+<select id="editCat1" onchange="editUpdateCat2()">
+<option value="">-- Select --</option>
+</select>
+</div>
+<div class="edit-field">
+<label>Category Level 2 <span class="req">*</span></label>
+<select id="editCat2" onchange="editUpdateCat3()" disabled>
+<option value="">-- Select --</option>
+</select>
+</div>
+</div>
+
+<div class="edit-field">
+<label>Category Level 3</label>
+<select id="editCat3" disabled>
+<option value="">-- Select --</option>
+</select>
+</div>
+
+</div>
+</div>
+
+<!-- Section 2 -->
+<div class="edit-card">
+<div class="edit-card-head">
+<div class="edit-card-head-title">2. Spatial Information</div>
+</div>
+<div class="edit-card-body">
+
+<div class="edit-field">
+<label>Geographic Extent <span class="req">*</span></label>
+<select id="editGeoExtent"></select>
+</div>
+
+<div class="edit-field">
+<label>Coordinate Reference System (CRS)</label>
+<input type="text" id="editCRS">
+<select id="editCRSPreset" style="margin-top:4px;font-size:12px;padding:4px 8px;height:auto"></select>
+</div>
+
+<div class="edit-field">
+<label>Spatial Resolution / Scale</label>
+<input type="text" id="editResolution">
+</div>
+
+<div class="edit-field">
+<label>Geometry Type</label>
+<select id="editGeomType"></select>
+</div>
+
+</div>
+</div>
+
+<!-- Section 3 -->
+<div class="edit-card">
+<div class="edit-card-head">
+<div class="edit-card-head-title">3. Temporal Information</div>
+</div>
+<div class="edit-card-body">
+
+<div class="edit-field">
+<label>Date of Creation</label>
+<input type="date" id="editDateCreated">
+</div>
+
+<div class="edit-field">
+<label>Date of Update</label>
+<input type="date" id="editDateUpdated">
+</div>
+
+<div class="edit-field">
+<label>Time Period Covered</label>
+<input type="text" id="editTimePeriod">
+</div>
+
+</div>
+</div>
+
+<!-- Section 4 -->
+<div class="edit-card">
+<div class="edit-card-head">
+<div class="edit-card-head-title">4. Source &amp; Lineage</div>
+</div>
+<div class="edit-card-body">
+
+<div class="edit-field">
+<label>Data Source</label>
+<input type="text" id="editDataSource">
+</div>
+
+<div class="edit-field">
+<label>Lineage / Processing Steps</label>
+<textarea id="editLineage" rows="3"></textarea>
+</div>
+
+<div class="edit-field">
+<label>Data Quality / Accuracy</label>
+<input type="text" id="editQuality">
+</div>
+
+</div>
+</div>
+
+<!-- Section 5 -->
+<div class="edit-card">
+<div class="edit-card-head">
+<div class="edit-card-head-title">5. Access Information</div>
+</div>
+<div class="edit-card-body">
+
+<div class="edit-field">
+<label>Dataset Link / Folder</label>
+<div class="ifield">
+<input type="url" id="editFileLink">
+<a href="#" target="_blank" id="editFileLinkOpen" class="ifield-btn">↗</a>
+</div>
+</div>
+
+<div class="edit-field">
+<label>Access Constraints</label>
+<select id="editAccessConstraints"></select>
+</div>
+
+<div class="edit-field">
+<label>License / Usage</label>
+<select id="editLicense"></select>
+</div>
+
+</div>
+</div>
+
+<!-- Section 6 -->
+<div class="edit-card">
+<div class="edit-card-head">
+<div class="edit-card-head-title">6. Metadata Information</div>
+</div>
+<div class="edit-card-body">
+
+<div class="edit-field">
+<label>Author / Creator</label>
+<select id="editCreator">
+<option value="">-- Select Author --</option>
+<option value="GA">Gemasakti Adzan (GA)</option>
+<option value="RS">Ridho Saifulhaq (RS)</option>
+<option value="AF">Abdillah Faruq (AF)</option>
+</select>
+</div>
+
+<div class="edit-field">
+<label>Division</label>
+<input type="text" id="editDivision" value="CarbonX Team">
+</div>
+
+<div class="edit-field">
+<label>Contact Email</label>
+<input type="email" id="editEmail">
+</div>
+
+<div class="edit-field">
+<label>Remarks</label>
+<textarea id="editRemarks" rows="3"></textarea>
+</div>
+
+</div>
+</div>
+
+</div><!-- end edit-grid -->
+
+<!-- Sidebar -->
+<div class="sidebar-col">
+
+<div class="sidebar-card">
+<div class="sidebar-card-head">Dataset Summary</div>
+<div class="sidebar-card-body">
+
+<div class="summary-row">
+<div class="summary-label">Category</div>
+<div class="summary-value" id="summaryCategory">—</div>
+</div>
+
+<div class="summary-row">
+<div class="summary-label">Geographic Extent</div>
+<div class="summary-value" id="summaryExtent">—</div>
+</div>
+
+<div class="summary-row">
+<div class="summary-label">CRS</div>
+<div class="summary-value" id="summaryCRS">—</div>
+</div>
+
+<div class="summary-row">
+<div class="summary-label">Data Type</div>
+<div class="summary-value" id="summaryDataType">—</div>
+</div>
+
+<div class="summary-row">
+<div class="summary-label">Date Created</div>
+<div class="summary-value" id="summaryDateCreated">—</div>
+</div>
+
+<div class="summary-row">
+<div class="summary-label">Last Updated</div>
+<div class="summary-value" id="summaryLastUpdated">—</div>
+</div>
+
+<div class="summary-row">
+<div class="summary-label">Author</div>
+<div class="summary-value" id="summaryAuthor">—</div>
+</div>
+
+</div>
+</div>
+
+<div class="sidebar-card" id="editHistoryCard" style="display:none;">
+<div class="sidebar-card-head">⏱ Perubahan Terakhir</div>
+<div class="sidebar-card-body" id="editHistoryBody"></div>
+</div>
+
+<div class="warning-card">
+<div class="warning-icon">⚠</div>
+<div>Pastikan semua informasi sudah benar sebelum menyimpan perubahan. Perubahan akan disimpan ke Google Sheet.</div>
+</div>
+
+</div>
+
+</div><!-- end edit-with-sidebar -->
+
+</div><!-- end edit-body -->
+
+<div class="edit-footer">
+<div class="edit-footer-brand">v1.2026</div>
+<div class="edit-footer-btns">
+<button class="ef-btn ef-btn-ghost" onclick="resetEditForm()">↺ Reset</button>
+<button class="ef-btn ef-btn-outline" onclick="saveEditDraft()">Save Draft</button>
+<button class="ef-btn ef-btn-primary" onclick="saveEditMetadata()">☁ Save Metadata</button>
+</div>
+</div>
+
+</div><!-- end edit-page -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
+
+/* ============================================================
+   CONFIG & CONSTANTS
+============================================================ */
 
 const SHEET_CSV =
 'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv';
 
-let RAW_DATA = [];
+const APPS_SCRIPT_URL =
+'https://script.google.com/macros/s/AKfycbzEObl4-ZiQbbGCXjvpOoIH9uA5t80HtMn6MCsjp2jeNUmKJkXbc7eU_JWuz-3uz-pwGQ/exec';
 
-let isLoggedIn =
-localStorage.getItem('gis_login') === 'true';
+const AUTHORS = {
+  GA:{ name:'Gemasakti Adzan',    email:'gema@carbonxco.com'  },
+  RS:{ name:'Ridho Saifulhaq',    email:'gis@carbonxco.com'   },
+  AF:{ name:'Abdillah Faruq',     email:'faruq@sanggala.id'   }
+};
+
+const EDIT_OPTIONS = {
+  geoExtent:[
+    'Project Area','Project Zone','Indonesia',
+    'Kalimantan Barat','Kabupaten Sanggau','Kabupaten Landak','Other'
+  ],
+  geomType:['Point','Line / Polyline','Polygon','Raster'],
+  access:['Public','Internal Use Only','Restricted','Confidential'],
+  license:['CC BY 4.0','Internal Use Only','Proprietary'],
+  crs:[
+    'EPSG:4326 - WGS 84','EPSG:32750 - UTM Zone 50S',
+    'EPSG:32650 - UTM Zone 50N','EPSG:32749 - UTM Zone 49S',
+    'EPSG:32649 - UTM Zone 49N','EPSG:3857 - Web Mercator','EPSG:4755 - DGN95'
+  ]
+};
+
+const CAT = {
+  "01":{ label:"01. Admin", slug:"admin", sub:{
+    "SOP":{ label:"01. SOP", slug:"sop",
+      l3:["Workflow","QAQC","Metadata Standard","Naming Convention"] }
+  }},
+  "02":{ label:"02. Basemap", slug:"basemap", sub:{
+    "01":{ label:"01. Administrasi", slug:"administrasi",
+      l3:["Province","District","Village"] },
+    "02":{ label:"02. Jalan", slug:"jalan",
+      l3:["Primary Road","Secondary Road","Trail"] },
+    "03":{ label:"03. Hidrologi", slug:"hidrologi",
+      l3:["River","Watershed","Wetland"] },
+    "04":{ label:"04. DEM", slug:"dem",
+      l3:["DEM","DSM","DTM","Contour"] },
+    "05":{ label:"05. Citra", slug:"citra",
+      l3:["Landsat","Sentinel","Drone"] }
+  }}
+};
+
+/* ============================================================
+   STATE
+============================================================ */
+
+let RAW_DATA = [];
+let isLoggedIn = localStorage.getItem('gis_login') === 'true';
+let editMode = 'add'; // 'add' | 'edit'
+let editIndex = -1;   // index in RAW_DATA being edited
+let editVisitCounter = parseInt(localStorage.getItem('editVisitCounter')) || 1;
+
+/* ============================================================
+   DATA LOADING
+============================================================ */
 
 async function loadData(){
-
-const response =
-await fetch(SHEET_CSV);
-
-const csv =
-await response.text();
-
-RAW_DATA =
-csvToArray(csv);
-
-populateFilters();
-
-renderData(RAW_DATA);
-
+  const response = await fetch(SHEET_CSV);
+  const csv = await response.text();
+  RAW_DATA = csvToArray(csv);
+  populateFilters();
+  renderData(RAW_DATA);
 }
 
 function csvToArray(str){
-
-const rows =
-str.trim().split('\n');
-
-const headers =
-rows[0].split(',');
-
-return rows.slice(1).map(r=>{
-
-const values =
-splitCSV(r);
-
-let obj = {};
-
-headers.forEach((h,i)=>{
-obj[h.trim()] =
-values[i] || '';
-});
-
-return obj;
-
-});
-
+  const rows = str.trim().split('\n');
+  const headers = rows[0].split(',');
+  return rows.slice(1).map(r=>{
+    const values = splitCSV(r);
+    let obj = {};
+    headers.forEach((h,i)=>{ obj[h.trim()] = values[i] || ''; });
+    return obj;
+  });
 }
 
 function splitCSV(row){
-
-let result = [];
-
-let current = '';
-
-let insideQuotes = false;
-
-for(let i=0;i<row.length;i++){
-
-const char = row[i];
-
-if(char === '"'){
-insideQuotes = !insideQuotes;
-}
-else if(char === ',' && !insideQuotes){
-result.push(current);
-current='';
-}
-else{
-current += char;
+  let result = [];
+  let current = '';
+  let insideQuotes = false;
+  for(let i=0;i<row.length;i++){
+    const char = row[i];
+    if(char === '"'){ insideQuotes = !insideQuotes; }
+    else if(char === ',' && !insideQuotes){ result.push(current); current=''; }
+    else{ current += char; }
+  }
+  result.push(current);
+  return result.map(v=>v.replace(/^"|"$/g,''));
 }
 
-}
-
-result.push(current);
-
-return result.map(v=>
-v.replace(/^"|"$/g,'')
-);
-
-}
+/* ============================================================
+   FILTERS & RENDER
+============================================================ */
 
 function populateFilters(){
-
-const categorySet =
-[
-...new Set(
-RAW_DATA.map(d=>d.l1).filter(Boolean)
-)
-];
-
-const geoSet =
-[
-...new Set(
-RAW_DATA.map(d=>d.geo_type).filter(Boolean)
-)
-];
-
-const categoryFilter =
-document.getElementById('categoryFilter');
-
-const geoFilter =
-document.getElementById('geoFilter');
-
-categorySet.forEach(v=>{
-
-categoryFilter.innerHTML += `
-<option value="${v}">
-${v}
-</option>
-`;
-
-});
-
-geoSet.forEach(v=>{
-
-geoFilter.innerHTML += `
-<option value="${v}">
-${v}
-</option>
-`;
-
-});
-
+  const categorySet = [...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
+  const geoSet      = [...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
+  const cf = document.getElementById('categoryFilter');
+  const gf = document.getElementById('geoFilter');
+  categorySet.forEach(v=>{ cf.innerHTML += `<option value="${v}">${v}</option>`; });
+  geoSet.forEach(v=>{      gf.innerHTML += `<option value="${v}">${v}</option>`; });
 }
 
 function renderData(data){
+  document.getElementById('totalDataset').innerText = data.length;
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
 
-document.getElementById('totalDataset').innerText =
-data.length;
-
-const tbody =
-document.getElementById('tableBody');
-
-tbody.innerHTML = '';
-
-data.forEach((d,i)=>{
-
-tbody.innerHTML += `
-
-<tr>
-
-<td>${i+1}</td>
-
-<td>
-
-<div class="dataset-title">
-${d.file_name}
-</div>
-
-<div class="dataset-desc">
-${d.desc}
-</div>
-
-<div class="keyword">
-${d.keywords}
-</div>
-
-</td>
-
-<td>
-
-<span class="tag blue-tag">
-${d.l1}
-</span>
-
-<br>
-
-<span class="tag blue-tag">
-${d.l2}
-</span>
-
-</td>
-
-<td>
-${d.extent}
-</td>
-
-<td>
-${d.date_of_update}
-</td>
-
-<td>
-
-<span class="tag ${
-d.geo_type.includes('Raster')
-? 'yellow-tag'
-: 'green-tag'
-}">
-${d.geo_type}
-</span>
-
-</td>
-
-<td>
-${d.date_of_update}<br>
-by ${d.author}
-</td>
-
-<td>
-
-<div class="action-group">
-
-<button
-class="action-btn"
-onclick="showMetadata(${i})"
->
-View
-</button>
-
-<button
-class="action-btn"
-onclick="editDataset(${i})"
->
-Edit
-</button>
-
-<button
-class="action-btn"
-onclick="deleteDataset(${i})"
->
-Delete
-</button>
-
-</div>
-
-</td>
-
-</tr>
-
-`;
-
-});
-
+  data.forEach((d,i)=>{
+    const dataIndex = RAW_DATA.indexOf(d);
+    tbody.innerHTML += `
+      <tr>
+        <td>${i+1}</td>
+        <td>
+          <div class="dataset-title">${d.file_name}</div>
+          <div class="dataset-desc">${d.desc}</div>
+          <div class="keyword">${d.keywords}</div>
+        </td>
+        <td>
+          <span class="tag blue-tag">${d.l1}</span><br>
+          <span class="tag blue-tag">${d.l2}</span>
+        </td>
+        <td>${d.extent}</td>
+        <td>${d.date_of_update}</td>
+        <td>
+          <span class="tag ${d.geo_type.includes('Raster')?'yellow-tag':'green-tag'}">
+            ${d.geo_type}
+          </span>
+        </td>
+        <td>${d.date_of_update}<br>by ${d.author}</td>
+        <td>
+          <div class="action-group">
+            <button class="action-btn primary" onclick="showMetadata(${dataIndex})">View</button>
+            ${isLoggedIn ? `
+              <button class="action-btn" onclick="openEditPage(${dataIndex})">Edit</button>
+              <button class="action-btn danger" onclick="deleteDataset(${dataIndex})">Delete</button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  });
 }
 
 function applyFilters(){
-
-const search =
-document
-.getElementById('searchInput')
-.value
-.toLowerCase();
-
-const category =
-document
-.getElementById('categoryFilter')
-.value;
-
-const geo =
-document
-.getElementById('geoFilter')
-.value;
-
-const filtered =
-RAW_DATA.filter(d=>{
-
-const text =
-Object.values(d)
-.join(' ')
-.toLowerCase();
-
-const matchSearch =
-text.includes(search);
-
-const matchCategory =
-!category || d.l1 === category;
-
-const matchGeo =
-!geo || d.geo_type === geo;
-
-return (
-matchSearch &&
-matchCategory &&
-matchGeo
-);
-
-});
-
-renderData(filtered);
-
+  const search   = document.getElementById('searchInput').value.toLowerCase();
+  const category = document.getElementById('categoryFilter').value;
+  const geo      = document.getElementById('geoFilter').value;
+  const filtered = RAW_DATA.filter(d=>{
+    const text = Object.values(d).join(' ').toLowerCase();
+    return text.includes(search) &&
+      (!category || d.l1 === category) &&
+      (!geo      || d.geo_type === geo);
+  });
+  renderData(filtered);
 }
 
+/* ============================================================
+   METADATA VIEW
+============================================================ */
+
 function showMetadata(index){
-
-const d = RAW_DATA[index];
-
-document.getElementById('metaTitle').innerText =
-d.file_name;
-
-document.getElementById('metaContent').innerHTML = `
-
-<div class="meta-grid">
-<div class="meta-label">Description</div>
-<div>${d.desc}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">Category</div>
-<div>${d.l1} / ${d.l2}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">Geometry Type</div>
-<div>${d.geo_type}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">CRS</div>
-<div>${d.crs}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">Extent</div>
-<div>${d.extent}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">Keywords</div>
-<div>${d.keywords}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">Author</div>
-<div>${d.author}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">Division</div>
-<div>${d.division}</div>
-</div>
-
-<div class="meta-grid">
-<div class="meta-label">Dataset Link</div>
-<div>
-<a
-href="${d.file_link}"
-target="_blank"
->
-Open Folder / Dataset
-</a>
-</div>
-</div>
-
-`;
-
-document.getElementById('metadataModal').style.display =
-'flex';
-
+  const d = RAW_DATA[index];
+  document.getElementById('metaTitle').innerText = d.file_name;
+  document.getElementById('metaContent').innerHTML = `
+    <div class="meta-grid"><div class="meta-label">Description</div><div>${d.desc}</div></div>
+    <div class="meta-grid"><div class="meta-label">Category</div><div>${d.l1} / ${d.l2}</div></div>
+    <div class="meta-grid"><div class="meta-label">Geometry Type</div><div>${d.geo_type}</div></div>
+    <div class="meta-grid"><div class="meta-label">CRS</div><div>${d.crs}</div></div>
+    <div class="meta-grid"><div class="meta-label">Extent</div><div>${d.extent}</div></div>
+    <div class="meta-grid"><div class="meta-label">Keywords</div><div>${d.keywords}</div></div>
+    <div class="meta-grid"><div class="meta-label">Author</div><div>${d.author}</div></div>
+    <div class="meta-grid"><div class="meta-label">Division</div><div>${d.division}</div></div>
+    <div class="meta-grid"><div class="meta-label">Dataset Link</div>
+      <div><a href="${d.file_link}" target="_blank">Open Folder / Dataset</a></div>
+    </div>
+  `;
+  document.getElementById('metadataModal').style.display = 'flex';
 }
 
 function closeMetadata(){
-
-document.getElementById('metadataModal').style.display =
-'none';
-
+  document.getElementById('metadataModal').style.display = 'none';
 }
 
-function openLogin(){
+/* ============================================================
+   LOGIN / LOGOUT
+============================================================ */
 
-document.getElementById('loginPage').style.display =
-'block';
-
+function openLoginModal(){
+  document.getElementById('loginModal').classList.add('active');
+  document.getElementById('loginPasswordInput').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  setTimeout(()=>document.getElementById('loginPasswordInput').focus(), 100);
 }
 
-function closeLogin(){
-
-document.getElementById('loginPage').style.display =
-'none';
-
+function closeLoginModal(){
+  document.getElementById('loginModal').classList.remove('active');
 }
 
-function login(){
-
-const pass =
-document.getElementById('passwordInput').value;
-
-if(pass === '1234'){
-
-localStorage.setItem(
-'gis_login',
-'true'
-);
-
-isLoggedIn = true;
-
-alert('Login success');
-
-closeLogin();
-
-}
-else{
-
-alert('Wrong password');
-
+function doLogin(){
+  const pass = document.getElementById('loginPasswordInput').value;
+  if(pass === '1234'){
+    localStorage.setItem('gis_login','true');
+    isLoggedIn = true;
+    updateHeaderAuth();
+    closeLoginModal();
+    renderData(RAW_DATA); // re-render to show edit/delete buttons
+    showToast('Login successful','ok');
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('loginPasswordInput').value = '';
+    document.getElementById('loginPasswordInput').focus();
+  }
 }
 
+function logout(){
+  if(!confirm('Are you sure you want to logout?')) return;
+  localStorage.setItem('gis_login','false');
+  isLoggedIn = false;
+  updateHeaderAuth();
+  renderData(RAW_DATA); // re-render to hide edit/delete buttons
+  showToast('Logged out');
 }
 
-function editDataset(index){
-
-if(!isLoggedIn){
-
-alert('Please login first');
-
-openLogin();
-
-return;
-
+function updateHeaderAuth(){
+  const loginBtn     = document.getElementById('headerLoginBtn');
+  const userArea     = document.getElementById('headerUserArea');
+  if(isLoggedIn){
+    loginBtn.style.display = 'none';
+    userArea.style.display = 'flex';
+    document.getElementById('headerAvatar').innerText = 'A';
+    document.getElementById('headerUserName').innerText = 'Admin';
+  } else {
+    loginBtn.style.display = 'block';
+    userArea.style.display = 'none';
+  }
 }
 
-alert(
-'Edit dataset: ' +
-RAW_DATA[index].file_name
-);
+/* ============================================================
+   EDIT / ADD PAGE — HELPERS
+============================================================ */
 
+function setEditOptions(id, data, placeholder='-- Select --'){
+  const el = document.getElementById(id);
+  el.innerHTML = `<option value="">${placeholder}</option>` +
+    data.map(v=>`<option value="${v}">${v}</option>`).join('');
 }
+
+function initEditOptions(){
+  setEditOptions('editGeoExtent',     EDIT_OPTIONS.geoExtent);
+  setEditOptions('editGeomType',      EDIT_OPTIONS.geomType);
+  setEditOptions('editAccessConstraints', EDIT_OPTIONS.access);
+  setEditOptions('editLicense',       EDIT_OPTIONS.license);
+
+  document.getElementById('editCRSPreset').innerHTML =
+    '<option value="">Quick select CRS…</option>' +
+    EDIT_OPTIONS.crs.map(v=>`<option value="${v}">${v}</option>`).join('');
+
+  document.getElementById('editCat1').innerHTML =
+    '<option value="">-- Select --</option>' +
+    Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+}
+
+function editUpdateCat2(){
+  const k1 = document.getElementById('editCat1').value;
+  const s2 = document.getElementById('editCat2');
+  const s3 = document.getElementById('editCat3');
+  s2.innerHTML = '<option value="">-- Select --</option>';
+  s3.innerHTML = '<option value="">-- Select --</option>';
+  s2.disabled = true; s3.disabled = true;
+  if(!CAT[k1]) return;
+  Object.entries(CAT[k1].sub).forEach(([k,v])=>{
+    s2.innerHTML += `<option value="${k}">${v.label}</option>`;
+  });
+  s2.disabled = false;
+  updateEditSummary();
+}
+
+function editUpdateCat3(){
+  const k1 = document.getElementById('editCat1').value;
+  const k2 = document.getElementById('editCat2').value;
+  const s3 = document.getElementById('editCat3');
+  s3.innerHTML = '<option value="">-- Select --</option>';
+  const l3 = CAT[k1]?.sub[k2]?.l3 || [];
+  s3.innerHTML += l3.map(v=>`<option>${v}</option>`).join('');
+  s3.disabled = !l3.length;
+  updateEditSummary();
+}
+
+function updateEditSummary(){
+  const cat1Label = document.getElementById('editCat1');
+  const cat2Label = document.getElementById('editCat2');
+  const cat3Label = document.getElementById('editCat3');
+  const c1 = cat1Label.options[cat1Label.selectedIndex]?.text || '—';
+  const c2 = cat2Label.options[cat2Label.selectedIndex]?.text || '';
+  const c3 = cat3Label.options[cat3Label.selectedIndex]?.text || '';
+  document.getElementById('summaryCategory').innerHTML =
+    [c1,c2,c3].filter(v=>v&&v!='-- Select --').map(v=>
+      `<span class="tag blue-tag" style="font-size:11px;">${v}</span> `
+    ).join('') || '—';
+  document.getElementById('summaryExtent').innerText =
+    document.getElementById('editGeoExtent').value || '—';
+  document.getElementById('summaryCRS').innerText =
+    document.getElementById('editCRS').value || '—';
+  document.getElementById('summaryDataType').innerText =
+    document.getElementById('editGeomType').value || '—';
+  document.getElementById('summaryDateCreated').innerText =
+    document.getElementById('editDateCreated').value || '—';
+  document.getElementById('summaryLastUpdated').innerText =
+    new Date().toLocaleDateString('id-ID');
+  const creatorSel = document.getElementById('editCreator');
+  const creatorCode = creatorSel.value;
+  document.getElementById('summaryAuthor').innerText =
+    AUTHORS[creatorCode]?.name || '—';
+}
+
+function slugify(text){
+  return text.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+}
+
+function generateEditId(){
+  const d = new Date();
+  const f = n=>String(n).padStart(2,'0');
+  const dd=f(d.getDate()), mm=f(d.getMonth()+1), yy=String(d.getFullYear()).slice(-2);
+  const cat1 = document.getElementById('editCat1').value || '00';
+  const cat2 = document.getElementById('editCat2').value || '00';
+  const cat3Raw = document.getElementById('editCat3').value || 'uncategorized';
+  const cat3 = slugify(cat3Raw);
+  const author = document.getElementById('editCreator').value || 'XX';
+  const number = String(editVisitCounter).padStart(4,'0');
+  return `${dd}${mm}${yy}-${cat1}/${cat2}/${cat3}-${author}-${number}`;
+}
+
+function collectEditData(){
+  const k1 = document.getElementById('editCat1').value;
+  const k2 = document.getElementById('editCat2').value;
+  const authorCode = document.getElementById('editCreator').value;
+  return {
+    id:            document.getElementById('editMetaId').value,
+    title:         document.getElementById('editTitle').value.trim(),
+    abstract:      document.getElementById('editAbstract').value.trim(),
+    keywords:      document.getElementById('editKeywords').value.trim(),
+    cat1_key:      k1,
+    cat1_label:    CAT[k1]?.label || '',
+    cat2_key:      k2,
+    cat2_label:    CAT[k1]?.sub[k2]?.label || '',
+    cat3:          document.getElementById('editCat3').value,
+    geoExtent:     document.getElementById('editGeoExtent').value,
+    crs:           document.getElementById('editCRS').value.trim(),
+    resolution:    document.getElementById('editResolution').value.trim(),
+    geomType:      document.getElementById('editGeomType').value,
+    dateCreated:   document.getElementById('editDateCreated').value,
+    dateUpdated:   document.getElementById('editDateUpdated').value,
+    timePeriod:    document.getElementById('editTimePeriod').value.trim(),
+    dataSource:    document.getElementById('editDataSource').value.trim(),
+    lineage:       document.getElementById('editLineage').value.trim(),
+    qualityAccuracy: document.getElementById('editQuality').value.trim(),
+    fileLink:      document.getElementById('editFileLink').value.trim(),
+    accessConstraints: document.getElementById('editAccessConstraints').value,
+    license:       document.getElementById('editLicense').value,
+    creator:       AUTHORS[authorCode]?.name || '',
+    creatorCode:   authorCode,
+    organization:  document.getElementById('editDivision').value.trim(),
+    email:         document.getElementById('editEmail').value.trim(),
+    remarks:       document.getElementById('editRemarks').value.trim(),
+    mode:          editMode,
+    timestamp:     new Date().toISOString()
+  };
+}
+
+/* ============================================================
+   EDIT / ADD PAGE — OPEN & CLOSE
+============================================================ */
+
+function openAddPage(){
+  if(!isLoggedIn){ openLoginModal(); return; }
+  editMode  = 'add';
+  editIndex = -1;
+  document.getElementById('editPageTitle').innerText = 'Add New Dataset';
+  initEditOptions();
+  resetEditFields();
+  document.getElementById('editDateCreated').valueAsDate  = new Date();
+  document.getElementById('editDateUpdated').valueAsDate  = new Date();
+  document.getElementById('editDateCreatedTop').valueAsDate = new Date();
+  document.getElementById('editMetaId').value = generateEditId();
+  document.getElementById('editDivision').value = 'CarbonX Team';
+  document.getElementById('editHistoryCard').style.display = 'none';
+  document.getElementById('editSaveStatus').style.display = 'none';
+  document.getElementById('editPage').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function openEditPage(index){
+  if(!isLoggedIn){ openLoginModal(); return; }
+  editMode  = 'edit';
+  editIndex = index;
+  document.getElementById('editPageTitle').innerText = 'Edit Metadata';
+  initEditOptions();
+  resetEditFields();
+
+  const d = RAW_DATA[index];
+
+  // Populate fields from existing data
+  document.getElementById('editTitle').value    = d.file_name  || '';
+  document.getElementById('editAbstract').value = d.desc       || '';
+  document.getElementById('editKeywords').value = d.keywords   || '';
+  document.getElementById('editGeoExtent').value = d.extent    || '';
+  document.getElementById('editCRS').value      = d.crs        || '';
+  document.getElementById('editGeomType').value = d.geo_type   || '';
+  document.getElementById('editDateUpdated').value = d.date_of_update || '';
+  document.getElementById('editDataSource').value  = d.source  || '';
+  document.getElementById('editLineage').value     = d.lineage || '';
+  document.getElementById('editFileLink').value    = d.file_link || '';
+  document.getElementById('editDivision').value    = d.division || 'CarbonX Team';
+  document.getElementById('editRemarks').value     = d.remarks  || '';
+  document.getElementById('editMetaId').value      = d.id || generateEditId();
+  document.getElementById('editDateCreatedTop').valueAsDate = new Date();
+
+  // Set author
+  Object.entries(AUTHORS).forEach(([code,info])=>{
+    if(info.name === d.author){
+      document.getElementById('editCreator').value = code;
+      document.getElementById('editEmail').value = info.email;
+    }
+  });
+
+  // History sidebar
+  document.getElementById('editHistoryCard').style.display = 'block';
+  document.getElementById('editHistoryBody').innerHTML = `
+    <div class="history-item">
+      <div class="history-date">${new Date().toLocaleDateString('id-ID')} ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</div>
+      <div class="history-changes">• Membuka untuk diedit</div>
+    </div>
+    <div class="history-item">
+      <div class="history-date">—</div>
+      <div class="history-changes">• Dataset dibuat</div>
+    </div>
+  `;
+
+  document.getElementById('editSaveStatus').style.display = 'none';
+  updateEditSummary();
+  document.getElementById('editPage').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function closeEditPage(){
+  document.getElementById('editPage').classList.remove('active');
+}
+
+function resetEditFields(){
+  document.querySelectorAll(
+    '#editPage input:not([readonly]), #editPage select, #editPage textarea'
+  ).forEach(el=>{
+    if(el.tagName==='SELECT') el.selectedIndex=0;
+    else el.value='';
+  });
+  document.getElementById('editDivision').value = 'CarbonX Team';
+  ['editCat2','editCat3'].forEach(id=>{
+    document.getElementById(id).disabled=true;
+  });
+}
+
+/* ============================================================
+   EDIT / ADD PAGE — SAVE
+============================================================ */
+
+async function saveEditMetadata(){
+  const data = collectEditData();
+
+  if(!data.title)
+    return showToast('Dataset title required','err');
+  if(!data.abstract)
+    return showToast('Abstract required','err');
+
+  // Add mode: POST to sheet, add to RAW_DATA
+  // Edit mode: POST update to sheet, update RAW_DATA
+
+  const payload = { ...data, action: editMode === 'edit' ? 'update' : 'insert' };
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method:'POST',
+      body: JSON.stringify(payload)
+    });
+    const txt = await res.text();
+    let result;
+    try { result = JSON.parse(txt); } catch { return showToast('Invalid server response','err'); }
+
+    if(result.success){
+      showToast(editMode==='edit' ? 'Metadata updated' : 'Metadata saved','ok');
+
+      // Update local data
+      const newRow = {
+        file_name:       data.title,
+        desc:            data.abstract,
+        keywords:        data.keywords,
+        l1:              data.cat1_label,
+        l2:              data.cat2_label,
+        extent:          data.geoExtent,
+        crs:             data.crs,
+        geo_type:        data.geomType,
+        date_of_update:  data.dateUpdated,
+        author:          data.creator,
+        division:        data.organization,
+        file_link:       data.fileLink,
+        source:          data.dataSource,
+        lineage:         data.lineage,
+        remarks:         data.remarks,
+        id:              data.id
+      };
+
+      if(editMode==='edit' && editIndex>=0){
+        RAW_DATA[editIndex] = { ...RAW_DATA[editIndex], ...newRow };
+      } else {
+        RAW_DATA.unshift(newRow);
+        editVisitCounter++;
+        localStorage.setItem('editVisitCounter', editVisitCounter);
+      }
+
+      // Show "saved" indicator
+      document.getElementById('editSaveStatus').style.display = 'flex';
+
+      saveEditJSON(data);
+      renderData(RAW_DATA);
+
+    } else {
+      showToast(result.error || 'Failed to save','err');
+    }
+
+  } catch(err){
+    console.error(err);
+    showToast('Apps Script connection failed','err');
+  }
+}
+
+function saveEditDraft(){
+  const data = collectEditData();
+  localStorage.setItem('geometa_draft', JSON.stringify(data));
+  saveEditJSON(data);
+  showToast('Draft saved','ok');
+}
+
+function saveEditJSON(data){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(
+    new Blob([JSON.stringify(data,null,2)], {type:'application/json'})
+  );
+  a.download = `metadata_${data.id}.json`;
+  a.click();
+}
+
+function resetEditForm(){
+  if(!confirm('Reset all fields?')) return;
+  resetEditFields();
+  document.getElementById('editMetaId').value = generateEditId();
+  updateEditSummary();
+}
+
+/* ============================================================
+   DELETE
+============================================================ */
 
 function deleteDataset(index){
-
-if(!isLoggedIn){
-
-alert('Please login first');
-
-openLogin();
-
-return;
-
+  const yes = confirm('Delete dataset "' + RAW_DATA[index].file_name + '" ?');
+  if(yes){
+    RAW_DATA.splice(index,1);
+    renderData(RAW_DATA);
+    showToast('Dataset deleted');
+  }
 }
 
-const yes =
-confirm(
-'Delete dataset "' +
-RAW_DATA[index].file_name +
-'" ?'
-);
+/* ============================================================
+   TOAST
+============================================================ */
 
-if(yes){
-
-RAW_DATA.splice(index,1);
-
-renderData(RAW_DATA);
-
+function showToast(msg, type=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
-}
+/* ============================================================
+   EVENT LISTENERS & INIT
+============================================================ */
 
-document
-.getElementById('searchInput')
-.addEventListener(
-'input',
-applyFilters
-);
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+document.getElementById('geoFilter').addEventListener('change', applyFilters);
 
-document
-.getElementById('categoryFilter')
-.addEventListener(
-'change',
-applyFilters
-);
+// Edit page live summary updates
+document.getElementById('editGeoExtent').addEventListener('change', updateEditSummary);
+document.getElementById('editCRS').addEventListener('input', updateEditSummary);
+document.getElementById('editGeomType').addEventListener('change', updateEditSummary);
+document.getElementById('editDateCreated').addEventListener('change', updateEditSummary);
+document.getElementById('editCreator').addEventListener('change', ()=>{
+  const code = document.getElementById('editCreator').value;
+  if(AUTHORS[code]) document.getElementById('editEmail').value = AUTHORS[code].email;
+  updateEditSummary();
+});
 
-document
-.getElementById('geoFilter')
-.addEventListener(
-'change',
-applyFilters
-);
+document.getElementById('editFileLink').addEventListener('input', e=>{
+  document.getElementById('editFileLinkOpen').href = e.target.value || '#';
+});
 
+document.getElementById('editCRSPreset').addEventListener('change', e=>{
+  document.getElementById('editCRS').value = e.target.value;
+  e.target.value = '';
+  updateEditSummary();
+});
+
+// Close modals on backdrop click
+document.getElementById('loginModal').addEventListener('click', e=>{
+  if(e.target === document.getElementById('loginModal')) closeLoginModal();
+});
+
+document.getElementById('metadataModal').addEventListener('click', e=>{
+  if(e.target === document.getElementById('metadataModal')) closeMetadata();
+});
+
+// Init
+updateHeaderAuth();
 loadData();
 
 </script>
