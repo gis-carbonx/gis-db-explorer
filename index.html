@@ -585,18 +585,132 @@ const OPTS = {
              'EPSG:32749 - UTM Zone 49S','EPSG:32649 - UTM Zone 49N','EPSG:3857 - Web Mercator','EPSG:4755 - DGN95']
 };
 
+// ============================================================
+// KATEGORI — diperbarui sesuai gambar (Level 1, 2, 3)
+// ============================================================
 const CAT = {
-  "01":{ label:"01. Admin",   code:"01", sub:{
-    "SOP":{ label:"01. SOP", code:"SOP", l3:["Workflow","QAQC","Metadata Standard","Naming Convention"] }
-  }},
-  "02":{ label:"02. Basemap", code:"02", sub:{
-    "01":{ label:"01. Administrasi", code:"01", l3:["Province","District","Village"] },
-    "02":{ label:"02. Jalan",        code:"02", l3:["Primary Road","Secondary Road","Trail"] },
-    "03":{ label:"03. Hidrologi",    code:"03", l3:["River","Watershed","Wetland"] },
-    "04":{ label:"04. DEM",          code:"04", l3:["DEM","DSM","DTM","Contour"] },
-    "05":{ label:"05. Citra",        code:"05", l3:["Landsat","Sentinel","Drone"] }
-  }}
+  "01": {
+    label: "01. Admin", code: "01",
+    sub: {
+      "SOP": {
+        label: "1. SOP", code: "SOP",
+        l3: ["(File Name) SOP_Deskripsi_YYYYMMDD_Versi"]
+      }
+    }
+  },
+  "02": {
+    label: "02. Basemap", code: "02",
+    sub: {
+      "01": {
+        label: "1. Administrasi", code: "01",
+        l3: ["Provinsi","Kabupaten/Kota","Kecamatan","Desa/Kelurahan","Dusun"]
+      },
+      "02": {
+        label: "2. Jalan", code: "02",
+        l3: ["RSI","OSM","Tracking","Deliniasi"]
+      },
+      "03": {
+        label: "3. Hidrologi", code: "03",
+        l3: ["Watershed","Sungai","Tubuh air lainnya"]
+      },
+      "04": {
+        label: "4. DEM", code: "04",
+        l3: ["DEMNAS","SRTM"]
+      },
+      "05": {
+        label: "5. Citra", code: "05",
+        l3: ["2023","2024","2025"]
+      },
+      "06": {
+        label: "6. Data CMI", code: "06",
+        l3: ["Boundaries","grid monitoring","eligible area"]
+      }
+    }
+  },
+  "03": {
+    label: "03. Thematic", code: "03",
+    sub: {
+      "01": {
+        label: "1. Forest Patrol", code: "01",
+        l3: ["Multipatrol","Kebun Pengawas Api","Hotspot"]
+      },
+      "02": {
+        label: "2. Nursery", code: "02",
+        l3: ["Layout","Kebun Entress","Kebun Inti"]
+      },
+      "03": {
+        label: "3. Planting", code: "03",
+        l3: ["Restoration","Enrichment","KTH"]
+      },
+      "04": {
+        label: "4. Alternative Livelihood", code: "04",
+        l3: ["Handycraft","Perikanan","House Garden"]
+      },
+      "05": {
+        label: "5. Access to Health", code: "05",
+        l3: ["Visit Dokter"]
+      },
+      "06": {
+        label: "6. Access to Education", code: "06",
+        l3: ["Sekolah Vokasi","Paket BBC","Demplot"]
+      },
+      "07": {
+        label: "7. Access to Water", code: "07",
+        l3: ["Pipanisasi"]
+      },
+      "08": {
+        label: "8. Biodiversity Conservation", code: "08",
+        l3: ["Camera Trap & Bioacoustic","Wildlife Monitoring Post","Field Survey"]
+      },
+      "09": {
+        label: "9. MRV", code: "09",
+        l3: ["Biomass Measurement","Ground Truthing"]
+      },
+      "10": {
+        label: "10. LULC", code: "10",
+        l3: ["Lahan Garapan Masyarakat","Land Cover","Other Land Cover"]
+      },
+      "11": {
+        label: "11. Planning", code: "11",
+        l3: ["RKU","RKT","PAL Batas"]
+      },
+      "12": {
+        label: "12. Drone Mapping", code: "12",
+        l3: ["RAW","Imagery","Report","Pre-flight Form","Overview Map","Metadata"]
+      },
+      "13": {
+        label: "13. Preservation of Sites and Culture", code: "13",
+        l3: ["Culture Sites","Sekolah Adat"]
+      }
+    }
+  },
+  "04": {
+    label: "04. Templates", code: "04",
+    sub: {
+      "13": {
+        label: "13. Reporting & Submission", code: "13",
+        l3: ["[external organisation name]"]
+      },
+      "21": {
+        label: "21. MPK", code: "21",
+        l3: ["(File Name)"]
+      },
+      "GP": {
+        label: "2. Geopackage", code: "GP",
+        l3: ["(File Name)"]
+      },
+      "LO": {
+        label: "3. Layout", code: "LO",
+        l3: ["(File Name)"]
+      },
+      "SY": {
+        label: "4. Symbology", code: "SY",
+        l3: ["(File Name)"]
+      }
+    }
+  }
 };
+// ============================================================
 
 let RAW_DATA        = [];
 let currentUserCode = localStorage.getItem('gis_user') || null;
@@ -908,7 +1022,6 @@ function openEditModal(index){
   initEditOptions();
 
   const d = RAW_DATA[index];
-
 
   setVal('editTitle',      d.title      || d.file_name   || '');
   setVal('editAbstract',   d.abstract   || d.desc        || '');
