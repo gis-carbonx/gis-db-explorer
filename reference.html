@@ -92,7 +92,7 @@
   .section-line { flex: 1; height: 1px; background: var(--border); }
   .section-count { font-size: .68rem; color: var(--muted); background: var(--light); padding: 2px 8px; border-radius: 10px; }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; align-items: start; }
 
   .card {
     background: var(--white); border: 1.5px solid var(--border); border-radius: 11px;
@@ -100,14 +100,8 @@
     transition: box-shadow .15s, border-color .15s, transform .1s;
     position: relative; overflow: hidden;
   }
-  .card::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 4px; background: var(--bar, var(--mid)); border-radius: 11px 0 0 11px;
-    transition: width .15s;
-  }
-  .card:hover { box-shadow: 0 4px 18px rgba(30,90,160,.12); border-color: var(--mid); transform: translateY(-1px); }
-  .card:hover::before, .card.expanded::before { width: 5px; }
-  .card.expanded { border-color: var(--blue); box-shadow: 0 5px 22px rgba(13,54,99,.14); }
+.card:hover { box-shadow: 0 4px 18px rgba(30,90,160,.12); border-color: var(--mid); transform: translateY(-1px); }
+.card.expanded { border-color: var(--blue); box-shadow: 0 5px 22px rgba(13,54,99,.14); }
 
   .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
   .card-name { font-size: .88rem; font-weight: 600; color: var(--text); line-height: 1.35; }
@@ -379,9 +373,9 @@ function render() {
         </div>
       `;
       card.addEventListener('click', () => {
-        const was = card.classList.contains('expanded');
+        const isOpen = card.classList.contains('expanded');
         document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
-        if (!was) card.classList.add('expanded');
+        if (!isOpen) card.classList.add('expanded');
       });
       grid.appendChild(card);
     });
