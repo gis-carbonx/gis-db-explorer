@@ -160,7 +160,7 @@
   <div class="header-right">
     <a href="https://gis-carbonx.github.io/gis-db-explorer/" class="back-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Back
+      Back to Explorer
     </a>
     <div class="search-wrap">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -194,10 +194,16 @@ const SHEET_URLS = [
 
 // Warna per Level 1 (bisa ditambah sesuai kebutuhan)
 const SECTION_COLORS = {
-  'Admin':     '#22843A',
-  'Basemap':   '#0D3663',
-  'Thematic':  '#1E5AA0',
-  'Templates': '#5A3FA0',
+  // keys from "index" sheet kolom screenshot (Level 1)
+  'Admin':          '#22843A',
+  'Basemap':        '#0D3663',
+  'Thematic':       '#1E5AA0',
+  'Templates':      '#5A3FA0',
+  // keys from GIS Explorer sheet (kolom l1)
+  '01_Admin':       '#22843A',
+  '02_Basemap':     '#0D3663',
+  '03_Thematic':    '#1E5AA0',
+  '04_Templates':   '#5A3FA0',
 };
 const DEFAULT_COLOR = '#3A7DC9';
 
@@ -230,28 +236,34 @@ function splitRow(row) {
 }
 
 // ── BUILD SECTIONS FROM SHEET DATA ──────────────────────────
-// Expected columns: Level 1, Level 2, Code, Deskripsi, Level 3
+// Supports both column naming conventions:
+//   "index" sheet (classification): Level 1, Level 2, Code, Deskripsi, Level 3
+//   GIS Explorer sheet: l1, l2, l3, desc (no separate Code column)
 function buildSections(rows) {
   const sections = {};
   rows.forEach(row => {
-    const l1   = row['Level 1']  || row['level_1'] || '';
-    const l2   = row['Level 2']  || row['level_2'] || '';
-    const code = row['Code']     || row['code']     || '';
-    const desc = row['Deskripsi']|| row['deskripsi']|| row['description'] || '';
-    const l3   = row['Level 3']  || row['level_3'] || '';
+    // Support both column name styles
+    const l1   = row['Level 1']   || row['level_1'] || row['l1'] || '';
+    const l2   = row['Level 2']   || row['level_2'] || row['l2'] || '';
+    const code = row['Code']      || row['code']    || '';
+    const desc = row['Deskripsi'] || row['deskripsi']|| row['desc'] || row['description'] || '';
+    const l3   = row['Level 3']   || row['level_3'] || row['l3'] || '';
 
     if (!l1) return;
 
-    if (!sections[l1]) {
-      sections[l1] = {
-        color: SECTION_COLORS[l1] || DEFAULT_COLOR,
-        items: {}          // keyed by l2+code to group examples
+    // Strip numeric prefix from l1 for clean display: "02_Basemap" → "Basemap"
+    const l1Display = l1.replace(/^\d+_/, '');
+
+    if (!sections[l1Display]) {
+      sections[l1Display] = {
+        color: SECTION_COLORS[l1] || SECTION_COLORS[l1Display] || DEFAULT_COLOR,
+        items: {}
       };
     }
 
-    const itemKey = `${l2}||${code}`;
-    if (!sections[l1].items[itemKey]) {
-      sections[l1].items[itemKey] = {
+    const itemKey = `${l2}||${code || l2}`;
+    if (!sections[l1Display].items[itemKey]) {
+      sections[l1Display].items[itemKey] = {
         name: l2,
         code: code,
         desc: desc,
@@ -259,7 +271,10 @@ function buildSections(rows) {
       };
     }
 
-    if (l3) sections[l1].items[itemKey].examples.push(l3);
+    // Avoid duplicate l3 entries (same dataset appears multiple times)
+    if (l3 && !sections[l1Display].items[itemKey].examples.includes(l3)) {
+      sections[l1Display].items[itemKey].examples.push(l3);
+    }
   });
 
   // Convert items objects to arrays
