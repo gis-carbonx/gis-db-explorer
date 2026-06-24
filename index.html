@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Explorer 2</title>
+<title>GIS Data Explorer</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 :root{
   --navy:#08245c; --navy2:#103a87;
@@ -74,6 +72,12 @@ header{
   background:linear-gradient(90deg,var(--navy),var(--navy2));
   color:white; border-radius:10px; font-weight:600; cursor:pointer;
 }
+.manage-cat-btn{
+  height:46px; padding:0 18px; border:1px solid var(--gray-300);
+  background:white; color:var(--navy); border-radius:10px; font-weight:600;
+  cursor:pointer; font-size:14px; transition:.15s; display:none;
+}
+.manage-cat-btn:hover{ background:var(--gray-50); border-color:var(--navy); }
 .table-wrapper{
   background:white; border:1px solid var(--gray-200);
   border-radius:16px; overflow:hidden;
@@ -104,6 +108,9 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
 .action-btn.primary{ border-color:#93c5fd; color:var(--blue); }
 .action-btn.primary:hover{ background:#eff6ff; }
 .footer{ margin-top:18px; display:flex; justify-content:space-between; font-size:12px; color:var(--gray-500); }
+
+/* Loading skeleton */
+.cat-loading{ padding:12px 16px; font-size:13px; color:var(--gray-400); text-align:center; }
 
 .modal{
   position:fixed; inset:0; background:rgba(0,0,0,.45);
@@ -262,6 +269,100 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
   margin-top:4px; grid-column:1/-1;
 }
 
+/* ============================================================
+   CATEGORY MANAGER MODAL
+   ============================================================ */
+.cat-manager-modal{
+  position:fixed; inset:0; background:rgba(0,0,0,.55);
+  display:none; align-items:flex-start; justify-content:center;
+  z-index:2500; overflow-y:auto; padding:32px 16px;
+}
+.cat-manager-modal.active{ display:flex; }
+.cat-manager-card{
+  background:white; border-radius:20px; width:1000px; max-width:98%;
+  box-shadow:0 24px 80px rgba(0,0,0,.25); overflow:hidden; margin:auto;
+}
+.cat-manager-header{
+  padding:18px 28px;
+  background:linear-gradient(90deg,var(--navy),var(--navy2));
+  color:white; display:flex; align-items:center; gap:14px;
+}
+.cat-manager-header-info{ flex:1; }
+.cat-manager-header-title{ font-size:16px; font-weight:700; }
+.cat-manager-header-sub{ font-size:12px; opacity:.65; margin-top:2px; }
+.cat-manager-body{ padding:24px; }
+.cat-tabs{ display:flex; gap:8px; margin-bottom:20px; border-bottom:2px solid var(--gray-200); padding-bottom:0; }
+.cat-tab{
+  padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer;
+  border-radius:8px 8px 0 0; border:1px solid transparent; border-bottom:none;
+  color:var(--gray-500); background:transparent; transition:.15s;
+  margin-bottom:-2px;
+}
+.cat-tab:hover{ color:var(--navy); background:var(--gray-50); }
+.cat-tab.active{
+  color:var(--navy); background:white;
+  border-color:var(--gray-200); border-bottom-color:white;
+}
+.cat-panel{ display:none; }
+.cat-panel.active{ display:block; }
+
+/* Level panels layout */
+.cat-level-layout{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.cat-list-section{ }
+.cat-list-section h4{ font-size:13px; font-weight:700; color:var(--navy); margin-bottom:12px; }
+.cat-list{
+  border:1px solid var(--gray-200); border-radius:10px; overflow:hidden;
+  max-height:320px; overflow-y:auto;
+}
+.cat-list-item{
+  display:flex; align-items:center; padding:10px 14px;
+  border-bottom:1px solid var(--gray-100); gap:10px;
+  font-size:13px;
+}
+.cat-list-item:last-child{ border-bottom:none; }
+.cat-list-item:hover{ background:var(--gray-50); }
+.cat-list-item-code{
+  background:var(--navy); color:white; border-radius:5px;
+  padding:2px 7px; font-size:11px; font-weight:700; flex-shrink:0;
+}
+.cat-list-item-label{ flex:1; }
+.cat-list-item-parent{ font-size:11px; color:var(--gray-400); }
+.cat-list-empty{ padding:20px; text-align:center; color:var(--gray-400); font-size:13px; }
+.cat-add-section{ background:var(--gray-50); border:1px solid var(--gray-200); border-radius:10px; padding:16px; }
+.cat-add-section h4{ font-size:13px; font-weight:700; color:var(--navy); margin-bottom:14px; }
+.cat-add-row{ display:flex; gap:8px; margin-bottom:10px; }
+.cat-add-label{ font-size:11px; font-weight:600; color:var(--gray-600); margin-bottom:4px; }
+.cat-add-input{
+  flex:1; height:38px; padding:0 10px; border:1px solid var(--gray-300);
+  border-radius:7px; font:13px 'Inter',sans-serif; outline:none;
+}
+.cat-add-input:focus{ border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+.cat-add-select{
+  height:38px; padding:0 10px; border:1px solid var(--gray-300);
+  border-radius:7px; font:13px 'Inter',sans-serif; outline:none;
+  background:white;
+}
+.cat-add-select:focus{ border-color:var(--blue); }
+.cat-save-btn{
+  width:100%; height:40px; border:none; border-radius:8px;
+  background:linear-gradient(90deg,var(--navy),var(--navy2));
+  color:white; font-weight:700; font-size:13px; cursor:pointer;
+  font-family:'Inter',sans-serif; margin-top:4px; transition:.15s;
+}
+.cat-save-btn:hover{ opacity:.9; }
+.cat-save-btn:disabled{ opacity:.5; cursor:not-allowed; }
+.cat-manager-footer{
+  padding:14px 24px; border-top:1px solid var(--gray-200);
+  background:#fafafa; display:flex; justify-content:flex-end;
+}
+.cat-close-btn{
+  padding:9px 20px; border-radius:8px; border:1px solid var(--gray-300);
+  background:white; font-size:13px; font-weight:600; cursor:pointer;
+  font-family:'Inter',sans-serif;
+}
+
+/* ============================================================ */
+
 .toast{
   position:fixed; left:50%; bottom:30px; transform:translateX(-50%);
   padding:9px 22px; border-radius:8px; color:#fff; background:var(--gray-900);
@@ -300,14 +401,14 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
 
 <div class="page">
   <div class="top-section">
-    <div class="top-left">
-    </div>
+    <div class="top-left"></div>
     <div class="top-right">
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search dataset...">
       </div>
       <select id="categoryFilter" class="filter-select"><option value="">All Category</option></select>
       <select id="geoFilter" class="filter-select"><option value="">All Data Type</option></select>
+      <button class="manage-cat-btn" id="manageCatBtn" onclick="openCatManager()">⚙ Manage Categories</button>
       <button class="add-btn" onclick="openAddModal()">+ Add New Dataset</button>
     </div>
   </div>
@@ -332,6 +433,7 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
   </div>
 </div>
 
+<!-- Metadata View Modal -->
 <div class="modal" id="metadataModal">
   <div class="modal-content">
     <h3 id="metaTitle"></h3>
@@ -340,6 +442,7 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
   </div>
 </div>
 
+<!-- Login Modal -->
 <div class="login-modal" id="loginModal">
   <div class="login-card">
     <div class="login-card-header">
@@ -374,9 +477,9 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
   </div>
 </div>
 
+<!-- Edit / Add Dataset Modal -->
 <div class="edit-modal" id="editModal">
   <div class="edit-modal-card">
-
     <div class="edit-modal-header">
       <div class="edit-modal-header-info">
         <div class="edit-modal-header-title" id="editModalTitle">Add New Dataset</div>
@@ -559,15 +662,124 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
         <button class="ef-btn ef-primary" onclick="saveEditMetadata()">☁ Save Metadata</button>
       </div>
     </div>
-
   </div>
 </div>
+
+<!-- ============================================================
+     CATEGORY MANAGER MODAL
+     ============================================================ -->
+<div class="cat-manager-modal" id="catManagerModal">
+  <div class="cat-manager-card">
+    <div class="cat-manager-header">
+      <div class="cat-manager-header-info">
+        <div class="cat-manager-header-title">⚙ Manage Categories</div>
+        <div class="cat-manager-header-sub">Add new Level 1, Level 2, or Level 3 categories — saved to Google Sheet (index)</div>
+      </div>
+      <button style="padding:7px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:transparent;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"
+        onclick="closeCatManager()">Close</button>
+    </div>
+
+    <div class="cat-manager-body">
+      <div class="cat-tabs">
+        <button class="cat-tab active" onclick="switchCatTab('l1',this)">Level 1</button>
+        <button class="cat-tab" onclick="switchCatTab('l2',this)">Level 2</button>
+        <button class="cat-tab" onclick="switchCatTab('l3',this)">Level 3</button>
+      </div>
+
+      <!-- Level 1 Panel -->
+      <div class="cat-panel active" id="catPanel_l1">
+        <div class="cat-level-layout">
+          <div class="cat-list-section">
+            <h4>Existing Level 1 Categories</h4>
+            <div class="cat-list" id="catList_l1">
+              <div class="cat-loading">Loading...</div>
+            </div>
+          </div>
+          <div class="cat-add-section">
+            <h4>➕ Add New Level 1</h4>
+            <div class="cat-add-label">Category Code <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <input type="text" class="cat-add-input" id="newL1Code" placeholder="e.g. 05" maxlength="10">
+            </div>
+            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <input type="text" class="cat-add-input" id="newL1Label" placeholder="e.g. 05. Remote Sensing">
+            </div>
+            <button class="cat-save-btn" id="saveL1Btn" onclick="saveCatLevel1()">☁ Save to Google Sheet</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Level 2 Panel -->
+      <div class="cat-panel" id="catPanel_l2">
+        <div class="cat-level-layout">
+          <div class="cat-list-section">
+            <h4>Existing Level 2 Categories</h4>
+            <div class="cat-list" id="catList_l2">
+              <div class="cat-loading">Loading...</div>
+            </div>
+          </div>
+          <div class="cat-add-section">
+            <h4>➕ Add New Level 2</h4>
+            <div class="cat-add-label">Parent Level 1 <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <select class="cat-add-select" id="newL2ParentL1" style="flex:1;"></select>
+            </div>
+            <div class="cat-add-label">Category Code <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <input type="text" class="cat-add-input" id="newL2Code" placeholder="e.g. 07" maxlength="10">
+            </div>
+            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <input type="text" class="cat-add-input" id="newL2Label" placeholder="e.g. 7. Field Survey">
+            </div>
+            <button class="cat-save-btn" id="saveL2Btn" onclick="saveCatLevel2()">☁ Save to Google Sheet</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Level 3 Panel -->
+      <div class="cat-panel" id="catPanel_l3">
+        <div class="cat-level-layout">
+          <div class="cat-list-section">
+            <h4>Existing Level 3 Categories</h4>
+            <div class="cat-list" id="catList_l3">
+              <div class="cat-loading">Loading...</div>
+            </div>
+          </div>
+          <div class="cat-add-section">
+            <h4>➕ Add New Level 3</h4>
+            <div class="cat-add-label">Parent Level 1 <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <select class="cat-add-select" id="newL3ParentL1" style="flex:1;" onchange="refreshL3ParentL2()"></select>
+            </div>
+            <div class="cat-add-label">Parent Level 2 <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <select class="cat-add-select" id="newL3ParentL2" style="flex:1;"></select>
+            </div>
+            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-row">
+              <input type="text" class="cat-add-input" id="newL3Label" placeholder="e.g. Aerial Survey">
+            </div>
+            <button class="cat-save-btn" id="saveL3Btn" onclick="saveCatLevel3()">☁ Save to Google Sheet</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-manager-footer">
+      <button class="cat-close-btn" onclick="closeCatManager()">Close</button>
+    </div>
+  </div>
+</div>
+<!-- ============================================================ -->
 
 <div class="toast" id="toast"></div>
 
 <script>
 
-const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv';
+const SHEET_CSV       = 'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv';
+const INDEX_CSV       = 'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv&gid=579807719';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ9Y3-YBQQRduTeRSPp-YkamwugOq0lgpJpXf9OALahm8YaIzo9HaBx_ODZ0nDIjdwtw/exec';
 
 const USERS = {
@@ -586,131 +798,56 @@ const OPTS = {
 };
 
 // ============================================================
-// KATEGORI — diperbarui sesuai gambar (Level 1, 2, 3)
+// CAT — will be populated dynamically from sheet "index"
+// Fallback static data in case sheet is unavailable
 // ============================================================
-const CAT = {
+let CAT = {
   "01": {
     label: "01. Admin", code: "01",
     sub: {
-      "SOP": {
-        label: "1. SOP", code: "SOP",
-        l3: ["(File Name) SOP_Deskripsi_YYYYMMDD_Versi"]
-      }
+      "SOP": { label: "1. SOP", code: "SOP", l3: ["(File Name) SOP_Deskripsi_YYYYMMDD_Versi"] }
     }
   },
   "02": {
     label: "02. Basemap", code: "02",
     sub: {
-      "01": {
-        label: "1. Administrasi", code: "01",
-        l3: ["Provinsi","Kabupaten/Kota","Kecamatan","Desa/Kelurahan","Dusun"]
-      },
-      "02": {
-        label: "2. Jalan", code: "02",
-        l3: ["RSI","OSM","Tracking","Deliniasi"]
-      },
-      "03": {
-        label: "3. Hidrologi", code: "03",
-        l3: ["Watershed","Sungai","Tubuh air lainnya"]
-      },
-      "04": {
-        label: "4. DEM", code: "04",
-        l3: ["DEMNAS","SRTM"]
-      },
-      "05": {
-        label: "5. Citra", code: "05",
-        l3: ["2023","2024","2025"]
-      },
-      "06": {
-        label: "6. Data CMI", code: "06",
-        l3: ["Boundaries","grid monitoring","eligible area"]
-      }
+      "01": { label: "1. Administrasi", code: "01", l3: ["Provinsi","Kabupaten/Kota","Kecamatan","Desa/Kelurahan","Dusun"] },
+      "02": { label: "2. Jalan", code: "02", l3: ["RSI","OSM","Tracking","Deliniasi"] },
+      "03": { label: "3. Hidrologi", code: "03", l3: ["Watershed","Sungai","Tubuh air lainnya"] },
+      "04": { label: "4. DEM", code: "04", l3: ["DEMNAS","SRTM"] },
+      "05": { label: "5. Citra", code: "05", l3: ["2023","2024","2025"] },
+      "06": { label: "6. Data CMI", code: "06", l3: ["Boundaries","grid monitoring","eligible area"] }
     }
   },
   "03": {
     label: "03. Thematic", code: "03",
     sub: {
-      "01": {
-        label: "1. Forest Patrol", code: "01",
-        l3: ["Multipatrol","Kebun Pengawas Api","Hotspot"]
-      },
-      "02": {
-        label: "2. Nursery", code: "02",
-        l3: ["Layout","Kebun Entress","Kebun Inti"]
-      },
-      "03": {
-        label: "3. Planting", code: "03",
-        l3: ["Restoration","Enrichment","KTH"]
-      },
-      "04": {
-        label: "4. Alternative Livelihood", code: "04",
-        l3: ["Handycraft","Perikanan","House Garden"]
-      },
-      "05": {
-        label: "5. Access to Health", code: "05",
-        l3: ["Visit Dokter"]
-      },
-      "06": {
-        label: "6. Access to Education", code: "06",
-        l3: ["Sekolah Vokasi","Paket BBC","Demplot"]
-      },
-      "07": {
-        label: "7. Access to Water", code: "07",
-        l3: ["Pipanisasi"]
-      },
-      "08": {
-        label: "8. Biodiversity Conservation", code: "08",
-        l3: ["Camera Trap & Bioacoustic","Wildlife Monitoring Post","Field Survey"]
-      },
-      "09": {
-        label: "9. MRV", code: "09",
-        l3: ["Biomass Measurement","Ground Truthing"]
-      },
-      "10": {
-        label: "10. LULC", code: "10",
-        l3: ["Lahan Garapan Masyarakat","Land Cover","Other Land Cover"]
-      },
-      "11": {
-        label: "11. Planning", code: "11",
-        l3: ["RKU","RKT","PAL Batas"]
-      },
-      "12": {
-        label: "12. Drone Mapping", code: "12",
-        l3: ["RAW","Imagery","Report","Pre-flight Form","Overview Map","Metadata"]
-      },
-      "13": {
-        label: "13. Preservation of Sites and Culture", code: "13",
-        l3: ["Culture Sites","Sekolah Adat"]
-      }
+      "01": { label: "1. Forest Patrol", code: "01", l3: ["Multipatrol","Kebun Pengawas Api","Hotspot"] },
+      "02": { label: "2. Nursery", code: "02", l3: ["Layout","Kebun Entress","Kebun Inti"] },
+      "03": { label: "3. Planting", code: "03", l3: ["Restoration","Enrichment","KTH"] },
+      "04": { label: "4. Alternative Livelihood", code: "04", l3: ["Handycraft","Perikanan","House Garden"] },
+      "05": { label: "5. Access to Health", code: "05", l3: ["Visit Dokter"] },
+      "06": { label: "6. Access to Education", code: "06", l3: ["Sekolah Vokasi","Paket BBC","Demplot"] },
+      "07": { label: "7. Access to Water", code: "07", l3: ["Pipanisasi"] },
+      "08": { label: "8. Biodiversity Conservation", code: "08", l3: ["Camera Trap & Bioacoustic","Wildlife Monitoring Post","Field Survey"] },
+      "09": { label: "9. MRV", code: "09", l3: ["Biomass Measurement","Ground Truthing"] },
+      "10": { label: "10. LULC", code: "10", l3: ["Lahan Garapan Masyarakat","Land Cover","Other Land Cover"] },
+      "11": { label: "11. Planning", code: "11", l3: ["RKU","RKT","PAL Batas"] },
+      "12": { label: "12. Drone Mapping", code: "12", l3: ["RAW","Imagery","Report","Pre-flight Form","Overview Map","Metadata"] },
+      "13": { label: "13. Preservation of Sites and Culture", code: "13", l3: ["Culture Sites","Sekolah Adat"] }
     }
   },
   "04": {
     label: "04. Templates", code: "04",
     sub: {
-      "13": {
-        label: "13. Reporting & Submission", code: "13",
-        l3: ["[external organisation name]"]
-      },
-      "21": {
-        label: "21. MPK", code: "21",
-        l3: ["(File Name)"]
-      },
-      "GP": {
-        label: "2. Geopackage", code: "GP",
-        l3: ["(File Name)"]
-      },
-      "LO": {
-        label: "3. Layout", code: "LO",
-        l3: ["(File Name)"]
-      },
-      "SY": {
-        label: "4. Symbology", code: "SY",
-        l3: ["(File Name)"]
-      }
+      "13": { label: "13. Reporting & Submission", code: "13", l3: ["[external organisation name]"] },
+      "21": { label: "21. MPK", code: "21", l3: ["(File Name)"] },
+      "GP": { label: "2. Geopackage", code: "GP", l3: ["(File Name)"] },
+      "LO": { label: "3. Layout", code: "LO", l3: ["(File Name)"] },
+      "SY": { label: "4. Symbology", code: "SY", l3: ["(File Name)"] }
     }
   }
 };
-// ============================================================
 
 let RAW_DATA        = [];
 let currentUserCode = localStorage.getItem('gis_user') || null;
@@ -719,42 +856,98 @@ let selectedLoginUser = 'RS';
 let editMode        = 'add';
 let editIndex       = -1;
 let editCounter     = parseInt(localStorage.getItem('editCounter')) || 1;
-  
+let catLoaded       = false;
+
 const $  = id => document.getElementById(id);
 const fv = id => ($( id)?.value || '').trim();
 const today = () => new Date().toISOString().split('T')[0];
 
 function slugify(t){ return t.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,''); }
-
 function setOpts(id, arr, ph='-- Select --'){
-  $(id).innerHTML = `<option value="">${ph}</option>` +
-    arr.map(v=>`<option value="${v}">${v}</option>`).join('');
+  $(id).innerHTML = `<option value="">${ph}</option>` + arr.map(v=>`<option value="${v}">${v}</option>`).join('');
 }
-
 function setVal(id, val){ const el=$(id); if(el) el.value = val||''; }
 
+// ============================================================
+// LOAD CATEGORIES FROM SHEET "index"
+// Columns: A=Level1, B=Level2, E=Level3
+// ============================================================
+async function loadCategories(){
+  try{
+    const res = await fetch(INDEX_CSV);
+    if(!res.ok) throw new Error('fetch failed');
+    const csv = await res.text();
+    const rows = csv.trim().split('\n').slice(1); // skip header row
+
+    const newCAT = {};
+
+    for(const rawRow of rows){
+      const cols = splitCSV(rawRow);
+      const l1raw = (cols[0]||'').trim();   // A: Level 1
+      const l2raw = (cols[1]||'').trim();   // B: Level 2
+      // cols[2]=C, cols[3]=D
+      const l3raw = (cols[4]||'').trim();   // E: Level 3
+
+      if(!l1raw) continue;
+
+      // Derive code: take the numeric/alpha prefix before the first dot or space
+      const l1code = deriveCode(l1raw);
+
+      if(!newCAT[l1code]){
+        newCAT[l1code] = { label: l1raw, code: l1code, sub: {} };
+      }
+
+      if(l2raw){
+        const l2code = deriveCode(l2raw);
+        if(!newCAT[l1code].sub[l2code]){
+          newCAT[l1code].sub[l2code] = { label: l2raw, code: l2code, l3: [] };
+        }
+        if(l3raw && !newCAT[l1code].sub[l2code].l3.includes(l3raw)){
+          newCAT[l1code].sub[l2code].l3.push(l3raw);
+        }
+      }
+    }
+
+    if(Object.keys(newCAT).length > 0){
+      CAT = newCAT;
+    }
+    catLoaded = true;
+  } catch(e){
+    console.warn('Could not load index sheet, using fallback categories:', e);
+    catLoaded = true;
+  }
+}
+
+function deriveCode(label){
+  // Extract code from labels like "01. Admin", "1. SOP", "SOP", "GP"
+  const m = label.match(/^([A-Z0-9]+)\.\s/);
+  if(m) return m[1];
+  const m2 = label.match(/^(\d+)/);
+  if(m2) return m2[1].padStart(2,'0');
+  // no dot pattern — use first word as code
+  return label.split(/[\s.]/)[0].toUpperCase().slice(0,10);
+}
+
+// ============================================================
+// REFRESH META ID
+// ============================================================
 function refreshMetaId(){
   const d   = new Date();
   const pad = n => String(n).padStart(2,'0');
   const dd  = pad(d.getDate()), mm = pad(d.getMonth()+1), yy = String(d.getFullYear()).slice(-2);
-
-  const k1 = fv('editCat1');
-  const k2 = fv('editCat2');
-  const k3 = fv('editCat3');
-
-  const c1 = k1 || '00';
-  const c2 = k2 || '00';
-
+  const k1 = fv('editCat1'), k2 = fv('editCat2'), k3 = fv('editCat3');
+  const c1 = k1 || '00', c2 = k2 || '00';
   const c3 = k3 ? slugify(k3) : (k2 ? slugify(k2) : '000');
-
   const auth = currentUserCode || 'XX';
   const num  = String(editCounter).padStart(4,'0');
-
   $('editMetaId').value = `${dd}${mm}${yy}-${c1}/${c2}/${c3}-${auth}-${num}`;
 }
 
-
+// ============================================================
+// LOAD DATASET DATA
+// ============================================================
 async function loadData(){
+  await loadCategories();
   try{
     const res = await fetch(SHEET_CSV);
     const csv = await res.text();
@@ -840,6 +1033,9 @@ function applyFilters(){
   }));
 }
 
+// ============================================================
+// METADATA VIEW
+// ============================================================
 function showMetadata(index){
   const d = RAW_DATA[index];
   $('metaTitle').innerText = d.file_name||d.title||'';
@@ -859,6 +1055,9 @@ function showMetadata(index){
 }
 function closeMetadata(){ $('metadataModal').style.display='none'; }
 
+// ============================================================
+// AUTH
+// ============================================================
 function selectUser(code, el){
   selectedLoginUser = code;
   document.querySelectorAll('.user-option').forEach(e=>e.classList.remove('selected'));
@@ -866,7 +1065,6 @@ function selectUser(code, el){
   $('loginPasswordInput').value = '';
   $('loginError').style.display = 'none';
 }
-
 function openLoginModal(){
   $('loginModal').classList.add('active');
   $('loginPasswordInput').value = '';
@@ -874,7 +1072,6 @@ function openLoginModal(){
   setTimeout(()=>$('loginPasswordInput').focus(), 100);
 }
 function closeLoginModal(){ $('loginModal').classList.remove('active'); }
-
 function doLogin(){
   const pass = $('loginPasswordInput').value;
   const user = USERS[selectedLoginUser];
@@ -893,7 +1090,6 @@ function doLogin(){
     $('loginPasswordInput').focus();
   }
 }
-
 function logout(){
   if(!confirm('Are you sure you want to logout?')) return;
   localStorage.setItem('gis_login','false');
@@ -903,7 +1099,6 @@ function logout(){
   renderData(RAW_DATA);
   showToast('Logged out');
 }
-
 function updateHeaderAuth(){
   if(isLoggedIn && currentUserCode && USERS[currentUserCode]){
     const u = USERS[currentUserCode];
@@ -911,12 +1106,17 @@ function updateHeaderAuth(){
     $('headerUserArea').style.display = 'flex';
     $('headerAvatar').innerText   = currentUserCode;
     $('headerUserName').innerText = u.name;
+    $('manageCatBtn').style.display = 'block';
   } else {
     $('headerLoginBtn').style.display = 'block';
     $('headerUserArea').style.display = 'none';
+    $('manageCatBtn').style.display = 'none';
   }
 }
 
+// ============================================================
+// EDIT MODAL — CATEGORY DROPDOWNS
+// ============================================================
 function initEditCat1(){
   $('editCat1').innerHTML = '<option value="">-- Select --</option>' +
     Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
@@ -925,7 +1125,6 @@ function initEditCat1(){
   $('editCat2').disabled = true;
   $('editCat3').disabled = true;
 }
-
 function editUpdateCat2(){
   const k1 = fv('editCat1');
   const s2 = $('editCat2'), s3 = $('editCat3');
@@ -940,7 +1139,6 @@ function editUpdateCat2(){
   }
   refreshMetaId();
 }
-
 function editUpdateCat3(){
   const k1 = fv('editCat1'), k2 = fv('editCat2');
   const s3 = $('editCat3');
@@ -950,11 +1148,8 @@ function editUpdateCat3(){
   s3.disabled = !l3.length;
   refreshMetaId();
 }
-
 function setCatValues(k1, k2, k3){
-
   setVal('editCat1', k1);
-
   const s2 = $('editCat2');
   s2.innerHTML = '<option value="">-- Select --</option>';
   s2.disabled  = true;
@@ -965,7 +1160,6 @@ function setCatValues(k1, k2, k3){
     s2.disabled = false;
     s2.value = k2 || '';
   }
-
   const s3 = $('editCat3');
   s3.innerHTML = '<option value="">-- Select --</option>';
   s3.disabled  = true;
@@ -976,7 +1170,6 @@ function setCatValues(k1, k2, k3){
     s3.value = k3 || '';
   }
 }
-
 function initEditOptions(){
   setOpts('editGeoExtent',         OPTS.geoExtent);
   setOpts('editGeomType',          OPTS.geomType);
@@ -987,7 +1180,6 @@ function initEditOptions(){
     OPTS.crs.map(v=>`<option value="${v}">${v}</option>`).join('');
   initEditCat1();
 }
-
 function fillAuthorBox(){
   const u = USERS[currentUserCode];
   if(!u) return;
@@ -997,12 +1189,14 @@ function fillAuthorBox(){
   setVal('editDivision', u.division);
 }
 
+// ============================================================
+// ADD / EDIT DATASET MODAL
+// ============================================================
 function openAddModal(){
   if(!isLoggedIn){ openLoginModal(); return; }
   editMode = 'add'; editIndex = -1;
   $('editModalTitle').innerText = 'Add New Dataset';
   initEditOptions();
-
   document.querySelectorAll('#editModal input:not([readonly]),#editModal select,#editModal textarea')
     .forEach(el=>{ el.tagName==='SELECT' ? el.selectedIndex=0 : el.value=''; });
   setVal('editDivision','CarbonX GIS Team');
@@ -1014,15 +1208,12 @@ function openAddModal(){
   $('editModal').classList.add('active');
   $('editModal').scrollTop = 0;
 }
-
 function openEditModal(index){
   if(!isLoggedIn){ openLoginModal(); return; }
   editMode = 'edit'; editIndex = index;
   $('editModalTitle').innerText = 'Edit Metadata';
   initEditOptions();
-
   const d = RAW_DATA[index];
-
   setVal('editTitle',      d.title      || d.file_name   || '');
   setVal('editAbstract',   d.abstract   || d.desc        || '');
   setVal('editKeywords',   d.keywords   || '');
@@ -1042,26 +1233,20 @@ function openEditModal(index){
   setVal('editDivision',   d.organization||d.division    || 'CarbonX GIS Team');
   setVal('editRemarks',    d.remarks    || '');
   setVal('editDateCreatedTop', today());
-
   const k1 = d.cat1_key || d.l1_key || '';
   const k2 = d.cat2_key || d.l2_key || '';
   const k3 = d.cat3     || '';
   setCatValues(k1, k2, k3);
-
   $('editMetaId').value = d.id || (() => { refreshMetaId(); return $('editMetaId').value; })();
-
   fillAuthorBox();
   $('editFileLinkOpen').href = $('editFileLink').value || '#';
   $('editModal').classList.add('active');
   $('editModal').scrollTop = 0;
 }
-
 function closeEditModal(){ $('editModal').classList.remove('active'); }
-
 function resetEditForm(){
   if(!confirm('Reset all fields?')) return;
-  if(editMode==='edit'){ openEditModal(editIndex); return; } 
-
+  if(editMode==='edit'){ openEditModal(editIndex); return; }
   document.querySelectorAll('#editModal input:not([readonly]),#editModal select,#editModal textarea')
     .forEach(el=>{ el.tagName==='SELECT' ? el.selectedIndex=0 : el.value=''; });
   setVal('editDivision','CarbonX GIS Team');
@@ -1072,7 +1257,6 @@ function resetEditForm(){
   initEditCat1();
   refreshMetaId();
 }
-
 function collectEditData(){
   const u = USERS[currentUserCode] || {};
   return {
@@ -1106,21 +1290,17 @@ function collectEditData(){
     action:           editMode==='edit' ? 'update' : 'insert'
   };
 }
-
 async function saveEditMetadata(){
   const data = collectEditData();
   if(!data.title)    return showToast('Dataset title required','err');
   if(!data.abstract) return showToast('Abstract required','err');
-
   try{
     const res = await fetch(APPS_SCRIPT_URL,{ method:'POST', body:JSON.stringify(data) });
     const txt = await res.text();
     let result;
     try{ result=JSON.parse(txt); } catch{ return showToast('Invalid server response','err'); }
-
     if(result.success){
       showToast(editMode==='edit'?'Metadata updated ✓':'Metadata saved ✓','ok');
-
       const row = {
         ...( editMode==='edit' ? RAW_DATA[editIndex] : {} ),
         id:           data.id,
@@ -1150,7 +1330,6 @@ async function saveEditMetadata(){
         email:        data.email,
         remarks:      data.remarks
       };
-
       if(editMode==='edit' && editIndex>=0){
         RAW_DATA[editIndex] = row;
       } else {
@@ -1158,14 +1337,11 @@ async function saveEditMetadata(){
         editCounter++;
         localStorage.setItem('editCounter', editCounter);
       }
-
       renderData(RAW_DATA);
       closeEditModal();
-
     } else {
       showToast(result.error||'Failed to save','err');
     }
-
   } catch(err){
     console.error(err);
     showToast('Connection failed','err');
@@ -1176,7 +1352,6 @@ async function deleteDataset(index){
   const d = RAW_DATA[index];
   const name = d.file_name || d.title || 'this dataset';
   if(!confirm(`Delete "${name}"?\n\nThis will also remove it from Google Sheet.`)) return;
-
   if(d.id){
     try{
       const res = await fetch(APPS_SCRIPT_URL,{
@@ -1195,12 +1370,214 @@ async function deleteDataset(index){
       return;
     }
   }
-
   RAW_DATA.splice(index,1);
   renderData(RAW_DATA);
   showToast('Dataset deleted','ok');
 }
 
+// ============================================================
+// CATEGORY MANAGER
+// ============================================================
+function openCatManager(){
+  if(!isLoggedIn){ openLoginModal(); return; }
+  renderCatLists();
+  populateCatManagerDropdowns();
+  $('catManagerModal').classList.add('active');
+}
+function closeCatManager(){ $('catManagerModal').classList.remove('active'); }
+
+function switchCatTab(level, el){
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.cat-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  $(`catPanel_${level}`).classList.add('active');
+}
+
+function renderCatLists(){
+  // Level 1
+  const l1entries = Object.entries(CAT);
+  $('catList_l1').innerHTML = l1entries.length
+    ? l1entries.map(([code,v])=>`
+        <div class="cat-list-item">
+          <span class="cat-list-item-code">${code}</span>
+          <span class="cat-list-item-label">${v.label}</span>
+        </div>`).join('')
+    : '<div class="cat-list-empty">No Level 1 categories yet.</div>';
+
+  // Level 2
+  const l2rows = [];
+  for(const [k1,v1] of Object.entries(CAT)){
+    for(const [k2,v2] of Object.entries(v1.sub||{})){
+      l2rows.push({ code:k2, label:v2.label, parent:v1.label, pk:k1 });
+    }
+  }
+  $('catList_l2').innerHTML = l2rows.length
+    ? l2rows.map(r=>`
+        <div class="cat-list-item">
+          <span class="cat-list-item-code">${r.code}</span>
+          <span class="cat-list-item-label">${r.label}</span>
+          <span class="cat-list-item-parent">↑ ${r.parent}</span>
+        </div>`).join('')
+    : '<div class="cat-list-empty">No Level 2 categories yet.</div>';
+
+  // Level 3
+  const l3rows = [];
+  for(const [k1,v1] of Object.entries(CAT)){
+    for(const [k2,v2] of Object.entries(v1.sub||{})){
+      for(const l3 of (v2.l3||[])){
+        l3rows.push({ label:l3, parent1:v1.label, parent2:v2.label });
+      }
+    }
+  }
+  $('catList_l3').innerHTML = l3rows.length
+    ? l3rows.map(r=>`
+        <div class="cat-list-item">
+          <span class="cat-list-item-label">${r.label}</span>
+          <span class="cat-list-item-parent">↑ ${r.parent1} / ${r.parent2}</span>
+        </div>`).join('')
+    : '<div class="cat-list-empty">No Level 3 categories yet.</div>';
+}
+
+function populateCatManagerDropdowns(){
+  // For L2: parent L1 dropdown
+  const l1Opts = Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+  $('newL2ParentL1').innerHTML = '<option value="">-- Select L1 --</option>' + l1Opts;
+  // For L3: parent L1 dropdown
+  $('newL3ParentL1').innerHTML = '<option value="">-- Select L1 --</option>' + l1Opts;
+  $('newL3ParentL2').innerHTML = '<option value="">-- Select L2 --</option>';
+}
+
+function refreshL3ParentL2(){
+  const k1 = $('newL3ParentL1').value;
+  const sel = $('newL3ParentL2');
+  sel.innerHTML = '<option value="">-- Select L2 --</option>';
+  if(k1 && CAT[k1]){
+    Object.entries(CAT[k1].sub).forEach(([k,v])=>{
+      sel.innerHTML += `<option value="${k}">${v.label}</option>`;
+    });
+  }
+}
+
+async function saveCatLevel1(){
+  const code  = $('newL1Code').value.trim();
+  const label = $('newL1Label').value.trim();
+  if(!code || !label) return showToast('Code and Label are required','err');
+  if(CAT[code]) return showToast(`Code "${code}" already exists`,'err');
+
+  const btn = $('saveL1Btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const payload = {
+    action: 'add_category',
+    level:  1,
+    l1_code:  code,
+    l1_label: label,
+    l2_code:  '',
+    l2_label: '',
+    l3_label: ''
+  };
+
+  const ok = await sendCatToSheet(payload);
+  btn.disabled = false; btn.textContent = '☁ Save to Google Sheet';
+  if(ok){
+    CAT[code] = { label, code, sub:{} };
+    $('newL1Code').value = '';
+    $('newL1Label').value = '';
+    renderCatLists();
+    populateCatManagerDropdowns();
+    initEditCat1();
+    showToast('Level 1 category added ✓','ok');
+  }
+}
+
+async function saveCatLevel2(){
+  const k1    = $('newL2ParentL1').value;
+  const code  = $('newL2Code').value.trim();
+  const label = $('newL2Label').value.trim();
+  if(!k1)            return showToast('Please select a parent Level 1','err');
+  if(!code || !label)return showToast('Code and Label are required','err');
+  if(CAT[k1]?.sub[code]) return showToast(`Code "${code}" already exists under this L1`,'err');
+
+  const btn = $('saveL2Btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const payload = {
+    action: 'add_category',
+    level:  2,
+    l1_code:  k1,
+    l1_label: CAT[k1]?.label || '',
+    l2_code:  code,
+    l2_label: label,
+    l3_label: ''
+  };
+
+  const ok = await sendCatToSheet(payload);
+  btn.disabled = false; btn.textContent = '☁ Save to Google Sheet';
+  if(ok){
+    if(!CAT[k1]) CAT[k1] = { label:'', code:k1, sub:{} };
+    CAT[k1].sub[code] = { label, code, l3:[] };
+    $('newL2Code').value = '';
+    $('newL2Label').value = '';
+    renderCatLists();
+    populateCatManagerDropdowns();
+    initEditCat1();
+    showToast('Level 2 category added ✓','ok');
+  }
+}
+
+async function saveCatLevel3(){
+  const k1    = $('newL3ParentL1').value;
+  const k2    = $('newL3ParentL2').value;
+  const label = $('newL3Label').value.trim();
+  if(!k1)  return showToast('Please select a parent Level 1','err');
+  if(!k2)  return showToast('Please select a parent Level 2','err');
+  if(!label) return showToast('Label is required','err');
+  if(CAT[k1]?.sub[k2]?.l3?.includes(label)) return showToast(`"${label}" already exists here`,'err');
+
+  const btn = $('saveL3Btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const payload = {
+    action: 'add_category',
+    level:  3,
+    l1_code:  k1,
+    l1_label: CAT[k1]?.label || '',
+    l2_code:  k2,
+    l2_label: CAT[k1]?.sub[k2]?.label || '',
+    l3_label: label
+  };
+
+  const ok = await sendCatToSheet(payload);
+  btn.disabled = false; btn.textContent = '☁ Save to Google Sheet';
+  if(ok){
+    if(!CAT[k1]) CAT[k1] = { label:'', code:k1, sub:{} };
+    if(!CAT[k1].sub[k2]) CAT[k1].sub[k2] = { label:'', code:k2, l3:[] };
+    CAT[k1].sub[k2].l3.push(label);
+    $('newL3Label').value = '';
+    renderCatLists();
+    showToast('Level 3 category added ✓','ok');
+  }
+}
+
+async function sendCatToSheet(payload){
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) });
+    const txt = await res.text();
+    let result;
+    try{ result = JSON.parse(txt); } catch{ showToast('Invalid server response','err'); return false; }
+    if(result.success) return true;
+    showToast(result.error || 'Failed to save','err');
+    return false;
+  } catch(e){
+    console.error(e);
+    showToast('Connection failed','err');
+    return false;
+  }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
 function showToast(msg, type=''){
   const t = $('toast');
   t.textContent = msg;
@@ -1208,29 +1585,22 @@ function showToast(msg, type=''){
   setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
 $('searchInput').addEventListener('input', applyFilters);
 $('categoryFilter').addEventListener('change', applyFilters);
 $('geoFilter').addEventListener('change', applyFilters);
+$('editCRSPreset').addEventListener('change', e=>{ $('editCRS').value = e.target.value; e.target.value = ''; });
+$('editFileLink').addEventListener('input', e=>{ $('editFileLinkOpen').href = e.target.value || '#'; });
+$('loginModal').addEventListener('click', e=>{ if(e.target===$('loginModal')) closeLoginModal(); });
+$('metadataModal').addEventListener('click', e=>{ if(e.target===$('metadataModal')) closeMetadata(); });
+$('editModal').addEventListener('click', e=>{ if(e.target===$('editModal')) closeEditModal(); });
+$('catManagerModal').addEventListener('click', e=>{ if(e.target===$('catManagerModal')) closeCatManager(); });
 
-$('editCRSPreset').addEventListener('change', e=>{
-  $('editCRS').value = e.target.value;
-  e.target.value = '';
-});
-
-$('editFileLink').addEventListener('input', e=>{
-  $('editFileLinkOpen').href = e.target.value || '#';
-});
-
-$('loginModal').addEventListener('click', e=>{
-  if(e.target===$('loginModal')) closeLoginModal();
-});
-$('metadataModal').addEventListener('click', e=>{
-  if(e.target===$('metadataModal')) closeMetadata();
-});
-$('editModal').addEventListener('click', e=>{
-  if(e.target===$('editModal')) closeEditModal();
-});
-
+// ============================================================
+// INIT
+// ============================================================
 if(isLoggedIn && localStorage.getItem('gis_user')){
   currentUserCode = localStorage.getItem('gis_user');
 }
