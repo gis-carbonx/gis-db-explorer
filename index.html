@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Explorer</title>
+<title>GIS Data Explorer 2</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -351,6 +351,13 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
 }
 .cat-save-btn:hover{ opacity:.9; }
 .cat-save-btn:disabled{ opacity:.5; cursor:not-allowed; }
+.cat-manual-link{
+  display:block; text-align:center; margin-top:10px;
+  font-size:12px; color:var(--blue); text-decoration:none;
+  padding:7px; border-radius:7px; border:1px dashed #93c5fd;
+  background:#eff6ff; transition:.15s;
+}
+.cat-manual-link:hover{ background:#dbeafe; border-color:var(--blue); }
 .cat-manager-footer{
   padding:14px 24px; border-top:1px solid var(--gray-200);
   background:#fafafa; display:flex; justify-content:flex-end;
@@ -697,15 +704,14 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
           </div>
           <div class="cat-add-section">
             <h4>➕ Add New Level 1</h4>
-            <div class="cat-add-label">Category Code <span style="color:var(--red)">*</span></div>
-            <div class="cat-add-row">
-              <input type="text" class="cat-add-input" id="newL1Code" placeholder="e.g. 05" maxlength="10">
-            </div>
-            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span> <span style="color:var(--gray-400);font-weight:400;">(→ kolom A)</span></div>
             <div class="cat-add-row">
               <input type="text" class="cat-add-input" id="newL1Label" placeholder="e.g. 05. Remote Sensing">
             </div>
+            <div class="cat-add-divider"></div>
             <button class="cat-save-btn" id="saveL1Btn" onclick="saveCatLevel1()">☁ Save to Google Sheet</button>
+            <a href="https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/edit?gid=579807719#gid=579807719"
+               target="_blank" class="cat-manual-link">✏ Edit manual di Spreadsheet ↗</a>
           </div>
         </div>
       </div>
@@ -725,15 +731,21 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
             <div class="cat-add-row">
               <select class="cat-add-select" id="newL2ParentL1" style="flex:1;"></select>
             </div>
-            <div class="cat-add-label">Category Code <span style="color:var(--red)">*</span></div>
-            <div class="cat-add-row">
-              <input type="text" class="cat-add-input" id="newL2Code" placeholder="e.g. 07" maxlength="10">
-            </div>
-            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span> <span style="color:var(--gray-400);font-weight:400;">(→ kolom B)</span></div>
             <div class="cat-add-row">
               <input type="text" class="cat-add-input" id="newL2Label" placeholder="e.g. 7. Field Survey">
             </div>
+            <div class="cat-add-label">Category Code <span style="color:var(--gray-400);font-weight:400;">(→ kolom C, opsional)</span></div>
+            <div class="cat-add-row">
+              <input type="text" class="cat-add-input" id="newL2Code" placeholder="e.g. 07" maxlength="10">
+            </div>
+            <div class="cat-add-label">Description <span style="color:var(--gray-400);font-weight:400;">(→ kolom D, opsional)</span></div>
+            <div class="cat-add-row">
+              <input type="text" class="cat-add-input" id="newL2Desc" placeholder="e.g. Field survey activities and data">
+            </div>
             <button class="cat-save-btn" id="saveL2Btn" onclick="saveCatLevel2()">☁ Save to Google Sheet</button>
+            <a href="https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/edit?gid=579807719#gid=579807719"
+               target="_blank" class="cat-manual-link">✏ Edit manual di Spreadsheet ↗</a>
           </div>
         </div>
       </div>
@@ -757,11 +769,13 @@ tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-a
             <div class="cat-add-row">
               <select class="cat-add-select" id="newL3ParentL2" style="flex:1;"></select>
             </div>
-            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span></div>
+            <div class="cat-add-label">Category Label <span style="color:var(--red)">*</span> <span style="color:var(--gray-400);font-weight:400;">(→ kolom E)</span></div>
             <div class="cat-add-row">
               <input type="text" class="cat-add-input" id="newL3Label" placeholder="e.g. Aerial Survey">
             </div>
             <button class="cat-save-btn" id="saveL3Btn" onclick="saveCatLevel3()">☁ Save to Google Sheet</button>
+            <a href="https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/edit?gid=579807719#gid=579807719"
+               target="_blank" class="cat-manual-link">✏ Edit manual di Spreadsheet ↗</a>
           </div>
         </div>
       </div>
@@ -883,9 +897,10 @@ async function loadCategories(){
 
     for(const rawRow of rows){
       const cols = splitCSV(rawRow);
-      const l1raw = (cols[0]||'').trim();   // A: Level 1
-      const l2raw = (cols[1]||'').trim();   // B: Level 2
-      // cols[2]=C, cols[3]=D
+      const l1raw = (cols[0]||'').trim();   // A: Level 1 label
+      const l2raw = (cols[1]||'').trim();   // B: Level 2 label
+      const l2cod = (cols[2]||'').trim();   // C: Level 2 code
+      // cols[3]=D: description (stored but not used for dropdown)
       const l3raw = (cols[4]||'').trim();   // E: Level 3
 
       if(!l1raw) continue;
@@ -898,7 +913,8 @@ async function loadCategories(){
       }
 
       if(l2raw){
-        const l2code = deriveCode(l2raw);
+        // Prefer explicit col C code, fallback to deriving from label
+        const l2code = l2cod || deriveCode(l2raw);
         if(!newCAT[l1code].sub[l2code]){
           newCAT[l1code].sub[l2code] = { label: l2raw, code: l2code, l3: [] };
         }
@@ -1459,21 +1475,23 @@ function refreshL3ParentL2(){
 }
 
 async function saveCatLevel1(){
-  const code  = $('newL1Code').value.trim();
   const label = $('newL1Label').value.trim();
-  if(!code || !label) return showToast('Code and Label are required','err');
-  if(CAT[code]) return showToast(`Code "${code}" already exists`,'err');
+  if(!label) return showToast('Label wajib diisi','err');
+
+  // Derive code from label for internal use
+  const code = deriveCode(label);
+  if(CAT[code]) return showToast(`Kategori dengan kode "${code}" sudah ada`,'err');
 
   const btn = $('saveL1Btn');
   btn.disabled = true; btn.textContent = 'Saving…';
 
   const payload = {
-    action: 'add_category',
-    level:  1,
-    l1_code:  code,
-    l1_label: label,
-    l2_code:  '',
+    action:   'add_category',
+    level:    1,
+    l1_label: label,  // → kolom A
     l2_label: '',
+    l2_code:  '',
+    l2_desc:  '',
     l3_label: ''
   };
 
@@ -1481,7 +1499,6 @@ async function saveCatLevel1(){
   btn.disabled = false; btn.textContent = '☁ Save to Google Sheet';
   if(ok){
     CAT[code] = { label, code, sub:{} };
-    $('newL1Code').value = '';
     $('newL1Label').value = '';
     renderCatLists();
     populateCatManagerDropdowns();
@@ -1492,22 +1509,26 @@ async function saveCatLevel1(){
 
 async function saveCatLevel2(){
   const k1    = $('newL2ParentL1').value;
-  const code  = $('newL2Code').value.trim();
   const label = $('newL2Label').value.trim();
-  if(!k1)            return showToast('Please select a parent Level 1','err');
-  if(!code || !label)return showToast('Code and Label are required','err');
-  if(CAT[k1]?.sub[code]) return showToast(`Code "${code}" already exists under this L1`,'err');
+  const code  = $('newL2Code').value.trim();
+  const desc  = $('newL2Desc').value.trim();
+  if(!k1)    return showToast('Pilih parent Level 1 terlebih dahulu','err');
+  if(!label) return showToast('Label wajib diisi','err');
+
+  // Use explicit code if given, otherwise derive from label
+  const finalCode = code || deriveCode(label);
+  if(CAT[k1]?.sub[finalCode]) return showToast(`Kode "${finalCode}" sudah ada di bawah L1 ini`,'err');
 
   const btn = $('saveL2Btn');
   btn.disabled = true; btn.textContent = 'Saving…';
 
   const payload = {
-    action: 'add_category',
-    level:  2,
-    l1_code:  k1,
-    l1_label: CAT[k1]?.label || '',
-    l2_code:  code,
-    l2_label: label,
+    action:   'add_category',
+    level:    2,
+    l1_label: CAT[k1]?.label || '',  // context only (not written again to A)
+    l2_label: label,  // → kolom B
+    l2_code:  finalCode,  // → kolom C
+    l2_desc:  desc,   // → kolom D
     l3_label: ''
   };
 
@@ -1515,9 +1536,10 @@ async function saveCatLevel2(){
   btn.disabled = false; btn.textContent = '☁ Save to Google Sheet';
   if(ok){
     if(!CAT[k1]) CAT[k1] = { label:'', code:k1, sub:{} };
-    CAT[k1].sub[code] = { label, code, l3:[] };
-    $('newL2Code').value = '';
+    CAT[k1].sub[finalCode] = { label, code: finalCode, l3:[] };
     $('newL2Label').value = '';
+    $('newL2Code').value  = '';
+    $('newL2Desc').value  = '';
     renderCatLists();
     populateCatManagerDropdowns();
     initEditCat1();
@@ -1529,22 +1551,22 @@ async function saveCatLevel3(){
   const k1    = $('newL3ParentL1').value;
   const k2    = $('newL3ParentL2').value;
   const label = $('newL3Label').value.trim();
-  if(!k1)  return showToast('Please select a parent Level 1','err');
-  if(!k2)  return showToast('Please select a parent Level 2','err');
-  if(!label) return showToast('Label is required','err');
-  if(CAT[k1]?.sub[k2]?.l3?.includes(label)) return showToast(`"${label}" already exists here`,'err');
+  if(!k1)    return showToast('Pilih parent Level 1 terlebih dahulu','err');
+  if(!k2)    return showToast('Pilih parent Level 2 terlebih dahulu','err');
+  if(!label) return showToast('Label wajib diisi','err');
+  if(CAT[k1]?.sub[k2]?.l3?.includes(label)) return showToast(`"${label}" sudah ada di sini`,'err');
 
   const btn = $('saveL3Btn');
   btn.disabled = true; btn.textContent = 'Saving…';
 
   const payload = {
-    action: 'add_category',
-    level:  3,
-    l1_code:  k1,
-    l1_label: CAT[k1]?.label || '',
+    action:   'add_category',
+    level:    3,
+    l1_label: CAT[k1]?.label || '',     // context only
+    l2_label: CAT[k1]?.sub[k2]?.label || '',  // context only
     l2_code:  k2,
-    l2_label: CAT[k1]?.sub[k2]?.label || '',
-    l3_label: label
+    l2_desc:  '',
+    l3_label: label   // → kolom E
   };
 
   const ok = await sendCatToSheet(payload);
