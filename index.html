@@ -1,1240 +1,441 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Explorer 2</title>
+<title>GIS Data Classification Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --navy:#08245c; --navy2:#103a87;
-  --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
-  --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
-  --gray-600:#4b5563; --gray-700:#374151; --gray-900:#111827;
-  --blue:#2563eb; --green:#15803d; --green-bg:#dcfce7;
-  --yellow:#d97706; --yellow-bg:#fef3c7; --red:#dc2626;
-}
-*{ margin:0; padding:0; box-sizing:border-box; }
-body{ font-family:'Inter',sans-serif; background:#f4f7fb; color:#111827; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #08245c; --navy2: #103a87;
+    --blue: #1E5AA0; --mid: #3A7DC9;
+    --light: #D5E8FA; --pale: #F0F6FF;
+    --text: #1A2B40; --muted: #5A7A9A; --border: #C8DDEF;
+    --white: #FFFFFF; --bg: #F5F8FC;
+  }
+  body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-header{
-  height:76px;
-  background:linear-gradient(90deg,var(--navy),var(--navy2));
-  display:flex; justify-content:space-between; align-items:center;
-  padding:0 26px; color:white;
-}
-.header-left{ display:flex; align-items:center; gap:14px; }
-.logo-img{ height:42px; width:auto; object-fit:contain; }
-.title-wrap h1{ font-size:18px; font-weight:700; margin-bottom:2px; }
-.title-wrap p{ font-size:13px; opacity:.9; }
-.header-right{ display:flex; align-items:center; gap:12px; }
-.login-btn{
-  cursor:pointer; font-size:14px; font-weight:600;
-  padding:8px 16px; border-radius:8px;
-  border:1px solid rgba(255,255,255,.35); transition:.15s;
-}
-.login-btn:hover{ background:rgba(255,255,255,.12); }
-.user-badge{ display:flex; align-items:center; gap:8px; }
-.user-avatar{
-  width:34px; height:34px; border-radius:50%;
-  background:rgba(255,255,255,.2);
-  display:flex; align-items:center; justify-content:center;
-  font-weight:700; font-size:14px;
-}
-.user-name{ font-weight:600; font-size:14px; }
-.user-role{ font-size:11px; opacity:.7; }
-.logout-btn{
-  cursor:pointer; font-size:12px; padding:6px 12px;
-  border-radius:6px; border:1px solid rgba(255,255,255,.3);
-  opacity:.8; transition:.15s;
-}
-.logout-btn:hover{ opacity:1; background:rgba(255,255,255,.1); }
+  /* ── HEADER ── */
+  header {
+    height: 76px;
+    background: linear-gradient(90deg, var(--navy), var(--navy2));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 26px;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 14px rgba(0,0,0,.2);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-img { height: 42px; width: auto; object-fit: contain; }
+  .title-wrap h1 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+  .title-wrap p { font-size: 13px; opacity: .9; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 8px;
+    border: 1.5px solid rgba(255,255,255,.3);
+    background: rgba(255,255,255,.08);
+    color: #fff; font-size: 13px; font-weight: 600;
+    text-decoration: none; font-family: 'Inter', sans-serif;
+    transition: background .15s, border-color .15s;
+  }
+  .back-btn:hover { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.5); }
+  .back-btn svg { flex-shrink: 0; }
 
-.page{ padding:28px; max-width:1550px; margin:auto; }
-.top-section{
-  display:flex; justify-content:space-between; align-items:center;
-  margin-bottom:22px; gap:20px;
-}
-.top-left h2{ font-size:32px; margin-bottom:4px; }
-.top-left p{ color:var(--gray-600); font-size:15px; }
-.top-right{ display:flex; gap:12px; align-items:center; }
-.search-box input{
-  width:450px; height:46px; border:1px solid var(--gray-300);
-  border-radius:10px; padding:0 14px; font-size:14px; outline:none;
-}
-.search-box input:focus{ border-color:var(--blue); }
-.filter-select{
-  height:46px; padding:0 14px; border-radius:10px;
-  border:1px solid var(--gray-300); background:white; font-size:14px;
-}
-.add-btn{
-  height:46px; padding:0 18px; border:none;
-  background:linear-gradient(90deg,var(--navy),var(--navy2));
-  color:white; border-radius:10px; font-weight:600; cursor:pointer;
-}
-.table-wrapper{
-  background:white; border:1px solid var(--gray-200);
-  border-radius:16px; overflow:hidden;
-}
-.table-top{
-  padding:18px 22px; font-size:14px; font-weight:600;
-  border-bottom:1px solid var(--gray-200);
-}
-table{ width:100%; border-collapse:collapse; }
-thead{ background:linear-gradient(90deg,var(--navy),var(--navy2)); color:white; }
-thead th{ padding:16px; font-size:13px; text-align:left; font-weight:600; }
-tbody td{ padding:18px 16px; border-bottom:1px solid var(--gray-200); vertical-align:top; font-size:13px; }
-.dataset-title{ font-size:18px; font-weight:700; color:#1d4ed8; margin-bottom:6px; }
-.dataset-desc{ color:var(--gray-600); line-height:1.6; margin-bottom:8px; }
-.keyword{ font-size:12px; color:var(--gray-500); }
-.tag{ display:inline-block; padding:5px 9px; border-radius:8px; font-size:11px; font-weight:600; margin:2px; }
-.blue-tag{ background:#dbeafe; color:#1d4ed8; }
-.green-tag{ background:var(--green-bg); color:var(--green); }
-.yellow-tag{ background:var(--yellow-bg); color:var(--yellow); }
-.action-group{ display:flex; gap:8px; flex-wrap:wrap; }
-.action-btn{
-  padding:8px 12px; border-radius:8px; border:1px solid var(--gray-300);
-  background:white; cursor:pointer; font-size:12px; font-weight:600; transition:.15s;
-}
-.action-btn:hover{ background:#f3f4f6; }
-.action-btn.danger{ border-color:#fca5a5; color:var(--red); }
-.action-btn.danger:hover{ background:#fef2f2; }
-.action-btn.primary{ border-color:#93c5fd; color:var(--blue); }
-.action-btn.primary:hover{ background:#eff6ff; }
-.footer{ margin-top:18px; display:flex; justify-content:space-between; font-size:12px; color:var(--gray-500); }
+  .search-wrap { position: relative; }
+  .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,.5); pointer-events: none; }
+  #search {
+    padding: 8px 14px 8px 36px;
+    border: 1.5px solid rgba(255,255,255,.2);
+    border-radius: 8px;
+    background: rgba(255,255,255,.1);
+    color: #fff;
+    font-size: .875rem;
+    width: 230px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    transition: border .2s, background .2s;
+  }
+  #search::placeholder { color: rgba(255,255,255,.4); }
+  #search:focus { border-color: var(--mid); background: rgba(255,255,255,.16); }
 
-.modal{
-  position:fixed; inset:0; background:rgba(0,0,0,.45);
-  display:none; align-items:center; justify-content:center; z-index:999;
-}
-.modal-content{
-  background:white; width:760px; max-width:95%;
-  border-radius:18px; padding:28px; max-height:90vh; overflow:auto;
-}
-.modal-content h3{ font-size:26px; margin-bottom:22px; }
-.meta-grid{ display:grid; grid-template-columns:180px 1fr; gap:12px; margin-bottom:14px; font-size:14px; }
-.meta-label{ font-weight:700; }
-.close-btn{
-  margin-top:18px; padding:12px 18px; background:var(--navy);
-  color:white; border:none; border-radius:10px; cursor:pointer;
-}
+  /* ── FILTER TABS ── */
+  .filter-row { display: flex; gap: 8px; padding: 14px 40px 2px; flex-wrap: wrap; }
+  .tab {
+    padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: var(--white); color: var(--blue); font-size: .78rem; font-weight: 600;
+    cursor: pointer; transition: all .15s; user-select: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .tab:hover { background: var(--light); }
+  .tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
 
-.login-modal{
-  position:fixed; inset:0; background:rgba(0,0,0,.5);
-  display:none; align-items:center; justify-content:center; z-index:2000;
-}
-.login-modal.active{ display:flex; }
-.login-card{
-  background:white; border-radius:20px; padding:36px; width:420px; max-width:95%;
-  box-shadow:0 20px 60px rgba(0,0,0,.2);
-}
-.login-card-header{ display:flex; flex-direction:column; align-items:center; margin-bottom:24px; }
-.login-logo{
-  width:56px; height:56px; border-radius:16px;
-  background:linear-gradient(135deg,var(--navy),var(--navy2));
-  display:flex; align-items:center; justify-content:center;
-  color:white; font-weight:800; font-size:20px; margin-bottom:12px;
-}
-.login-card h2{ font-size:20px; margin-bottom:4px; text-align:center; }
-.login-card-header p{ color:var(--gray-500); font-size:13px; text-align:center; }
-.user-selector{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:20px; }
-.user-option{
-  border:2px solid var(--gray-200); border-radius:12px; padding:10px 8px;
-  cursor:pointer; transition:.15s; display:flex; flex-direction:column;
-  align-items:center; gap:6px; text-align:center;
-}
-.user-option:hover{ border-color:var(--blue); background:#eff6ff; }
-.user-option.selected{ border-color:var(--blue); background:#eff6ff; }
-.user-option-avatar{
-  width:36px; height:36px; border-radius:10px;
-  background:linear-gradient(135deg,var(--navy),var(--navy2));
-  color:white; display:flex; align-items:center; justify-content:center;
-  font-weight:700; font-size:13px;
-}
-.user-option-name{ font-weight:600; font-size:11px; line-height:1.3; }
-.user-option-role{ font-size:10px; color:var(--gray-500); }
-.login-label{ font-size:12px; font-weight:600; color:var(--gray-600); margin-bottom:6px; display:block; }
-.login-input{
-  width:100%; height:46px; border:1px solid var(--gray-300);
-  border-radius:10px; padding:0 14px; font-size:14px;
-  margin-bottom:12px; outline:none; font-family:'Inter',sans-serif;
-}
-.login-input:focus{ border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
-.sign-btn{
-  width:100%; height:46px; border:none; border-radius:10px;
-  background:linear-gradient(90deg,var(--navy),var(--navy2));
-  color:white; font-weight:700; font-size:14px; cursor:pointer;
-  font-family:'Inter',sans-serif; transition:.15s;
-}
-.sign-btn:hover{ opacity:.9; }
-.login-error{
-  color:var(--red); font-size:13px; margin-bottom:10px; display:none;
-  background:#fef2f2; border:1px solid #fecaca; padding:8px 12px; border-radius:8px;
-}
-.cancel-login{ display:block; text-align:center; margin-top:12px; font-size:13px; color:var(--gray-500); cursor:pointer; }
-.cancel-login:hover{ color:var(--gray-900); }
+  .stats { display: flex; gap: 16px; padding: 8px 40px; border-bottom: 1px solid var(--border); background: var(--white); font-size: .76rem; color: var(--muted); flex-wrap: wrap; align-items: center; }
+  .stats strong { color: var(--navy); }
+  .refresh-btn {
+    margin-left: auto; padding: 4px 12px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--white);
+    color: var(--blue); font-size: .72rem; font-weight: 600;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    transition: background .15s;
+  }
+  .refresh-btn:hover { background: var(--light); }
 
-.edit-modal{
-  position:fixed; inset:0; background:rgba(0,0,0,.55);
-  display:none; align-items:flex-start; justify-content:center;
-  z-index:1800; overflow-y:auto; padding:32px 16px;
-}
-.edit-modal.active{ display:flex; }
-.edit-modal-card{
-  background:white; border-radius:20px; width:900px; max-width:98%;
-  box-shadow:0 24px 80px rgba(0,0,0,.25); overflow:hidden; margin:auto;
-}
-.edit-modal-header{
-  padding:18px 28px;
-  background:linear-gradient(90deg,var(--navy),var(--navy2));
-  color:white; display:flex; align-items:center; gap:14px;
-}
-.edit-modal-header-info{ flex:1; }
-.edit-modal-header-title{ font-size:16px; font-weight:700; }
-.edit-modal-header-sub{ font-size:12px; opacity:.65; margin-top:2px; }
-.edit-modal-topbar{
-  padding:10px 24px; background:#f8fafc;
-  border-bottom:1px solid var(--gray-200);
-  display:flex; gap:20px; flex-wrap:wrap; align-items:center;
-}
-.etb-field{ display:flex; align-items:center; gap:8px; }
-.etb-label{ font-size:11px; font-weight:600; color:var(--gray-600); }
-.etb-input{
-  padding:5px 10px; background:white; border:1px solid var(--gray-200);
-  border-radius:6px; font-size:12px; font-family:'Inter',sans-serif;
-}
-.etb-id{ width:320px; font-weight:600; font-size:12px; }
-.edit-modal-body{ padding:24px; }
-.edit-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.edit-card{ background:#fff; border:1px solid var(--gray-200); border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.06); }
-.edit-card-head{ padding:11px 16px; border-bottom:1px solid var(--gray-100); background:#fafafa; }
-.edit-card-head-title{ font-size:13px; font-weight:600; color:var(--navy); }
-.edit-card-body{ padding:16px; display:grid; gap:10px; }
-.edit-field{ display:flex; flex-direction:column; gap:3px; }
-.edit-field label{ font-size:11px; font-weight:600; color:var(--gray-600); }
-.req{ color:var(--red); }
-.edit-field input, .edit-field select, .edit-field textarea{
-  width:100%; padding:6px 9px; border:1px solid var(--gray-300);
-  border-radius:6px; font:13px 'Inter',sans-serif; outline:none;
-}
-.edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus{
-  border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1);
-}
-.edit-field textarea{ resize:vertical; }
-.edit-field .hint{ font-size:11px; color:var(--gray-400); }
-.fgcat{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.ifield{ display:flex; border:1px solid var(--gray-300); border-radius:6px; overflow:hidden; }
-.ifield input{ border:none; }
-.ifield-btn{
-  padding:0 10px; display:grid; place-items:center;
-  background:var(--gray-50); border-left:1px solid var(--gray-200);
-  text-decoration:none; color:var(--gray-500); font-size:13px;
-}
-.author-info-box{
-  background:#f0f7ff; border:1px solid #bfdbfe;
-  border-radius:8px; padding:12px 14px;
-  display:flex; align-items:center; gap:12px;
-}
-.aib-avatar{
-  width:36px; height:36px; border-radius:9px; flex-shrink:0;
-  background:linear-gradient(135deg,var(--navy),var(--navy2));
-  color:white; display:flex; align-items:center; justify-content:center;
-  font-weight:700; font-size:13px;
-}
-.aib-name{ font-weight:600; font-size:13px; }
-.aib-email{ font-size:12px; color:var(--gray-500); }
-.edit-modal-footer{
-  padding:14px 24px; border-top:1px solid var(--gray-200);
-  background:#fafafa; display:flex; justify-content:space-between; align-items:center;
-}
-.ef-brand{ font-size:11px; color:var(--gray-400); }
-.ef-btns{ display:flex; gap:8px; }
-.ef-btn{ padding:8px 16px; border-radius:7px; font-size:13px; font-weight:500; cursor:pointer; font-family:'Inter',sans-serif; border:none; }
-.ef-ghost{ background:white; border:1px solid var(--gray-300); }
-.ef-primary{ background:var(--navy); color:white; }
-.ef-primary:hover{ opacity:.9; }
-.warning-box{
-  background:#fffbeb; border:1px solid #fde68a; border-radius:8px;
-  padding:10px 14px; font-size:12px; color:#92400e;
-  display:flex; gap:8px; align-items:flex-start;
-  margin-top:4px; grid-column:1/-1;
-}
+  main { padding: 20px 40px 60px; }
 
-.toast{
-  position:fixed; left:50%; bottom:30px; transform:translateX(-50%);
-  padding:9px 22px; border-radius:8px; color:#fff; background:var(--gray-900);
-  opacity:0; transition:.25s; z-index:9999; font-size:13px; font-weight:500;
-  pointer-events:none; white-space:nowrap;
-}
-.toast.show{ opacity:1; }
-.toast.ok{ background:var(--green); }
-.toast.err{ background:var(--red); }
+  /* Loading state */
+  .loading-wrap { text-align: center; padding: 80px 20px; color: var(--muted); }
+  .spinner {
+    width: 36px; height: 36px; border: 3px solid var(--light);
+    border-top-color: var(--blue); border-radius: 50%;
+    animation: spin .7s linear infinite; margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .section-block { margin-bottom: 32px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+  .section-title { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .section-count { font-size: .68rem; color: var(--muted); background: var(--light); padding: 2px 8px; border-radius: 10px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; align-items: start; }
+
+  .card {
+    background: var(--white); border: 1.5px solid var(--border); border-radius: 11px;
+    padding: 14px 16px; cursor: pointer;
+    transition: box-shadow .15s, border-color .15s, transform .1s;
+    position: relative; overflow: hidden;
+  }
+.card:hover { box-shadow: 0 4px 18px rgba(30,90,160,.12); border-color: var(--mid); transform: translateY(-1px); }
+.card.expanded { border-color: var(--blue); box-shadow: 0 5px 22px rgba(13,54,99,.14); }
+
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .card-name { font-size: .88rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .card-right { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+  .card-code {
+    background: var(--navy); color: #fff; font-size: .68rem; font-weight: 700;
+    letter-spacing: .06em; padding: 3px 9px; border-radius: 6px;
+    font-family: 'Courier New', monospace;
+  }
+  .chevron { width: 15px; height: 15px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+  .card.expanded .chevron { transform: rotate(180deg); }
+
+  .card-preview { font-size: .76rem; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+  .card-detail { display: none; margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--border); }
+  .card.expanded .card-detail { display: block; }
+  .detail-label { font-size: .63rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  .detail-desc { font-size: .76rem; color: var(--text); line-height: 1.55; margin-bottom: 10px; }
+  .detail-examples { display: flex; flex-wrap: wrap; gap: 5px; }
+  .example-tag { background: var(--pale); border: 1px solid var(--light); color: var(--blue); font-size: .74rem; padding: 3px 10px; border-radius: 6px; line-height: 1.4; }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); display: none; }
+  .empty.show { display: block; }
+
+  mark { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; }
+
+  @media (max-width: 600px) {
+    header { padding: 0 16px; }
+    .filter-row, main, .stats { padding-left: 16px; padding-right: 16px; }
+    #search { width: 170px; }
+    .cards { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-left">
-    <img src="data/cx_white.png" class="logo-img">
+    <img src="data/cx_white.png" class="logo-img" onerror="this.style.display='none'">
     <div class="title-wrap">
-      <h1>GIS DATA EXPLORER</h1>
-      <p>CarbonX - Geospatial Datasets</p>
+      <h1>GIS DATA CLASSIFICATION REFERENCE</h1>
+      <p>CarbonX – Kode, kategori, dan contoh data geospasial</p>
     </div>
   </div>
   <div class="header-right">
-    <div id="headerLoginBtn" class="login-btn" onclick="openLoginModal()">Login</div>
-    <div id="headerUserArea" style="display:none;align-items:center;gap:12px;">
-      <div class="user-badge">
-        <div class="user-avatar" id="headerAvatar">—</div>
-        <div>
-          <div class="user-name" id="headerUserName">—</div>
-          <div class="user-role">CarbonX team</div>
-        </div>
-      </div>
-      <div class="logout-btn" onclick="logout()">Logout</div>
+    <a href="https://gis-carbonx.github.io/gis-db-explorer/" class="back-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Explorer
+    </a>
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Cari nama, kode, contoh…" autocomplete="off">
     </div>
   </div>
 </header>
 
-<div class="page">
-  <div class="top-section">
-    <div class="top-left">
-    </div>
-    <div class="top-right">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search dataset...">
-      </div>
-      <select id="categoryFilter" class="filter-select"><option value="">All Category</option></select>
-      <select id="geoFilter" class="filter-select"><option value="">All Data Type</option></select>
-      <button class="add-btn" onclick="openAddModal()">+ Add New Dataset</button>
-    </div>
-  </div>
-
-  <div class="table-wrapper">
-    <div class="table-top">Total <span id="totalDataset">0</span> datasets</div>
-    <table>
-      <thead>
-        <tr>
-          <th>No.</th><th>Dataset Title</th><th>Category</th>
-          <th>Extent</th><th>Date Created</th><th>Data Type</th>
-          <th>Last Updated</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
-
-  <div class="footer">
-    <div>CarbonX</div>
-    <div>v1.2026</div>
-  </div>
+<div class="stats" id="stats">
+  <span>Memuat data…</span>
 </div>
-
-<div class="modal" id="metadataModal">
-  <div class="modal-content">
-    <h3 id="metaTitle"></h3>
-    <div id="metaContent"></div>
-    <button class="close-btn" onclick="closeMetadata()">Close</button>
+<div class="filter-row" id="filters"></div>
+<main id="main">
+  <div class="loading-wrap">
+    <div class="spinner"></div>
+    <div>Memuat data dari Google Sheets…</div>
   </div>
-</div>
-
-<div class="login-modal" id="loginModal">
-  <div class="login-card">
-    <div class="login-card-header">
-      <div class="login-logo">GIS</div>
-      <h2>Sign In</h2>
-      <p>CarbonX Team</p>
-    </div>
-    <div class="user-selector" id="userSelector">
-      <div class="user-option selected" data-user="RS" onclick="selectUser('RS',this)">
-        <div class="user-option-avatar">RS</div>
-        <div class="user-option-name">Ridho Saifulhaq</div>
-        <div class="user-option-role">CarbonX Team</div>
-      </div>
-      <div class="user-option" data-user="GA" onclick="selectUser('GA',this)">
-        <div class="user-option-avatar">GA</div>
-        <div class="user-option-name">Gemasakti Adzan</div>
-        <div class="user-option-role">CarbonX Team</div>
-      </div>
-      <div class="user-option" data-user="AF" onclick="selectUser('AF',this)">
-        <div class="user-option-avatar">AF</div>
-        <div class="user-option-name">Abdillah Faruq</div>
-        <div class="user-option-role">CarbonX Team</div>
-      </div>
-    </div>
-    <label class="login-label">Password</label>
-    <input type="password" id="loginPasswordInput" class="login-input"
-      placeholder="Enter your password"
-      onkeydown="if(event.key==='Enter') doLogin()">
-    <div class="login-error" id="loginError">Wrong password. Please try again.</div>
-    <button class="sign-btn" onclick="doLogin()">Sign In</button>
-    <span class="cancel-login" onclick="closeLoginModal()">Cancel</span>
-  </div>
-</div>
-
-<div class="edit-modal" id="editModal">
-  <div class="edit-modal-card">
-
-    <div class="edit-modal-header">
-      <div class="edit-modal-header-info">
-        <div class="edit-modal-header-title" id="editModalTitle">Add New Dataset</div>
-        <div class="edit-modal-header-sub">CarbonX Team – Metadata Editor</div>
-      </div>
-      <button style="padding:7px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:transparent;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-right:6px;"
-        onclick="closeEditModal()">Cancel</button>
-      <button style="padding:7px 16px;border-radius:8px;border:none;background:white;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;"
-        onclick="saveEditMetadata()">☁ Save</button>
-    </div>
-
-    <div class="edit-modal-topbar">
-      <div class="etb-field">
-        <span class="etb-label">Metadata ID</span>
-        <input type="text" id="editMetaId" class="etb-input etb-id" readonly>
-      </div>
-      <div class="etb-field" style="margin-left:auto;">
-        <span class="etb-label">Date Created</span>
-        <input type="date" id="editDateCreatedTop" class="etb-input">
-      </div>
-    </div>
-
-    <div class="edit-modal-body">
-    <div class="edit-grid">
-
-      <div class="edit-card">
-        <div class="edit-card-head"><div class="edit-card-head-title">1. Identification</div></div>
-        <div class="edit-card-body">
-          <div class="edit-field">
-            <label>Dataset Title <span class="req">*</span></label>
-            <input type="text" id="editTitle">
-          </div>
-          <div class="edit-field">
-            <label>Abstract / Description <span class="req">*</span></label>
-            <textarea id="editAbstract" rows="3"></textarea>
-          </div>
-          <div class="edit-field">
-            <label>Keywords / Tags</label>
-            <input type="text" id="editKeywords">
-            <div class="hint">Separate with comma</div>
-          </div>
-          <div class="fgcat">
-            <div class="edit-field">
-              <label>Category Level 1 <span class="req">*</span></label>
-              <select id="editCat1" onchange="editUpdateCat2()">
-                <option value="">-- Select --</option>
-              </select>
-            </div>
-            <div class="edit-field">
-              <label>Category Level 2 <span class="req">*</span></label>
-              <select id="editCat2" onchange="editUpdateCat3()" disabled>
-                <option value="">-- Select --</option>
-              </select>
-            </div>
-          </div>
-          <div class="edit-field">
-            <label>Category Level 3</label>
-            <select id="editCat3" onchange="refreshMetaId()" disabled>
-              <option value="">-- Select --</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="edit-card">
-        <div class="edit-card-head"><div class="edit-card-head-title">2. Spatial Information</div></div>
-        <div class="edit-card-body">
-          <div class="edit-field">
-            <label>Geographic Extent <span class="req">*</span></label>
-            <select id="editGeoExtent"></select>
-          </div>
-          <div class="edit-field">
-            <label>Coordinate Reference System (CRS)</label>
-            <input type="text" id="editCRS">
-            <select id="editCRSPreset" style="margin-top:4px;font-size:12px;padding:4px 8px;height:auto;font-family:'Inter',sans-serif;"></select>
-          </div>
-          <div class="edit-field">
-            <label>Spatial Resolution / Scale</label>
-            <input type="text" id="editResolution">
-          </div>
-          <div class="edit-field">
-            <label>Geometry Type</label>
-            <select id="editGeomType"></select>
-          </div>
-        </div>
-      </div>
-
-      <div class="edit-card">
-        <div class="edit-card-head"><div class="edit-card-head-title">3. Temporal Information</div></div>
-        <div class="edit-card-body">
-          <div class="edit-field">
-            <label>Date of Creation</label>
-            <input type="date" id="editDateCreated">
-          </div>
-          <div class="edit-field">
-            <label>Date of Update</label>
-            <input type="date" id="editDateUpdated">
-          </div>
-          <div class="edit-field">
-            <label>Time Period Covered</label>
-            <input type="text" id="editTimePeriod">
-          </div>
-        </div>
-      </div>
-
-      <div class="edit-card">
-        <div class="edit-card-head"><div class="edit-card-head-title">4. Source &amp; Lineage</div></div>
-        <div class="edit-card-body">
-          <div class="edit-field">
-            <label>Data Source</label>
-            <input type="text" id="editDataSource">
-          </div>
-          <div class="edit-field">
-            <label>Lineage / Processing Steps</label>
-            <textarea id="editLineage" rows="3"></textarea>
-          </div>
-          <div class="edit-field">
-            <label>Data Quality / Accuracy</label>
-            <input type="text" id="editQuality">
-          </div>
-        </div>
-      </div>
-
-      <div class="edit-card">
-        <div class="edit-card-head"><div class="edit-card-head-title">5. Access Information</div></div>
-        <div class="edit-card-body">
-          <div class="edit-field">
-            <label>Dataset Link / Folder</label>
-            <div class="ifield">
-              <input type="url" id="editFileLink">
-              <a href="#" target="_blank" id="editFileLinkOpen" class="ifield-btn">↗</a>
-            </div>
-          </div>
-          <div class="edit-field">
-            <label>Access Constraints</label>
-            <select id="editAccessConstraints"></select>
-          </div>
-          <div class="edit-field">
-            <label>License / Usage</label>
-            <select id="editLicense"></select>
-          </div>
-        </div>
-      </div>
-
-      <div class="edit-card">
-        <div class="edit-card-head"><div class="edit-card-head-title">6. Metadata Information</div></div>
-        <div class="edit-card-body">
-          <div class="edit-field">
-            <label>Author / Creator</label>
-            <div class="author-info-box">
-              <div class="aib-avatar" id="editAuthorAvatar">—</div>
-              <div>
-                <div class="aib-name" id="editAuthorName">—</div>
-                <div class="aib-email" id="editAuthorEmail">—</div>
-              </div>
-            </div>
-          </div>
-          <div class="edit-field">
-            <label>Division</label>
-            <input type="text" id="editDivision" value="CarbonX GIS Team">
-          </div>
-          <div class="edit-field">
-            <label>Remarks</label>
-            <textarea id="editRemarks" rows="3"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="warning-box">
-        ⚠ Pastikan semua informasi sudah benar sebelum menyimpan. Perubahan akan disimpan ke Google Sheet.
-      </div>
-
-    </div>
-    </div>
-
-    <div class="edit-modal-footer">
-      <div class="ef-brand">v1.2026</div>
-      <div class="ef-btns">
-        <button class="ef-btn ef-ghost" onclick="resetEditForm()">↺ Reset</button>
-        <button class="ef-btn ef-primary" onclick="saveEditMetadata()">☁ Save Metadata</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+</main>
 
 <script>
+// ── CONFIG ──────────────────────────────────────────────────
+const SHEET_ID   = '1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8';
+const SHEET_GID  = '0';        // gid dari URL spreadsheet (tab pertama = 0)
+const SHEET_NAME = 'index';    // nama tab sebagai fallback
 
-const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/export?format=csv';
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ9Y3-YBQQRduTeRSPp-YkamwugOq0lgpJpXf9OALahm8YaIzo9HaBx_ODZ0nDIjdwtw/exec';
+// Dua URL dicoba secara berurutan
+const SHEET_URLS = [
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`,
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
+];
 
-const USERS = {
-  RS:{ name:'Ridho Saifulhaq', email:'gis@carbonxco.com',  password:'ridho', division:'CarbonX GIS Team' },
-  GA:{ name:'Gemasakti Adzan', email:'gema@carbonxco.com', password:'gema',  division:'CarbonX GIS Team' },
-  AF:{ name:'Abdillah Faruq',  email:'faruq@sanggala.id',  password:'faruq', division:'CarbonX GIS Team' }
+// Warna per Level 1 (bisa ditambah sesuai kebutuhan)
+const SECTION_COLORS = {
+  'Admin':     '#22843A',
+  'Basemap':   '#0D3663',
+  'Thematic':  '#1E5AA0',
+  'Templates': '#5A3FA0',
 };
+const DEFAULT_COLOR = '#3A7DC9';
 
-const OPTS = {
-  geoExtent:['Project Area','Project Zone','Indonesia','Kalimantan Barat','Kabupaten Sanggau','Kabupaten Landak','Other'],
-  geomType: ['Point','Line / Polyline','Polygon','Raster'],
-  access:   ['Public','Internal Use Only','Restricted','Confidential'],
-  license:  ['CC BY 4.0','Internal Use Only','Proprietary'],
-  crs:      ['EPSG:4326 - WGS 84','EPSG:32750 - UTM Zone 50S','EPSG:32650 - UTM Zone 50N',
-             'EPSG:32749 - UTM Zone 49S','EPSG:32649 - UTM Zone 49N','EPSG:3857 - Web Mercator','EPSG:4755 - DGN95']
-};
+// ── STATE ───────────────────────────────────────────────────
+let SECTIONS      = {};
+let activeFilter  = 'Semua';
+let searchTerm    = '';
 
-// ============================================================
-// KATEGORI — diperbarui sesuai gambar (Level 1, 2, 3)
-// ============================================================
-const CAT = {
-  "01": {
-    label: "01. Admin", code: "01",
-    sub: {
-      "SOP": {
-        label: "1. SOP", code: "SOP",
-        l3: ["(File Name) SOP_Deskripsi_YYYYMMDD_Versi"]
-      }
-    }
-  },
-  "02": {
-    label: "02. Basemap", code: "02",
-    sub: {
-      "01": {
-        label: "1. Administrasi", code: "01",
-        l3: ["Provinsi","Kabupaten/Kota","Kecamatan","Desa/Kelurahan","Dusun"]
-      },
-      "02": {
-        label: "2. Jalan", code: "02",
-        l3: ["RSI","OSM","Tracking","Deliniasi"]
-      },
-      "03": {
-        label: "3. Hidrologi", code: "03",
-        l3: ["Watershed","Sungai","Tubuh air lainnya"]
-      },
-      "04": {
-        label: "4. DEM", code: "04",
-        l3: ["DEMNAS","SRTM"]
-      },
-      "05": {
-        label: "5. Citra", code: "05",
-        l3: ["2023","2024","2025"]
-      },
-      "06": {
-        label: "6. Data CMI", code: "06",
-        l3: ["Boundaries","grid monitoring","eligible area"]
-      }
-    }
-  },
-  "03": {
-    label: "03. Thematic", code: "03",
-    sub: {
-      "01": {
-        label: "1. Forest Patrol", code: "01",
-        l3: ["Multipatrol","Kebun Pengawas Api","Hotspot"]
-      },
-      "02": {
-        label: "2. Nursery", code: "02",
-        l3: ["Layout","Kebun Entress","Kebun Inti"]
-      },
-      "03": {
-        label: "3. Planting", code: "03",
-        l3: ["Restoration","Enrichment","KTH"]
-      },
-      "04": {
-        label: "4. Alternative Livelihood", code: "04",
-        l3: ["Handycraft","Perikanan","House Garden"]
-      },
-      "05": {
-        label: "5. Access to Health", code: "05",
-        l3: ["Visit Dokter"]
-      },
-      "06": {
-        label: "6. Access to Education", code: "06",
-        l3: ["Sekolah Vokasi","Paket BBC","Demplot"]
-      },
-      "07": {
-        label: "7. Access to Water", code: "07",
-        l3: ["Pipanisasi"]
-      },
-      "08": {
-        label: "8. Biodiversity Conservation", code: "08",
-        l3: ["Camera Trap & Bioacoustic","Wildlife Monitoring Post","Field Survey"]
-      },
-      "09": {
-        label: "9. MRV", code: "09",
-        l3: ["Biomass Measurement","Ground Truthing"]
-      },
-      "10": {
-        label: "10. LULC", code: "10",
-        l3: ["Lahan Garapan Masyarakat","Land Cover","Other Land Cover"]
-      },
-      "11": {
-        label: "11. Planning", code: "11",
-        l3: ["RKU","RKT","PAL Batas"]
-      },
-      "12": {
-        label: "12. Drone Mapping", code: "12",
-        l3: ["RAW","Imagery","Report","Pre-flight Form","Overview Map","Metadata"]
-      },
-      "13": {
-        label: "13. Preservation of Sites and Culture", code: "13",
-        l3: ["Culture Sites","Sekolah Adat"]
-      }
-    }
-  },
-  "04": {
-    label: "04. Templates", code: "04",
-    sub: {
-      "13": {
-        label: "13. Reporting & Submission", code: "13",
-        l3: ["[external organisation name]"]
-      },
-      "21": {
-        label: "21. MPK", code: "21",
-        l3: ["(File Name)"]
-      },
-      "GP": {
-        label: "2. Geopackage", code: "GP",
-        l3: ["(File Name)"]
-      },
-      "LO": {
-        label: "3. Layout", code: "LO",
-        l3: ["(File Name)"]
-      },
-      "SY": {
-        label: "4. Symbology", code: "SY",
-        l3: ["(File Name)"]
-      }
-    }
-  }
-};
-// ============================================================
-
-let RAW_DATA        = [];
-let currentUserCode = localStorage.getItem('gis_user') || null;
-let isLoggedIn      = localStorage.getItem('gis_login') === 'true';
-let selectedLoginUser = 'RS';
-let editMode        = 'add';
-let editIndex       = -1;
-let editCounter     = parseInt(localStorage.getItem('editCounter')) || 1;
-  
-const $  = id => document.getElementById(id);
-const fv = id => ($( id)?.value || '').trim();
-const today = () => new Date().toISOString().split('T')[0];
-
-function slugify(t){ return t.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,''); }
-
-function setOpts(id, arr, ph='-- Select --'){
-  $(id).innerHTML = `<option value="">${ph}</option>` +
-    arr.map(v=>`<option value="${v}">${v}</option>`).join('');
-}
-
-function setVal(id, val){ const el=$(id); if(el) el.value = val||''; }
-
-function refreshMetaId(){
-  const d   = new Date();
-  const pad = n => String(n).padStart(2,'0');
-  const dd  = pad(d.getDate()), mm = pad(d.getMonth()+1), yy = String(d.getFullYear()).slice(-2);
-
-  const k1 = fv('editCat1');
-  const k2 = fv('editCat2');
-  const k3 = fv('editCat3');
-
-  const c1 = k1 || '00';
-  const c2 = k2 || '00';
-
-  const c3 = k3 ? slugify(k3) : (k2 ? slugify(k2) : '000');
-
-  const auth = currentUserCode || 'XX';
-  const num  = String(editCounter).padStart(4,'0');
-
-  $('editMetaId').value = `${dd}${mm}${yy}-${c1}/${c2}/${c3}-${auth}-${num}`;
-}
-
-
-async function loadData(){
-  try{
-    const res = await fetch(SHEET_CSV);
-    const csv = await res.text();
-    RAW_DATA  = csvToArray(csv);
-    populateFilters();
-    renderData(RAW_DATA);
-  } catch(e){ console.error('Load failed',e); }
-}
-
-function csvToArray(str){
-  const rows = str.trim().split('\n');
-  const headers = rows[0].split(',');
-  return rows.slice(1).map(r=>{
-    const vals = splitCSV(r);
+// ── CSV PARSER ──────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = splitRow(lines[0]).map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    const vals = splitRow(line);
     const obj  = {};
-    headers.forEach((h,i)=>{ obj[h.trim()] = (vals[i]||'').trim(); });
+    headers.forEach((h, i) => { obj[h] = (vals[i] || '').trim().replace(/^"|"$/g, ''); });
     return obj;
   });
 }
 
-function splitCSV(row){
-  let res=[], cur='', inQ=false;
-  for(const c of row){
-    if(c==='"'){ inQ=!inQ; }
-    else if(c===','&&!inQ){ res.push(cur); cur=''; }
-    else{ cur+=c; }
+function splitRow(row) {
+  const res = []; let cur = '', inQ = false;
+  for (const c of row) {
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { res.push(cur); cur = ''; }
+    else { cur += c; }
   }
   res.push(cur);
-  return res.map(v=>v.replace(/^"|"$/g,''));
+  return res;
 }
 
-function populateFilters(){
-  const cats = [...new Set(RAW_DATA.map(d=>d.l1).filter(Boolean))];
-  const geos = [...new Set(RAW_DATA.map(d=>d.geo_type).filter(Boolean))];
-  cats.forEach(v=>{ $('categoryFilter').innerHTML+=`<option value="${v}">${v}</option>`; });
-  geos.forEach(v=>{ $('geoFilter').innerHTML+=`<option value="${v}">${v}</option>`; });
+// ── BUILD SECTIONS FROM SHEET DATA ──────────────────────────
+// Expected columns: Level 1, Level 2, Code, Deskripsi, Level 3
+function buildSections(rows) {
+  const sections = {};
+  rows.forEach(row => {
+    const l1   = row['Level 1']  || row['level_1'] || '';
+    const l2   = row['Level 2']  || row['level_2'] || '';
+    const code = row['Code']     || row['code']     || '';
+    const desc = row['Deskripsi']|| row['deskripsi']|| row['description'] || '';
+    const l3   = row['Level 3']  || row['level_3'] || '';
+
+    if (!l1) return;
+
+    if (!sections[l1]) {
+      sections[l1] = {
+        color: SECTION_COLORS[l1] || DEFAULT_COLOR,
+        items: {}          // keyed by l2+code to group examples
+      };
+    }
+
+    const itemKey = `${l2}||${code}`;
+    if (!sections[l1].items[itemKey]) {
+      sections[l1].items[itemKey] = {
+        name: l2,
+        code: code,
+        desc: desc,
+        examples: []
+      };
+    }
+
+    if (l3) sections[l1].items[itemKey].examples.push(l3);
+  });
+
+  // Convert items objects to arrays
+  const result = {};
+  Object.entries(sections).forEach(([sName, sec]) => {
+    result[sName] = {
+      color: sec.color,
+      items: Object.values(sec.items)
+    };
+  });
+  return result;
 }
 
-function renderData(data){
-  $('totalDataset').innerText = data.length;
-  const tbody = $('tableBody');
-  tbody.innerHTML = '';
-  data.forEach((d,i)=>{
-    const idx = RAW_DATA.indexOf(d);
-    tbody.innerHTML += `
-      <tr>
-        <td>${i+1}</td>
-        <td>
-          <div class="dataset-title">${d.file_name||d.title||''}</div>
-          <div class="dataset-desc">${d.desc||d.abstract||''}</div>
-          <div class="keyword">${d.keywords||''}</div>
-        </td>
-        <td>
-          <span class="tag blue-tag">${d.l1||d.cat1_label||''}</span><br>
-          <span class="tag blue-tag">${d.l2||d.cat2_label||''}</span>
-        </td>
-        <td>${d.extent||d.geoExtent||''}</td>
-        <td>${d.date_of_update||d.dateCreated||''}</td>
-        <td><span class="tag ${(d.geo_type||d.geomType||'').includes('Raster')?'yellow-tag':'green-tag'}">${d.geo_type||d.geomType||''}</span></td>
-        <td>${d.date_of_update||d.dateUpdated||''}<br>by ${d.author||d.creator||''}</td>
-        <td>
-          <div class="action-group">
-            <button class="action-btn primary" onclick="showMetadata(${idx})">View</button>
-            ${isLoggedIn?`
-              <button class="action-btn" onclick="openEditModal(${idx})">Edit</button>
-              <button class="action-btn danger" onclick="deleteDataset(${idx})">Delete</button>
-            `:''}
+// ── LOAD DATA ───────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('main').innerHTML =
+    '<div class="loading-wrap"><div class="spinner"></div><div>Memuat data dari Google Sheets…</div></div>';
+  document.getElementById('stats').innerHTML = '<span>Memuat data…</span>';
+
+  let lastErr = null;
+  for (const url of SHEET_URLS) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      // Deteksi apakah response adalah halaman login Google (bukan CSV)
+      if (text.trim().startsWith('<!') || text.includes('<html')) {
+        throw new Error('Redirected to login page — spreadsheet not public');
+      }
+      const rows = parseCSV(text);
+      if (!rows.length) throw new Error('CSV kosong');
+      SECTIONS = buildSections(rows);
+      buildFilters();
+      render();
+      return; // sukses, stop
+    } catch (err) {
+      console.warn(`Gagal dari ${url}:`, err.message);
+      lastErr = err;
+    }
+  }
+
+  // Semua URL gagal
+  console.error('Semua URL gagal:', lastErr);
+  document.getElementById('main').innerHTML =
+    `<div class="empty show">
+      <div style="font-size:2rem;opacity:.3;margin-bottom:10px">⚠️</div>
+      <strong>Gagal memuat data dari Google Sheets.</strong><br>
+      <span style="font-size:.8rem;color:#888;display:block;margin-top:6px;">Error: ${lastErr?.message || 'unknown'}</span>
+      <span style="font-size:.8rem;display:block;margin-top:8px;">Pastikan spreadsheet sudah di-share <em>"Anyone with the link – Viewer"</em> dan nama tab sheet adalah <code>index</code>.</span>
+      <button onclick="loadData()" style="margin-top:14px;padding:7px 18px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);color:var(--blue);font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">↻ Coba lagi</button>
+    </div>`;
+  document.getElementById('stats').innerHTML = '<span style="color:#dc2626">Gagal memuat data</span>';
+}
+
+// ── HIGHLIGHT ───────────────────────────────────────────────
+function hl(text, q) {
+  if (!q || !text) return text || '';
+  return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark>$1</mark>');
+}
+
+function matches(item, q) {
+  if (!q) return true;
+  const lq = q.toLowerCase();
+  return (item.name  || '').toLowerCase().includes(lq)
+      || (item.code  || '').toLowerCase().includes(lq)
+      || (item.desc  || '').toLowerCase().includes(lq)
+      || item.examples.some(e => e.toLowerCase().includes(lq));
+}
+
+// ── RENDER ───────────────────────────────────────────────────
+function render() {
+  const mainEl  = document.getElementById('main');
+  const statsEl = document.getElementById('stats');
+  mainEl.innerHTML = '';
+
+  const total = Object.values(SECTIONS).flatMap(s => s.items).length;
+  let totalVisible = 0, anyVisible = false;
+  const sectionKeys = activeFilter === 'Semua' ? Object.keys(SECTIONS) : [activeFilter];
+
+  sectionKeys.forEach(sName => {
+    const sec   = SECTIONS[sName];
+    if (!sec) return;
+    const items = sec.items.filter(i => matches(i, searchTerm));
+    if (!items.length) return;
+    anyVisible = true;
+    totalVisible += items.length;
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header">
+        <span class="section-title" style="color:${sec.color}">${sName}</span>
+        <span class="section-line"></span>
+        <span class="section-count">${items.length} kategori</span>
+      </div>
+      <div class="cards" id="grid-${sName.replace(/\s+/g,'-')}"></div>
+    `;
+    mainEl.appendChild(block);
+
+    const grid = block.querySelector(`#grid-${sName.replace(/\s+/g,'-')}`);
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.setProperty('--bar', sec.color);
+
+      const preview = item.examples.length
+        ? item.examples.slice(0,2).map(e => hl(e, searchTerm)).join(' · ')
+        : (item.desc ? `<em>${hl(item.desc.substring(0,80), searchTerm)}…</em>` : '<em style="opacity:.45">—</em>');
+
+      const tags = item.examples.length
+        ? item.examples.map(e => `<span class="example-tag">${hl(e, searchTerm)}</span>`).join('')
+        : '<span style="font-size:.74rem;opacity:.5">Belum ada level 3 terdaftar</span>';
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-name">${hl(item.name, searchTerm)}</div>
+          <div class="card-right">
+            <div class="card-code">${hl(item.code, searchTerm)}</div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </div>
-        </td>
-      </tr>`;
+        </div>
+        <div class="card-detail">
+          ${item.desc ? `<div class="detail-label">Deskripsi</div><div class="detail-desc">${hl(item.desc, searchTerm)}</div>` : ''}
+          <div class="detail-label">Level 3 / Contoh data</div>
+          <div class="detail-examples">${tags}</div>
+        </div>
+      `;
+      card.addEventListener('click', () => {
+        const isOpen = card.classList.contains('expanded');
+        document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
+        if (!isOpen) card.classList.add('expanded');
+      });
+      grid.appendChild(card);
+    });
+  });
+
+  if (!anyVisible) {
+    mainEl.innerHTML = `<div class="empty show"><div style="font-size:2rem;opacity:.3;margin-bottom:10px">🔍</div>Tidak ada hasil untuk "<strong>${searchTerm}</strong>"</div>`;
+  }
+
+  statsEl.innerHTML = `Menampilkan <strong>${totalVisible}</strong> dari <strong>${total}</strong> kategori`;
+  if (searchTerm) statsEl.innerHTML += ` &nbsp;·&nbsp; Pencarian: "<strong>${searchTerm}</strong>"`;
+  statsEl.innerHTML += `<button class="refresh-btn" onclick="loadData()">↻ Refresh</button>`;
+}
+
+// ── FILTERS ──────────────────────────────────────────────────
+function buildFilters() {
+  const row = document.getElementById('filters');
+  row.innerHTML = '';
+  ['Semua', ...Object.keys(SECTIONS)].forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (t === 'Semua' ? ' active' : '');
+    btn.textContent = t;
+    btn.addEventListener('click', () => {
+      activeFilter = t;
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+    row.appendChild(btn);
   });
 }
 
-function applyFilters(){
-  const s = $('searchInput').value.toLowerCase();
-  const c = $('categoryFilter').value;
-  const g = $('geoFilter').value;
-  renderData(RAW_DATA.filter(d=>{
-    const txt = Object.values(d).join(' ').toLowerCase();
-    const l1  = d.l1||d.cat1_label||'';
-    const geo = d.geo_type||d.geomType||'';
-    return txt.includes(s) && (!c||l1===c) && (!g||geo===g);
-  }));
-}
-
-function showMetadata(index){
-  const d = RAW_DATA[index];
-  $('metaTitle').innerText = d.file_name||d.title||'';
-  $('metaContent').innerHTML = `
-    <div class="meta-grid"><div class="meta-label">Description</div><div>${d.desc||d.abstract||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Category</div><div>${d.l1||d.cat1_label||''} / ${d.l2||d.cat2_label||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Geometry Type</div><div>${d.geo_type||d.geomType||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">CRS</div><div>${d.crs||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Extent</div><div>${d.extent||d.geoExtent||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Keywords</div><div>${d.keywords||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Author</div><div>${d.author||d.creator||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Division</div><div>${d.division||d.organization||''}</div></div>
-    <div class="meta-grid"><div class="meta-label">Dataset Link</div>
-      <div><a href="${d.file_link||d.fileLink||d.dropboxLink||'#'}" target="_blank">Open Folder / Dataset</a></div>
-    </div>`;
-  $('metadataModal').style.display = 'flex';
-}
-function closeMetadata(){ $('metadataModal').style.display='none'; }
-
-function selectUser(code, el){
-  selectedLoginUser = code;
-  document.querySelectorAll('.user-option').forEach(e=>e.classList.remove('selected'));
-  el.classList.add('selected');
-  $('loginPasswordInput').value = '';
-  $('loginError').style.display = 'none';
-}
-
-function openLoginModal(){
-  $('loginModal').classList.add('active');
-  $('loginPasswordInput').value = '';
-  $('loginError').style.display = 'none';
-  setTimeout(()=>$('loginPasswordInput').focus(), 100);
-}
-function closeLoginModal(){ $('loginModal').classList.remove('active'); }
-
-function doLogin(){
-  const pass = $('loginPasswordInput').value;
-  const user = USERS[selectedLoginUser];
-  if(user && pass === user.password){
-    localStorage.setItem('gis_login','true');
-    localStorage.setItem('gis_user', selectedLoginUser);
-    isLoggedIn      = true;
-    currentUserCode = selectedLoginUser;
-    updateHeaderAuth();
-    closeLoginModal();
-    renderData(RAW_DATA);
-    showToast(`Welcome, ${user.name.split(' ')[0]}!`,'ok');
-  } else {
-    $('loginError').style.display = 'block';
-    $('loginPasswordInput').value = '';
-    $('loginPasswordInput').focus();
+// ── SEARCH ───────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.trim();
+  if (searchTerm) {
+    activeFilter = 'Semua';
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    const first = document.querySelector('.tab');
+    if (first) first.classList.add('active');
   }
-}
-
-function logout(){
-  if(!confirm('Are you sure you want to logout?')) return;
-  localStorage.setItem('gis_login','false');
-  localStorage.removeItem('gis_user');
-  isLoggedIn = false; currentUserCode = null;
-  updateHeaderAuth();
-  renderData(RAW_DATA);
-  showToast('Logged out');
-}
-
-function updateHeaderAuth(){
-  if(isLoggedIn && currentUserCode && USERS[currentUserCode]){
-    const u = USERS[currentUserCode];
-    $('headerLoginBtn').style.display = 'none';
-    $('headerUserArea').style.display = 'flex';
-    $('headerAvatar').innerText   = currentUserCode;
-    $('headerUserName').innerText = u.name;
-  } else {
-    $('headerLoginBtn').style.display = 'block';
-    $('headerUserArea').style.display = 'none';
-  }
-}
-
-function initEditCat1(){
-  $('editCat1').innerHTML = '<option value="">-- Select --</option>' +
-    Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
-  $('editCat2').innerHTML = '<option value="">-- Select --</option>';
-  $('editCat3').innerHTML = '<option value="">-- Select --</option>';
-  $('editCat2').disabled = true;
-  $('editCat3').disabled = true;
-}
-
-function editUpdateCat2(){
-  const k1 = fv('editCat1');
-  const s2 = $('editCat2'), s3 = $('editCat3');
-  s2.innerHTML = '<option value="">-- Select --</option>';
-  s3.innerHTML = '<option value="">-- Select --</option>';
-  s2.disabled = true; s3.disabled = true;
-  if(CAT[k1]){
-    Object.entries(CAT[k1].sub).forEach(([k,v])=>{
-      s2.innerHTML += `<option value="${k}">${v.label}</option>`;
-    });
-    s2.disabled = false;
-  }
-  refreshMetaId();
-}
-
-function editUpdateCat3(){
-  const k1 = fv('editCat1'), k2 = fv('editCat2');
-  const s3 = $('editCat3');
-  s3.innerHTML = '<option value="">-- Select --</option>';
-  const l3 = CAT[k1]?.sub[k2]?.l3 || [];
-  l3.forEach(v=>{ s3.innerHTML += `<option value="${v}">${v}</option>`; });
-  s3.disabled = !l3.length;
-  refreshMetaId();
-}
-
-function setCatValues(k1, k2, k3){
-
-  setVal('editCat1', k1);
-
-  const s2 = $('editCat2');
-  s2.innerHTML = '<option value="">-- Select --</option>';
-  s2.disabled  = true;
-  if(k1 && CAT[k1]){
-    Object.entries(CAT[k1].sub).forEach(([k,v])=>{
-      s2.innerHTML += `<option value="${k}">${v.label}</option>`;
-    });
-    s2.disabled = false;
-    s2.value = k2 || '';
-  }
-
-  const s3 = $('editCat3');
-  s3.innerHTML = '<option value="">-- Select --</option>';
-  s3.disabled  = true;
-  if(k1 && k2 && CAT[k1]?.sub[k2]){
-    const l3 = CAT[k1].sub[k2].l3 || [];
-    l3.forEach(v=>{ s3.innerHTML += `<option value="${v}">${v}</option>`; });
-    s3.disabled = !l3.length;
-    s3.value = k3 || '';
-  }
-}
-
-function initEditOptions(){
-  setOpts('editGeoExtent',         OPTS.geoExtent);
-  setOpts('editGeomType',          OPTS.geomType);
-  setOpts('editAccessConstraints', OPTS.access);
-  setOpts('editLicense',           OPTS.license);
-  $('editCRSPreset').innerHTML =
-    '<option value="">Quick select CRS…</option>' +
-    OPTS.crs.map(v=>`<option value="${v}">${v}</option>`).join('');
-  initEditCat1();
-}
-
-function fillAuthorBox(){
-  const u = USERS[currentUserCode];
-  if(!u) return;
-  $('editAuthorAvatar').innerText = currentUserCode;
-  $('editAuthorName').innerText   = u.name;
-  $('editAuthorEmail').innerText  = u.email;
-  setVal('editDivision', u.division);
-}
-
-function openAddModal(){
-  if(!isLoggedIn){ openLoginModal(); return; }
-  editMode = 'add'; editIndex = -1;
-  $('editModalTitle').innerText = 'Add New Dataset';
-  initEditOptions();
-
-  document.querySelectorAll('#editModal input:not([readonly]),#editModal select,#editModal textarea')
-    .forEach(el=>{ el.tagName==='SELECT' ? el.selectedIndex=0 : el.value=''; });
-  setVal('editDivision','CarbonX GIS Team');
-  setVal('editDateCreated', today());
-  setVal('editDateUpdated', today());
-  setVal('editDateCreatedTop', today());
-  fillAuthorBox();
-  refreshMetaId();
-  $('editModal').classList.add('active');
-  $('editModal').scrollTop = 0;
-}
-
-function openEditModal(index){
-  if(!isLoggedIn){ openLoginModal(); return; }
-  editMode = 'edit'; editIndex = index;
-  $('editModalTitle').innerText = 'Edit Metadata';
-  initEditOptions();
-
-  const d = RAW_DATA[index];
-
-  setVal('editTitle',      d.title      || d.file_name   || '');
-  setVal('editAbstract',   d.abstract   || d.desc        || '');
-  setVal('editKeywords',   d.keywords   || '');
-  setVal('editGeoExtent',  d.geoExtent  || d.extent      || '');
-  setVal('editCRS',        d.crs        || '');
-  setVal('editResolution', d.resolution || '');
-  setVal('editGeomType',   d.geomType   || d.geo_type    || '');
-  setVal('editDateCreated',d.dateCreated|| d.date_created|| today());
-  setVal('editDateUpdated',d.dateUpdated|| d.date_of_update|| today());
-  setVal('editTimePeriod', d.timePeriod || d.time_period || '');
-  setVal('editDataSource', d.dataSource || d.source      || '');
-  setVal('editLineage',    d.lineage    || '');
-  setVal('editQuality',    d.qualityAccuracy || '');
-  setVal('editFileLink',   d.dropboxLink|| d.file_link   || d.fileLink || '');
-  setVal('editAccessConstraints', d.accessConstraints || d.access_constraints || '');
-  setVal('editLicense',    d.license    || '');
-  setVal('editDivision',   d.organization||d.division    || 'CarbonX GIS Team');
-  setVal('editRemarks',    d.remarks    || '');
-  setVal('editDateCreatedTop', today());
-
-  const k1 = d.cat1_key || d.l1_key || '';
-  const k2 = d.cat2_key || d.l2_key || '';
-  const k3 = d.cat3     || '';
-  setCatValues(k1, k2, k3);
-
-  $('editMetaId').value = d.id || (() => { refreshMetaId(); return $('editMetaId').value; })();
-
-  fillAuthorBox();
-  $('editFileLinkOpen').href = $('editFileLink').value || '#';
-  $('editModal').classList.add('active');
-  $('editModal').scrollTop = 0;
-}
-
-function closeEditModal(){ $('editModal').classList.remove('active'); }
-
-function resetEditForm(){
-  if(!confirm('Reset all fields?')) return;
-  if(editMode==='edit'){ openEditModal(editIndex); return; } 
-
-  document.querySelectorAll('#editModal input:not([readonly]),#editModal select,#editModal textarea')
-    .forEach(el=>{ el.tagName==='SELECT' ? el.selectedIndex=0 : el.value=''; });
-  setVal('editDivision','CarbonX GIS Team');
-  setVal('editDateCreated', today());
-  setVal('editDateUpdated', today());
-  setVal('editDateCreatedTop', today());
-  fillAuthorBox();
-  initEditCat1();
-  refreshMetaId();
-}
-
-function collectEditData(){
-  const u = USERS[currentUserCode] || {};
-  return {
-    id:               fv('editMetaId'),
-    timestamp:        new Date().toISOString(),
-    title:            fv('editTitle'),
-    abstract:         fv('editAbstract'),
-    keywords:         fv('editKeywords'),
-    cat1_key:         fv('editCat1'),
-    cat1_label:       CAT[fv('editCat1')]?.label || '',
-    cat2_key:         fv('editCat2'),
-    cat2_label:       CAT[fv('editCat1')]?.sub[fv('editCat2')]?.label || '',
-    cat3:             fv('editCat3'),
-    geoExtent:        fv('editGeoExtent'),
-    crs:              fv('editCRS'),
-    resolution:       fv('editResolution'),
-    geomType:         fv('editGeomType'),
-    dateCreated:      fv('editDateCreated'),
-    dateUpdated:      fv('editDateUpdated'),
-    timePeriod:       fv('editTimePeriod'),
-    dataSource:       fv('editDataSource'),
-    lineage:          fv('editLineage'),
-    qualityAccuracy:  fv('editQuality'),
-    dropboxLink:      fv('editFileLink'),
-    accessConstraints:fv('editAccessConstraints'),
-    license:          fv('editLicense'),
-    creator:          u.name     || '',
-    organization:     fv('editDivision'),
-    email:            u.email    || '',
-    remarks:          fv('editRemarks'),
-    action:           editMode==='edit' ? 'update' : 'insert'
-  };
-}
-
-async function saveEditMetadata(){
-  const data = collectEditData();
-  if(!data.title)    return showToast('Dataset title required','err');
-  if(!data.abstract) return showToast('Abstract required','err');
-
-  try{
-    const res = await fetch(APPS_SCRIPT_URL,{ method:'POST', body:JSON.stringify(data) });
-    const txt = await res.text();
-    let result;
-    try{ result=JSON.parse(txt); } catch{ return showToast('Invalid server response','err'); }
-
-    if(result.success){
-      showToast(editMode==='edit'?'Metadata updated ✓':'Metadata saved ✓','ok');
-
-      const row = {
-        ...( editMode==='edit' ? RAW_DATA[editIndex] : {} ),
-        id:           data.id,
-        title:        data.title,       file_name:  data.title,
-        abstract:     data.abstract,    desc:       data.abstract,
-        keywords:     data.keywords,
-        cat1_key:     data.cat1_key,    l1:         data.cat1_label,
-        cat1_label:   data.cat1_label,
-        cat2_key:     data.cat2_key,    l2:         data.cat2_label,
-        cat2_label:   data.cat2_label,
-        cat3:         data.cat3,
-        geoExtent:    data.geoExtent,   extent:     data.geoExtent,
-        crs:          data.crs,
-        resolution:   data.resolution,
-        geomType:     data.geomType,    geo_type:   data.geomType,
-        dateCreated:  data.dateCreated, date_created: data.dateCreated,
-        dateUpdated:  data.dateUpdated, date_of_update: data.dateUpdated,
-        timePeriod:   data.timePeriod,
-        dataSource:   data.dataSource,  source:     data.dataSource,
-        lineage:      data.lineage,
-        qualityAccuracy: data.qualityAccuracy,
-        dropboxLink:  data.dropboxLink, file_link:  data.dropboxLink,
-        accessConstraints: data.accessConstraints,
-        license:      data.license,
-        creator:      data.creator,     author:     data.creator,
-        organization: data.organization,division:   data.organization,
-        email:        data.email,
-        remarks:      data.remarks
-      };
-
-      if(editMode==='edit' && editIndex>=0){
-        RAW_DATA[editIndex] = row;
-      } else {
-        RAW_DATA.unshift(row);
-        editCounter++;
-        localStorage.setItem('editCounter', editCounter);
-      }
-
-      renderData(RAW_DATA);
-      closeEditModal();
-
-    } else {
-      showToast(result.error||'Failed to save','err');
-    }
-
-  } catch(err){
-    console.error(err);
-    showToast('Connection failed','err');
-  }
-}
-
-async function deleteDataset(index){
-  const d = RAW_DATA[index];
-  const name = d.file_name || d.title || 'this dataset';
-  if(!confirm(`Delete "${name}"?\n\nThis will also remove it from Google Sheet.`)) return;
-
-  if(d.id){
-    try{
-      const res = await fetch(APPS_SCRIPT_URL,{
-        method:'POST',
-        body: JSON.stringify({ action:'delete', id: d.id })
-      });
-      const txt = await res.text();
-      let result;
-      try{ result=JSON.parse(txt); } catch{ result={success:false}; }
-      if(!result.success){
-        showToast('Sheet delete failed: '+(result.error||'unknown'),'err');
-        return;
-      }
-    } catch(e){
-      showToast('Connection failed — not deleted','err');
-      return;
-    }
-  }
-
-  RAW_DATA.splice(index,1);
-  renderData(RAW_DATA);
-  showToast('Dataset deleted','ok');
-}
-
-function showToast(msg, type=''){
-  const t = $('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(()=>t.classList.remove('show'), 3000);
-}
-
-$('searchInput').addEventListener('input', applyFilters);
-$('categoryFilter').addEventListener('change', applyFilters);
-$('geoFilter').addEventListener('change', applyFilters);
-
-$('editCRSPreset').addEventListener('change', e=>{
-  $('editCRS').value = e.target.value;
-  e.target.value = '';
+  render();
 });
 
-$('editFileLink').addEventListener('input', e=>{
-  $('editFileLinkOpen').href = e.target.value || '#';
-});
-
-$('loginModal').addEventListener('click', e=>{
-  if(e.target===$('loginModal')) closeLoginModal();
-});
-$('metadataModal').addEventListener('click', e=>{
-  if(e.target===$('metadataModal')) closeMetadata();
-});
-$('editModal').addEventListener('click', e=>{
-  if(e.target===$('editModal')) closeEditModal();
-});
-
-if(isLoggedIn && localStorage.getItem('gis_user')){
-  currentUserCode = localStorage.getItem('gis_user');
-}
-updateHeaderAuth();
+// ── INIT ─────────────────────────────────────────────────────
 loadData();
 </script>
 </body>
