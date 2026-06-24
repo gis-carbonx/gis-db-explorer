@@ -187,9 +187,11 @@ const SHEET_NAME = 'index'; // nama tab sheet
 
 // gviz/tq lebih reliable — tidak redirect ke login Google
 // Dicoba dua URL: by name (utama) dan by gid (fallback)
+// Fetch by gid (lebih reliable) dan by name sebagai fallback
+const SHEET_GID  = '579807719'; // gid sheet index
 const SHEET_URLS = [
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`,
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${SHEET_GID}`,
 ];
 
 // Warna per Level 1 — sesuai nilai di kolom A sheet index
