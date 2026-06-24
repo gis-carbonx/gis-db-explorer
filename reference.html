@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Classification Reference</title>
+<title>Hierarcy Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -183,27 +183,21 @@
 <script>
 // ── CONFIG ──────────────────────────────────────────────────
 const SHEET_ID   = '1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8';
-const SHEET_GID  = '0';        // gid dari URL spreadsheet (tab pertama = 0)
-const SHEET_NAME = 'index';    // nama tab sebagai fallback
+const SHEET_NAME = 'index'; // nama tab sheet
 
-// Dua URL dicoba secara berurutan
+// gviz/tq lebih reliable — tidak redirect ke login Google
+// Dicoba dua URL: by name (utama) dan by gid (fallback)
 const SHEET_URLS = [
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`,
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
 ];
 
-// Warna per Level 1 (bisa ditambah sesuai kebutuhan)
+// Warna per Level 1 — sesuai nilai di kolom A sheet index
 const SECTION_COLORS = {
-  // keys from "index" sheet kolom screenshot (Level 1)
-  'Admin':          '#22843A',
-  'Basemap':        '#0D3663',
-  'Thematic':       '#1E5AA0',
-  'Templates':      '#5A3FA0',
-  // keys from GIS Explorer sheet (kolom l1)
-  '01_Admin':       '#22843A',
-  '02_Basemap':     '#0D3663',
-  '03_Thematic':    '#1E5AA0',
-  '04_Templates':   '#5A3FA0',
+  'Admin':     '#22843A',
+  'Basemap':   '#0D3663',
+  'Thematic':  '#1E5AA0',
+  'Templates': '#5A3FA0',
 };
 const DEFAULT_COLOR = '#3A7DC9';
 
