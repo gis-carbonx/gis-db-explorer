@@ -4,36 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GIS Data Classification Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --navy: #0D3663; --blue: #1E5AA0; --mid: #3A7DC9;
+    --navy: #08245c; --navy2: #103a87;
+    --blue: #1E5AA0; --mid: #3A7DC9;
     --light: #D5E8FA; --pale: #F0F6FF;
     --text: #1A2B40; --muted: #5A7A9A; --border: #C8DDEF;
     --white: #FFFFFF; --bg: #F5F8FC;
   }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  header { background: var(--navy); padding: 24px 40px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 14px rgba(0,0,0,.2); }
-  .header-row { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  header h1 { font-size: 1.2rem; font-weight: 700; color: #fff; }
-  header p { font-size: .78rem; color: #8BBDE8; margin-top: 2px; }
+  /* ── HEADER (Script 2 style) ── */
+  header {
+    height: 76px;
+    background: linear-gradient(90deg, var(--navy), var(--navy2));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 26px;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 14px rgba(0,0,0,.2);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .title-wrap h1 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+  .title-wrap p { font-size: 13px; opacity: .9; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
 
   .search-wrap { position: relative; }
-  .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #8BBDE8; pointer-events: none; }
+  .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,.5); pointer-events: none; }
   #search {
-    padding: 8px 14px 8px 36px; border: 1.5px solid rgba(255,255,255,.2); border-radius: 8px;
-    background: rgba(255,255,255,.1); color: #fff; font-size: .875rem; width: 230px; outline: none;
+    padding: 8px 14px 8px 36px;
+    border: 1.5px solid rgba(255,255,255,.2);
+    border-radius: 8px;
+    background: rgba(255,255,255,.1);
+    color: #fff;
+    font-size: .875rem;
+    width: 230px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
     transition: border .2s, background .2s;
   }
   #search::placeholder { color: rgba(255,255,255,.4); }
   #search:focus { border-color: var(--mid); background: rgba(255,255,255,.16); }
 
+  /* ── FILTER TABS ── */
   .filter-row { display: flex; gap: 8px; padding: 14px 40px 2px; flex-wrap: wrap; }
   .tab {
     padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--border);
     background: var(--white); color: var(--blue); font-size: .78rem; font-weight: 600;
     cursor: pointer; transition: all .15s; user-select: none;
+    font-family: 'Inter', sans-serif;
   }
   .tab:hover { background: var(--light); }
   .tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
@@ -91,7 +116,8 @@
   mark { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; }
 
   @media (max-width: 600px) {
-    header, .filter-row, main, .stats { padding-left: 16px; padding-right: 16px; }
+    header { padding: 0 16px; }
+    .filter-row, main, .stats { padding-left: 16px; padding-right: 16px; }
     #search { width: 170px; }
     .cards { grid-template-columns: 1fr; }
   }
@@ -100,11 +126,13 @@
 <body>
 
 <header>
-  <div class="header-row">
-    <div>
-      <h1>GIS Data Classification Reference</h1>
+  <div class="header-left">
+    <div class="title-wrap">
+      <h1>GIS DATA CLASSIFICATION REFERENCE</h1>
       <p>Kode, kategori, dan contoh data geospasial</p>
     </div>
+  </div>
+  <div class="header-right">
     <div class="search-wrap">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" id="search" placeholder="Cari nama, kode, contoh…" autocomplete="off">
