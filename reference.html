@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hierarcy Reference</title>
+<title>Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -209,13 +209,21 @@ let searchTerm    = '';
 // ── CSV PARSER ──────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.trim().split('\n');
-  const headers = splitRow(lines[0]).map(h => h.trim().replace(/^"|"$/g, ''));
+  const rawHeaders = splitRow(lines[0]).map(h => h.trim().replace(/^"|"$/g, '').trim());
+
+  // Buat mapping: normalized key → original header
+  // Juga simpan versi asli agar bisa diakses dengan nama kolom persis
   return lines.slice(1).map(line => {
     const vals = splitRow(line);
     const obj  = {};
-    headers.forEach((h, i) => { obj[h] = (vals[i] || '').trim().replace(/^"|"$/g, ''); });
+    rawHeaders.forEach((h, i) => {
+      const val = (vals[i] || '').trim().replace(/^"|"$/g, '');
+      obj[h] = val;                        // exact: "Level 1"
+      obj[h.toLowerCase()] = val;          // lower: "level 1"
+      obj[h.replace(/\s+/g, '_').toLowerCase()] = val; // snake: "level_1"
+    });
     return obj;
-  });
+  }).filter(row => Object.values(row).some(v => v)); // skip empty rows
 }
 
 function splitRow(row) {
@@ -298,9 +306,28 @@ async function loadData() {
       if (text.trim().startsWith('<!') || text.includes('<html')) {
         throw new Error('Redirected to login page — spreadsheet not public');
       }
-      const rows = parseCSV(text);
-      if (!rows.length) throw new Error('CSV kosong');
+      // Debug: tampilkan 3 baris pertama di console
+      const rawLines = text.trim().split('\n');
+      console.log('[Reference] CSV Headers:', rawLines[0]);
+      console.log('[Reference] Row 1:', rawLines[1] || '(kosong)');
+      console.log('[Reference] Row 2:', rawLines[2] || '(kosong)');
+
+      // gviz/tq kadang menambahkan baris header Google di atas — skip jika bukan data
+      // Cari baris yang mengandung header kolom kita
+      let csvText = text;
+      const lowerFirst = rawLines[0].toLowerCase();
+      if (!lowerFirst.includes('level') && !lowerFirst.includes('code') && rawLines.length > 1) {
+        // skip baris pertama, coba dari baris ke-2
+        csvText = rawLines.slice(1).join('\n');
+        console.log('[Reference] Skipped first row, new header:', rawLines[1]);
+      }
+
+      const rows = parseCSV(csvText);
+      console.log('[Reference] Total rows parsed:', rows.length);
+      if (rows.length > 0) console.log('[Reference] First row keys:', Object.keys(rows[0]));
+      if (!rows.length) throw new Error('CSV kosong atau tidak terbaca');
       SECTIONS = buildSections(rows);
+      console.log('[Reference] Sections built:', Object.keys(SECTIONS));
       buildFilters();
       render();
       return; // sukses, stop
