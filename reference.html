@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reference</title>
+<title>Refe</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -207,23 +207,30 @@ let activeFilter  = 'Semua';
 let searchTerm    = '';
 
 // ── CSV PARSER ──────────────────────────────────────────────
+// Header kolom sheet index: Level 1, Level 2, Code, Deskripsi, Level 3
+const FIXED_HEADERS = ['Level 1', 'Level 2', 'Code', 'Deskripsi', 'Level 3'];
+
 function parseCSV(text) {
   const lines = text.trim().split('\n');
-  const rawHeaders = splitRow(lines[0]).map(h => h.trim().replace(/^"|"$/g, '').trim());
 
-  // Buat mapping: normalized key → original header
-  // Juga simpan versi asli agar bisa diakses dengan nama kolom persis
-  return lines.slice(1).map(line => {
-    const vals = splitRow(line);
-    const obj  = {};
-    rawHeaders.forEach((h, i) => {
-      const val = (vals[i] || '').trim().replace(/^"|"$/g, '');
-      obj[h] = val;                        // exact: "Level 1"
-      obj[h.toLowerCase()] = val;          // lower: "level 1"
-      obj[h.replace(/\s+/g, '_').toLowerCase()] = val; // snake: "level_1"
-    });
-    return obj;
-  }).filter(row => Object.values(row).some(v => v)); // skip empty rows
+  // Deteksi apakah baris pertama adalah header valid atau data gabungan (bug gviz)
+  // Header valid: kolom pertama harus berisi tepat "Level 1" saja
+  const firstCell = splitRow(lines[0])[0].replace(/^"|"$/g, '').trim();
+  const hasValidHeader = (firstCell === 'Level 1');
+
+  // Jika header valid, skip baris pertama; jika tidak, mulai dari baris pertama sebagai data
+  const dataLines = hasValidHeader ? lines.slice(1) : lines;
+
+  return dataLines
+    .map(line => {
+      const vals = splitRow(line);
+      const obj  = {};
+      FIXED_HEADERS.forEach((h, i) => {
+        obj[h] = (vals[i] || '').trim().replace(/^"|"$/g, '');
+      });
+      return obj;
+    })
+    .filter(row => row['Level 1']); // skip baris kosong
 }
 
 function splitRow(row) {
@@ -244,12 +251,11 @@ function splitRow(row) {
 function buildSections(rows) {
   const sections = {};
   rows.forEach(row => {
-    // Support both column name styles
-    const l1   = row['Level 1']   || row['level_1'] || row['l1'] || '';
-    const l2   = row['Level 2']   || row['level_2'] || row['l2'] || '';
-    const code = row['Code']      || row['code']    || '';
-    const desc = row['Deskripsi'] || row['deskripsi']|| row['desc'] || row['description'] || '';
-    const l3   = row['Level 3']   || row['level_3'] || row['l3'] || '';
+    const l1   = row['Level 1']  || '';
+    const l2   = row['Level 2']  || '';
+    const code = row['Code']     || '';
+    const desc = row['Deskripsi']|| '';
+    const l3   = row['Level 3']  || '';
 
     if (!l1) return;
 
