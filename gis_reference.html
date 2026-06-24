@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIS Data Classification Reference</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0D3663; --blue: #1E5AA0; --mid: #3A7DC9;
+    --light: #D5E8FA; --pale: #F0F6FF;
+    --text: #1A2B40; --muted: #5A7A9A; --border: #C8DDEF;
+    --white: #FFFFFF; --bg: #F5F8FC;
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header { background: var(--navy); padding: 24px 40px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 14px rgba(0,0,0,.2); }
+  .header-row { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  header h1 { font-size: 1.2rem; font-weight: 700; color: #fff; }
+  header p { font-size: .78rem; color: #8BBDE8; margin-top: 2px; }
+
+  .search-wrap { position: relative; }
+  .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #8BBDE8; pointer-events: none; }
+  #search {
+    padding: 8px 14px 8px 36px; border: 1.5px solid rgba(255,255,255,.2); border-radius: 8px;
+    background: rgba(255,255,255,.1); color: #fff; font-size: .875rem; width: 230px; outline: none;
+    transition: border .2s, background .2s;
+  }
+  #search::placeholder { color: rgba(255,255,255,.4); }
+  #search:focus { border-color: var(--mid); background: rgba(255,255,255,.16); }
+
+  .filter-row { display: flex; gap: 8px; padding: 14px 40px 2px; flex-wrap: wrap; }
+  .tab {
+    padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: var(--white); color: var(--blue); font-size: .78rem; font-weight: 600;
+    cursor: pointer; transition: all .15s; user-select: none;
+  }
+  .tab:hover { background: var(--light); }
+  .tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  .stats { display: flex; gap: 16px; padding: 8px 40px; border-bottom: 1px solid var(--border); background: var(--white); font-size: .76rem; color: var(--muted); flex-wrap: wrap; }
+  .stats strong { color: var(--navy); }
+
+  main { padding: 20px 40px 60px; }
+
+  .section-block { margin-bottom: 32px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+  .section-title { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .section-count { font-size: .68rem; color: var(--muted); background: var(--light); padding: 2px 8px; border-radius: 10px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; }
+
+  .card {
+    background: var(--white); border: 1.5px solid var(--border); border-radius: 11px;
+    padding: 14px 16px; cursor: pointer;
+    transition: box-shadow .15s, border-color .15s, transform .1s;
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: var(--bar, var(--mid)); border-radius: 11px 0 0 11px;
+    transition: width .15s;
+  }
+  .card:hover { box-shadow: 0 4px 18px rgba(30,90,160,.12); border-color: var(--mid); transform: translateY(-1px); }
+  .card:hover::before, .card.expanded::before { width: 5px; }
+  .card.expanded { border-color: var(--blue); box-shadow: 0 5px 22px rgba(13,54,99,.14); }
+
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .card-name { font-size: .88rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .card-right { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+  .card-code {
+    background: var(--navy); color: #fff; font-size: .68rem; font-weight: 700;
+    letter-spacing: .06em; padding: 3px 9px; border-radius: 6px;
+    font-family: 'Courier New', monospace;
+  }
+  .chevron { width: 15px; height: 15px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+  .card.expanded .chevron { transform: rotate(180deg); }
+
+  .card-preview { font-size: .76rem; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+  .card-detail { display: none; margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--border); }
+  .card.expanded .card-detail { display: block; }
+  .detail-label { font-size: .63rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  .detail-examples { display: flex; flex-wrap: wrap; gap: 5px; }
+  .example-tag { background: var(--pale); border: 1px solid var(--light); color: var(--blue); font-size: .74rem; padding: 3px 10px; border-radius: 6px; line-height: 1.4; }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); display: none; }
+  .empty.show { display: block; }
+
+  mark { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; }
+
+  @media (max-width: 600px) {
+    header, .filter-row, main, .stats { padding-left: 16px; padding-right: 16px; }
+    #search { width: 170px; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <div>
+      <h1>GIS Data Classification Reference</h1>
+      <p>Kode, kategori, dan contoh data geospasial</p>
+    </div>
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Cari nama, kode, contoh…" autocomplete="off">
+    </div>
+  </div>
+</header>
+
+<div class="stats" id="stats"></div>
+<div class="filter-row" id="filters"></div>
+<main id="main"></main>
+
+<script>
+const SECTIONS = {
+  "Admin": {
+    color: "#22843A",
+    items: [
+      { name: "SOP", code: "SOP", examples: ["SOP penamaan file", "SOP pengumpulan data", "SOP validasi data geospasial"] }
+    ]
+  },
+  "Basemap": {
+    color: "#0D3663",
+    items: [
+      { name: "Administrasi", code: "ADM", examples: ["Batas provinsi", "Batas kabupaten/kota", "Batas kecamatan", "Batas desa/kelurahan"] },
+      { name: "Jalan", code: "JLN", examples: ["Jaringan jalan nasional", "Jalan lokal"] },
+      { name: "Hidrologi", code: "HYD", examples: ["Sungai", "Danau", "Embung", "DAS", "Titik mata air"] },
+      { name: "Elevasi", code: "DEM", examples: ["Digital Elevation Model (DEM)", "Kontur", "Slope", "Hillshade", "SRTM", "LiDAR"] },
+      { name: "Citra", code: "IMG", examples: ["Sentinel", "Landsat", "SPOT", "Foto udara", "Ortofoto drone"] },
+      { name: "Data CMI", code: "CMI", examples: ["Batas area konses", "Project area-project zone", "Area eligible", "Grid monitoring"] },
+      { name: "Drone Mapping", code: "UAV", examples: ["Flight plan", "Titik GCP", "Ortomosaik"] }
+    ]
+  },
+  "Thematic": {
+    color: "#1E5AA0",
+    items: [
+      { name: "Forest Patrol", code: "FPT", examples: ["Titik temuan patrol", "Trek patroli"] },
+      { name: "Nursery", code: "NRS", examples: ["Area nursery", "Titik nursery"] },
+      { name: "Planting", code: "PLN", examples: ["Area planting", "Trek pengkayaan"] },
+      { name: "Alternative Livelihood", code: "ALV", examples: ["Titik POI kegiatan"] },
+      { name: "Access to Health", code: "HLT", examples: ["Titik POI kegiatan"] },
+      { name: "Access to Education", code: "EDU", examples: ["Titik POI kegiatan"] },
+      { name: "Access to Water", code: "WTR", examples: ["Jaringan pipa air", "Sumber air bersih", "Titik hidran"] },
+      { name: "Biodiversity Conservation", code: "BIO", examples: ["Titik pemasangan kamera trap", "Titik pemasangan bioacoustics", "Post monitoring satwa"] },
+      { name: "MRV", code: "MRV", examples: ["Plot monitoring", "Data LDS"] },
+      { name: "LULC", code: "LULC", examples: ["Peta tutupan lahan tahunan"] },
+      { name: "Planning", code: "PLNG", examples: ["Peta rencana tanam RKU/RKT", "Titik PAL batas"] },
+      { name: "Preservation of Sites and Culture", code: "PSC", examples: ["Titik POI kegiatan", "Sekolah adat", "Situs budaya"] }
+    ]
+  },
+  "Templates": {
+    color: "#5A3FA0",
+    items: [
+      { name: "Reporting & Submission", code: "RPT", examples: ["Kompilasi laporan kegiatan"] },
+      { name: "MPK", code: "MPK", examples: [] },
+      { name: "Geopackage", code: "GPKG", examples: ["File .gpkg multi-layer", "Geodatabase ringan untuk distribusi data lapangan"] },
+      { name: "Layout", code: "LYT", examples: ["Template peta A3/A4", "Layout laporan", "Desain peta untuk publikasi"] },
+      { name: "Symbology", code: "SYM", examples: ["File .qml/.lyr", "Style library", "Simbol kustom", "Skema warna layer peta"] }
+    ]
+  }
+};
+
+let activeFilter = "Semua";
+let searchTerm = "";
+
+function hl(text, q) {
+  if (!q) return text;
+  return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark>$1</mark>');
+}
+
+function matches(item, q) {
+  if (!q) return true;
+  const lq = q.toLowerCase();
+  return item.name.toLowerCase().includes(lq) || item.code.toLowerCase().includes(lq)
+    || item.examples.some(e => e.toLowerCase().includes(lq));
+}
+
+function render() {
+  const main = document.getElementById('main');
+  const statsEl = document.getElementById('stats');
+  main.innerHTML = '';
+  let totalVisible = 0;
+  const total = Object.values(SECTIONS).flatMap(s => s.items).length;
+  let anyVisible = false;
+  const sections = activeFilter === "Semua" ? Object.keys(SECTIONS) : [activeFilter];
+
+  sections.forEach(sName => {
+    const sec = SECTIONS[sName];
+    const items = sec.items.filter(i => matches(i, searchTerm));
+    if (!items.length) return;
+    anyVisible = true;
+    totalVisible += items.length;
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header">
+        <span class="section-title" style="color:${sec.color}">${sName}</span>
+        <span class="section-line"></span>
+        <span class="section-count">${items.length} kategori</span>
+      </div>
+      <div class="cards" id="grid-${sName}"></div>
+    `;
+    main.appendChild(block);
+
+    const grid = block.querySelector(`#grid-${sName}`);
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.setProperty('--bar', sec.color);
+      const preview = item.examples.length
+        ? item.examples.slice(0,2).map(e => hl(e, searchTerm)).join(' · ')
+        : '<em style="opacity:.45">—</em>';
+      const tags = item.examples.length
+        ? item.examples.map(e => `<span class="example-tag">${hl(e, searchTerm)}</span>`).join('')
+        : '<span style="font-size:.74rem;opacity:.5">Belum ada contoh terdaftar</span>';
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-name">${hl(item.name, searchTerm)}</div>
+          <div class="card-right">
+            <div class="card-code">${hl(item.code, searchTerm)}</div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="card-preview">${preview}</div>
+        <div class="card-detail">
+          <div class="detail-label">Contoh data &amp; dokumen</div>
+          <div class="detail-examples">${tags}</div>
+        </div>
+      `;
+      card.addEventListener('click', () => {
+        const was = card.classList.contains('expanded');
+        document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
+        if (!was) card.classList.add('expanded');
+      });
+      grid.appendChild(card);
+    });
+  });
+
+  if (!anyVisible) {
+    main.innerHTML = `<div class="empty show"><div style="font-size:2rem;opacity:.3;margin-bottom:10px">🔍</div>Tidak ada hasil untuk "<strong>${searchTerm}</strong>"</div>`;
+  }
+
+  statsEl.innerHTML = `Menampilkan <strong>${totalVisible}</strong> dari <strong>${total}</strong> kategori`;
+  if (searchTerm) statsEl.innerHTML += ` &nbsp;·&nbsp; Pencarian: "<strong>${searchTerm}</strong>"`;
+}
+
+function buildFilters() {
+  const row = document.getElementById('filters');
+  ["Semua", ...Object.keys(SECTIONS)].forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (t === "Semua" ? ' active' : '');
+    btn.textContent = t;
+    if (t !== "Semua") {
+      btn.style.setProperty('--tab-accent', SECTIONS[t].color);
+    }
+    btn.addEventListener('click', () => {
+      activeFilter = t;
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+    row.appendChild(btn);
+  });
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.trim();
+  if (searchTerm) {
+    activeFilter = "Semua";
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab').classList.add('active');
+  }
+  render();
+});
+
+buildFilters();
+render();
+</script>
+</body>
+</html>
