@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reference</title>
+<title>GIS Data Classification Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -188,8 +188,8 @@ const SHEET_NAME = 'index'; // nama tab sheet
 // gviz/tq lebih reliable — tidak redirect ke login Google
 // Dicoba dua URL: by name (utama) dan by gid (fallback)
 const SHEET_URLS = [
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`,
 ];
 
 // Warna per Level 1 — sesuai nilai di kolom A sheet index
@@ -304,6 +304,10 @@ async function loadData() {
       const rows = parseCSV(text);
       if (!rows.length) throw new Error('CSV kosong');
       SECTIONS = buildSections(rows);
+      if (!Object.keys(SECTIONS).length) {
+        // Tampilkan sample row untuk debug
+        throw new Error(`Sections kosong. Sample row: ${JSON.stringify(rows[0])}`);
+      }
       buildFilters();
       render();
       return; // sukses, stop
