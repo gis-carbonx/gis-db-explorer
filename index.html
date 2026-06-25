@@ -286,7 +286,7 @@ tbody td{ padding:14px 12px; border-bottom:1px solid var(--gray-200); vertical-a
       <select id="categoryFilter" class="filter-select"><option value="">All Category</option></select>
       <select id="geoFilter" class="filter-select"><option value="">All Data Type</option></select>
       <a href="https://gis-carbonx.github.io/gis-db-explorer/reference" target="_blank" class="ref-btn">↗ Reference</a>
-      <button class="manage-cat-btn" id="manageCatBtn" onclick="openCatManager()">⚙ Manage Categories</button>
+      <button class="manage-cat-btn" id="manageCatBtn" onclick="openCatManager()">Manage Categories</button>
       <button class="add-btn" onclick="openAddModal()">+ Add New Dataset</button>
     </div>
   </div>
@@ -454,14 +454,14 @@ tbody td{ padding:14px 12px; border-bottom:1px solid var(--gray-200); vertical-a
             <div class="edit-field"><label>Remarks</label><textarea id="editRemarks" rows="3"></textarea></div>
           </div>
         </div>
-        <div class="warning-box">⚠ Pastikan semua informasi sudah benar sebelum menyimpan. Perubahan akan disimpan ke Google Sheet.</div>
+        <div class="warning-box">Pastikan semua informasi sudah benar sebelum menyimpan. Perubahan akan disimpan ke Google Sheet.</div>
       </div>
     </div>
     <div class="edit-modal-footer">
       <div class="ef-brand">v1.2026</div>
       <div class="ef-btns">
         <button class="ef-btn ef-ghost" onclick="resetEditForm()">↺ Reset</button>
-        <button class="ef-btn ef-primary" onclick="saveEditMetadata()">☁ Save Metadata</button>
+        <button class="ef-btn ef-primary" onclick="saveEditMetadata()">Save Metadata</button>
       </div>
     </div>
   </div>
@@ -471,7 +471,7 @@ tbody td{ padding:14px 12px; border-bottom:1px solid var(--gray-200); vertical-a
 <div class="cat-manager-modal" id="catManagerModal">
   <div class="cat-manager-card">
     <div class="cat-manager-header">
-      <div class="cat-manager-header-title">⚙ Manage Categories</div>
+      <div class="cat-manager-header-title">Manage Categories</div>
     </div>
 
     <div class="cat-manager-body">
@@ -497,7 +497,7 @@ tbody td{ padding:14px 12px; border-bottom:1px solid var(--gray-200); vertical-a
               </div>
             </div>
             <div class="cat-add-footer">
-              <button class="cat-save-btn" id="saveL1Btn" onclick="saveCatLevel1()">☁ Save to Google Sheet</button>
+              <button class="cat-save-btn" id="saveL1Btn" onclick="saveCatLevel1()">Save to Google Sheet</button>
             </div>
           </div>
         </div>
@@ -532,7 +532,7 @@ tbody td{ padding:14px 12px; border-bottom:1px solid var(--gray-200); vertical-a
               </div>
             </div>
             <div class="cat-add-footer">
-              <button class="cat-save-btn" id="saveL2Btn" onclick="saveCatLevel2()">☁ Save to Google Sheet</button>
+              <button class="cat-save-btn" id="saveL2Btn" onclick="saveCatLevel2()">Save to Google Sheet</button>
             </div>
           </div>
         </div>
@@ -562,7 +562,7 @@ tbody td{ padding:14px 12px; border-bottom:1px solid var(--gray-200); vertical-a
               </div>
             </div>
             <div class="cat-add-footer">
-              <button class="cat-save-btn" id="saveL3Btn" onclick="saveCatLevel3()">☁ Save to Google Sheet</button>
+              <button class="cat-save-btn" id="saveL3Btn" onclick="saveCatLevel3()">Save to Google Sheet</button>
             </div>
           </div>
         </div>
@@ -1161,7 +1161,7 @@ async function saveCatLevel1(){
 
   const btn=$('saveL1Btn'); btn.disabled=true; btn.textContent='Menyimpan…';
   const ok = await sendCatToSheet({ action:'add_category', level:1, l1_label:label, l2_label:'', l2_code:'', l2_desc:'', l3_label:'' });
-  btn.disabled=false; btn.textContent='☁ Save to Google Sheet';
+  btn.disabled=false; btn.textContent='Save to Google Sheet';
   if(ok){
     CAT[code]={ label, code, sub:{} };
     $('newL1Label').value='';
@@ -1184,7 +1184,7 @@ async function saveCatLevel2(){
 
   const btn=$('saveL2Btn'); btn.disabled=true; btn.textContent='Menyimpan…';
   const ok = await sendCatToSheet({ action:'add_category', level:2, l1_label:CAT[k1]?.label||'', l2_label:label, l2_code:code, l2_desc:desc, l3_label:'' });
-  btn.disabled=false; btn.textContent='☁ Save to Google Sheet';
+  btn.disabled=false; btn.textContent='Save to Google Sheet';
   if(ok){
     if(!CAT[k1]) CAT[k1]={ label:'', code:k1, sub:{} };
     CAT[k1].sub[code]={ label, code, l3:[] };
@@ -1206,7 +1206,7 @@ async function saveCatLevel3(){
 
   const btn=$('saveL3Btn'); btn.disabled=true; btn.textContent='Menyimpan…';
   const ok = await sendCatToSheet({ action:'add_category', level:3, l1_label:CAT[k1]?.label||'', l2_label:CAT[k1]?.sub[k2]?.label||'', l2_code:k2, l2_desc:'', l3_label:label });
-  btn.disabled=false; btn.textContent='☁ Save to Google Sheet';
+  btn.disabled=false; btn.textContent='Save to Google Sheet';
   if(ok){
     if(!CAT[k1]) CAT[k1]={ label:'', code:k1, sub:{} };
     if(!CAT[k1].sub[k2]) CAT[k1].sub[k2]={ label:'', code:k2, l3:[] };
