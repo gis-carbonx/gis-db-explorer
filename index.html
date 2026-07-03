@@ -16,6 +16,7 @@
   --blue: #2563eb;
   --red: #dc2626;
   --green: #15803d;
+  --amber: #b45309;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,6 +50,8 @@ header {
 .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 .btn-danger { background: #f3f4f6; color: #374151; }
 .btn-danger:hover { background: #fee2e2; color: var(--red); }
+.btn-amber { background: #fffbeb; color: var(--amber); border: 1px solid #fde68a; }
+.btn-amber:hover { background: #fef3c7; }
 
 /* user chip */
 .user-chip { display: flex; align-items: center; gap: 8px; }
@@ -72,15 +75,24 @@ header {
 }
 .toolbar input { width: 400px; }
 .toolbar input:focus, .toolbar select:focus { border-color: var(--blue); }
+.toolbar-check {
+  display: flex; align-items: center; gap: 7px;
+  font: 500 12px 'Inter'; color: var(--muted);
+  background: #fff; border: 1px solid #d1d5db; border-radius: 9px;
+  height: 44px; padding: 0 13px; cursor: pointer; user-select: none;
+}
+.toolbar-check input { width: 15px; height: 15px; cursor: pointer; }
 
 /* table */
 .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-.card-header { padding: 16px 20px; font: 600 13px 'Inter'; border-bottom: 1px solid var(--border); }
+.card-header { padding: 16px 20px; font: 600 13px 'Inter'; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 table { width: 100%; border-collapse: collapse; }
 thead { background: linear-gradient(90deg, var(--navy), var(--navy2)); color: #fff; }
 thead th { padding: 14px 15px; font-size: 12px; text-align: left; font-weight: 600; }
 tbody td { padding: 16px 15px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 13px; }
-.ds-title { font-size: 16px; font-weight: 700; color: #1d4ed8; margin-bottom: 5px; }
+tbody tr.superseded-row { background: #fafafa; }
+tbody tr.superseded-row .ds-title { color: #6b7280; }
+.ds-title { font-size: 16px; font-weight: 700; color: #1d4ed8; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ds-desc { color: var(--muted); line-height: 1.55; margin-bottom: 6px; font-size: 12px; }
 .ds-kw { font-size: 11px; color: #9ca3af; }
 .tag {
@@ -88,6 +100,9 @@ tbody td { padding: 16px 15px; border-bottom: 1px solid var(--border); vertical-
   font-size: 11px; font-weight: 600; margin: 2px;
   background: #f3f4f6; color: #374151;
 }
+.tag-version { background: #eff6ff; color: #1d4ed8; }
+.tag-current { background: #ecfdf5; color: #047857; }
+.tag-superseded { background: #f3f4f6; color: #9ca3af; }
 .actions { display: flex; gap: 6px; flex-wrap: wrap; }
 footer { margin-top: 16px; display: flex; justify-content: space-between; font-size: 11px; color: #9ca3af; }
 
@@ -120,6 +135,7 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
   background: linear-gradient(90deg, var(--navy), var(--navy2));
   color: #fff; display: flex; align-items: center; gap: 10px;
 }
+.edit-card-hdr.revise-hdr { background: linear-gradient(90deg, #92400e, var(--amber)); }
 .edit-card-hdr h2 { font-size: 15px; flex: 1; }
 .edit-topbar {
   padding: 10px 22px; background: #f8fafc;
@@ -133,6 +149,13 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
   border-radius: 6px; font: 12px 'Inter'; background: #fff;
 }
 .topbar-field .id-field { width: 300px; font-weight: 600; }
+
+.revise-banner {
+  margin: 0 22px; margin-top: 14px;
+  background: #fffbeb; border: 1px solid #fde68a;
+  border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #92400e;
+  display: flex; align-items: center; gap: 8px;
+}
 
 .edit-body { padding: 22px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -271,6 +294,36 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
   background: #fafafa; display: flex; justify-content: flex-end; gap: 9px;
 }
 
+/* version history modal */
+.history-card {
+  background: #fff; border-radius: 18px;
+  width: 700px; max-width: 96%; margin: auto;
+  box-shadow: 0 22px 72px rgba(0,0,0,.22); overflow: hidden;
+}
+.history-hdr {
+  padding: 16px 26px; background: linear-gradient(90deg,var(--navy),var(--navy2));
+  color: #fff;
+}
+.history-hdr h3 { font-size: 16px; margin-bottom: 3px; }
+.history-hdr p { font-size: 12px; opacity: .8; }
+.history-body { padding: 10px 22px 22px; max-height: 60vh; overflow-y: auto; }
+.history-item {
+  display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border);
+}
+.history-item:last-child { border-bottom: none; }
+.history-dot-col { display: flex; flex-direction: column; align-items: center; }
+.history-dot { width: 12px; height: 12px; border-radius: 50%; background: #d1d5db; margin-top: 4px; }
+.history-dot.current { background: var(--green); }
+.history-line { flex: 1; width: 2px; background: var(--border); margin-top: 4px; }
+.history-content { flex: 1; }
+.history-content .hv-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; display: flex; align-items: center; gap: 8px; }
+.history-content .hv-meta { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.history-content .hv-remark { font-size: 12px; color: var(--muted); }
+.history-footer {
+  padding: 13px 22px; border-top: 1px solid var(--border);
+  background: #fafafa; display: flex; justify-content: flex-end;
+}
+
 /* toast */
 .toast {
   position: fixed; left: 50%; bottom: 28px;
@@ -314,13 +367,20 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
     <input type="text" id="searchInput" placeholder="Search datasets…">
     <select id="catFilter"><option value="">All Categories</option></select>
     <select id="geoFilter"><option value="">All Types</option></select>
+    <label class="toolbar-check">
+      <input type="checkbox" id="showAllVersions" onchange="applyFilters()">
+      Show all versions
+    </label>
     <a href="https://gis-carbonx.github.io/gis-db-explorer/reference" target="_blank" class="btn btn-outline">↗ Reference</a>
     <button class="btn btn-outline" id="manageCatBtn" style="display:none" onclick="openCatManager()">Manage Categories</button>
     <button class="btn btn-navy" onclick="openAddModal()">+ Add Dataset</button>
   </div>
 
   <div class="card">
-    <div class="card-header">Total <span id="totalCount">0</span> datasets</div>
+    <div class="card-header">
+      <span>Total <span id="totalCount">0</span> datasets</span>
+      <span style="font-weight:400;color:var(--muted);font-size:11px" id="hiddenCountNote"></span>
+    </div>
     <table>
       <thead>
         <tr>
@@ -364,18 +424,25 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
   </div>
 </div>
 
-<!-- edit / add dataset -->
+<!-- edit / add / revise dataset -->
 <div class="overlay scroll" id="editOverlay">
   <div class="edit-card">
-    <div class="edit-card-hdr">
+    <div class="edit-card-hdr" id="editCardHdr">
       <h2 id="editTitle">Add Dataset</h2>
       <button class="btn btn-ghost btn-sm" onclick="close('editOverlay')">Cancel</button>
       <button class="btn btn-white btn-sm" onclick="saveDataset()">☁ Save</button>
+    </div>
+    <div class="revise-banner" id="reviseBanner" style="display:none">
+      ⚠ Ini akan membuat <strong>versi baru</strong> dari dataset ini. Versi sebelumnya akan diarsipkan (tidak dihapus) dan tetap bisa dilihat lewat riwayat versi.
     </div>
     <div class="edit-topbar">
       <div class="topbar-field">
         <label>Metadata ID</label>
         <input type="text" id="editMetaId" class="id-field" readonly>
+      </div>
+      <div class="topbar-field">
+        <label>Version</label>
+        <input type="text" id="editVersionBadge" readonly style="width:60px;text-align:center;font-weight:700">
       </div>
       <div class="topbar-field" style="margin-left:auto">
         <label>Date Created</label>
@@ -440,6 +507,7 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
                 <input type="url" id="editLink">
                 <a href="#" target="_blank" id="editLinkOpen">↗</a>
               </div>
+              <div class="hint" id="editLinkHint"></div>
             </div>
             <div class="field"><label>Access Constraints</label><select id="editAccess"></select></div>
             <div class="field"><label>License</label><select id="editLicense"></select></div>
@@ -457,7 +525,10 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
               </div>
             </div>
             <div class="field"><label>Division</label><input type="text" id="editDivision" value="CarbonX GIS Team"></div>
-            <div class="field"><label>Remarks</label><textarea id="editRemarks" rows="3"></textarea></div>
+            <div class="field">
+              <label id="editRemarksLabel">Remarks</label>
+              <textarea id="editRemarks" rows="3"></textarea>
+            </div>
           </div>
         </div>
         <div class="form-notice">Double-check all info before saving — changes go straight to Google Sheet.</div>
@@ -467,8 +538,22 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
       <span style="font-size:11px;color:#9ca3af">v1.2026</span>
       <div class="edit-footer-btns">
         <button class="btn btn-outline btn-sm" onclick="resetEditForm()">↺ Reset</button>
-        <button class="btn btn-navy btn-sm" onclick="saveDataset()">Save Metadata</button>
+        <button class="btn btn-navy btn-sm" id="editSaveBtn" onclick="saveDataset()">Save Metadata</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- version history -->
+<div class="overlay scroll" id="historyOverlay">
+  <div class="history-card">
+    <div class="history-hdr">
+      <h3 id="historyTitle">Version history</h3>
+      <p id="historySub">dataset_group_id</p>
+    </div>
+    <div class="history-body" id="historyBody"></div>
+    <div class="history-footer">
+      <button class="btn btn-navy btn-sm" onclick="close('historyOverlay')">Close</button>
     </div>
   </div>
 </div>
@@ -550,6 +635,13 @@ const SHEET_CSV  = 'https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk
 const INDEX_CSV  = SHEET_CSV + '&gid=579807719';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ9Y3-YBQQRduTeRSPp-YkamwugOq0lgpJpXf9OALahm8YaIzo9HaBx_ODZ0nDIjdwtw/exec';
 
+// NOTE: the backend Apps Script (SCRIPT_URL) must understand two extra
+// actions used by the versioning flow below:
+//   { action: 'insert', ... , dataset_group_id, version, supersedes_id, is_current }
+//   { action: 'set_current', id, is_current: 'false' }   <- used to archive the old version
+// If your current Apps Script only supports insert/update/delete/add_category,
+// add a small branch there that patches just the is_current column for a given id.
+
 const USERS = {
   RS: { name:'Ridho Saifulhaq',  email:'gis@carbonxco.com',   pw:'ridho',  div:'CarbonX GIS Team' },
   GA: { name:'Gemasakti Adzan',  email:'gema@carbonxco.com',  pw:'gema',   div:'CarbonX GIS Team' },
@@ -605,8 +697,10 @@ let DATA = [];
 let curUser = localStorage.getItem('gis_user') || null;
 let loggedIn = localStorage.getItem('gis_login') === 'true';
 let selLoginUser = 'RS';
+
+// editMode: 'add' | 'edit' | 'revise'
 let editMode = 'add';
-let editIdx  = -1;
+let editIdx  = -1;          // index in DATA being edited/revised (source row)
 let editCtr  = parseInt(localStorage.getItem('editCtr')) || 1;
 
 // ── UTILS ─────────────────────────────────────────────────────
@@ -614,6 +708,7 @@ const $    = id => document.getElementById(id);
 const fv   = id => ($( id)?.value || '').trim();
 const today = () => new Date().toISOString().split('T')[0];
 const slugify = s => s.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+const isCurrent = d => (d.is_current === undefined || d.is_current === '' || d.is_current === 'true' || d.is_current === true);
 
 function deriveCode(label) {
   const m = label.match(/^([A-Z0-9]+)\.\s/) || label.match(/^(\d+)/);
@@ -639,7 +734,7 @@ function open(id)  { $(id).classList.add('active'); }
 function close(id) { $(id).classList.remove('active'); }
 
 // click-outside to close
-['metaOverlay','loginOverlay','editOverlay','catOverlay'].forEach(id => {
+['metaOverlay','loginOverlay','editOverlay','catOverlay','historyOverlay'].forEach(id => {
   $(id)?.addEventListener('click', e => { if(e.target === $(id)) close(id); });
 });
 
@@ -692,6 +787,15 @@ async function loadData() {
   try {
     const csv = await fetch(SHEET_CSV).then(r => r.text());
     DATA = csvToObjects(csv);
+
+    // Backfill versioning fields for legacy rows that predate this feature,
+    // so every row is treated as "version 1, current" of its own group.
+    DATA.forEach(d => {
+      if (!d.dataset_group_id) d.dataset_group_id = d.id || (d.title || d.file_name || '') + '_' + (d.date_created || '');
+      if (!d.version) d.version = '1';
+      if (d.is_current === undefined || d.is_current === '') d.is_current = 'true';
+    });
+
     fillFilters();
     render(DATA);
   } catch(e) { console.error('Failed to load data:', e); }
@@ -704,19 +808,35 @@ function fillFilters() {
   geos.forEach(v => $('geoFilter').innerHTML += `<option value="${v}">${v}</option>`);
 }
 
+function groupSize(groupId) {
+  return DATA.filter(d => d.dataset_group_id === groupId).length;
+}
+
 function render(rows) {
+  const totalGroups = new Set(rows.map(d => d.dataset_group_id)).size;
   $('totalCount').innerText = rows.length;
-  $('tableBody').innerHTML = rows.map((d, i) => {
+  const hiddenNote = $('hiddenCountNote');
+  const hiddenCount = DATA.length - rows.length;
+  hiddenNote.innerText = (!$('showAllVersions').checked && hiddenCount > 0)
+    ? `${hiddenCount} versi lama disembunyikan — centang "Show all versions" untuk melihat`
+    : '';
+
+  $('tableBody').innerHTML = rows.map((d) => {
     const idx = DATA.indexOf(d);
     const title   = d.file_name || d.title || '';
     const desc    = d.desc || d.abstract || '';
     const type    = d.geo_type || d.geomType || '';
     const updated = d.date_of_update || d.dateUpdated || '';
     const author  = d.author || d.creator || '';
-    return `<tr>
-      <td>${i+1}</td>
+    const cur     = isCurrent(d);
+    const gSize   = groupSize(d.dataset_group_id);
+    const versionTag = `<span class="tag tag-version">v${d.version || 1}</span>` +
+      (cur ? `<span class="tag tag-current">Current</span>` : `<span class="tag tag-superseded">Superseded</span>`);
+
+    return `<tr class="${cur ? '' : 'superseded-row'}">
+      <td>${DATA.indexOf(d)+1}</td>
       <td>
-        <div class="ds-title">${title}</div>
+        <div class="ds-title">${title} ${versionTag}</div>
         <div class="ds-desc">${desc}</div>
         <div class="ds-kw">${d.keywords||''}</div>
       </td>
@@ -731,8 +851,10 @@ function render(rows) {
       <td>
         <div class="actions">
           <button class="btn btn-outline btn-sm" onclick="showMeta(${idx})">View</button>
+          ${gSize > 1 ? `<button class="btn btn-outline btn-sm" onclick="showHistory('${d.dataset_group_id}')">History (${gSize})</button>` : ''}
           ${loggedIn ? `
             <button class="btn btn-outline btn-sm" onclick="openEditModal(${idx})">Edit</button>
+            ${cur ? `<button class="btn btn-amber btn-sm" onclick="openReviseModal(${idx})">↻ Revise</button>` : ''}
             <button class="btn btn-danger btn-sm" onclick="deleteRow(${idx})">Delete</button>
           ` : ''}
         </div>
@@ -745,11 +867,13 @@ function applyFilters() {
   const q = $('searchInput').value.toLowerCase();
   const c = $('catFilter').value;
   const g = $('geoFilter').value;
+  const showAll = $('showAllVersions').checked;
   render(DATA.filter(d => {
     const txt = Object.values(d).join(' ').toLowerCase();
     return txt.includes(q)
       && (!c || (d.l1||d.cat1_label||'') === c)
-      && (!g || (d.geo_type||d.geomType||'') === g);
+      && (!g || (d.geo_type||d.geomType||'') === g)
+      && (showAll || isCurrent(d));
   }));
 }
 
@@ -759,6 +883,7 @@ function showMeta(i) {
   $('metaTitle').innerText = d.file_name || d.title || '';
   const link = d.dropboxLink || d.file_link || d.fileLink || '#';
   $('metaContent').innerHTML = [
+    ['Version',        `v${d.version||1} ${isCurrent(d) ? '(current)' : '(superseded)'}`],
     ['Description',   d.desc||d.abstract||''],
     ['Category',      `${d.l1||d.cat1_label||''} / ${d.l2||d.cat2_label||''}`],
     ['Geometry Type', d.geo_type||d.geomType||''],
@@ -770,6 +895,41 @@ function showMeta(i) {
     ['Dataset Link',  `<a href="${link}" target="_blank">Open Folder / File</a>`],
   ].map(([k,v]) => `<div class="meta-grid"><div class="meta-label">${k}</div><div>${v}</div></div>`).join('');
   open('metaOverlay');
+}
+
+// ── VERSION HISTORY ───────────────────────────────────────────
+function showHistory(groupId) {
+  const rows = DATA
+    .filter(d => d.dataset_group_id === groupId)
+    .sort((a,b) => (parseInt(b.version)||1) - (parseInt(a.version)||1));
+  if (!rows.length) return;
+
+  $('historyTitle').innerText = `Version history — ${rows[0].file_name || rows[0].title || ''}`;
+  $('historySub').innerText   = `dataset_group_id: ${groupId}`;
+
+  $('historyBody').innerHTML = rows.map((d, i) => {
+    const idx = DATA.indexOf(d);
+    const cur = isCurrent(d);
+    return `<div class="history-item">
+      <div class="history-dot-col">
+        <div class="history-dot ${cur?'current':''}"></div>
+        ${i < rows.length-1 ? '<div class="history-line"></div>' : ''}
+      </div>
+      <div class="history-content">
+        <div class="hv-title">
+          v${d.version||1}
+          ${cur ? '<span class="tag tag-current">Current</span>' : '<span class="tag tag-superseded">Superseded</span>'}
+        </div>
+        <div class="hv-meta">Updated ${d.date_of_update||d.dateUpdated||'—'} by ${d.author||d.creator||'—'}</div>
+        <div class="hv-remark">${d.remarks || '—'}</div>
+        <div style="margin-top:8px">
+          <button class="btn btn-outline btn-sm" onclick="showMeta(${idx})">View metadata</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  open('historyOverlay');
 }
 
 // ── AUTH ──────────────────────────────────────────────────────
@@ -835,7 +995,8 @@ function buildMetaId() {
   const dd=p(d.getDate()), mm=p(d.getMonth()+1), yy=String(d.getFullYear()).slice(-2);
   const k1=fv('editCat1'), k2=fv('editCat2'), k3=fv('editCat3');
   const seg3 = k3 ? slugify(k3) : (k2||'000');
-  $('editMetaId').value = `${dd}${mm}${yy}-${k1||'00'}/${k2||'00'}/${seg3}-${curUser||'XX'}-${String(editCtr).padStart(4,'0')}`;
+  const version = fv('editVersionBadge') || '1';
+  $('editMetaId').value = `${dd}${mm}${yy}-${k1||'00'}/${k2||'00'}/${seg3}-${curUser||'XX'}-${String(editCtr).padStart(4,'0')}-v${version}`;
 }
 
 // single function handles L1→L2 and L2→L3 cascade
@@ -882,13 +1043,24 @@ function fillAuthor() {
   setVal('editDivision', u.div);
 }
 
-// ── ADD / EDIT MODAL ──────────────────────────────────────────
+// ── ADD / EDIT / REVISE MODAL ─────────────────────────────────
+function resetModalChrome() {
+  $('editCardHdr').classList.remove('revise-hdr');
+  $('reviseBanner').style.display = 'none';
+  $('editRemarksLabel').innerText = 'Remarks';
+  $('editLinkHint').innerText = '';
+  $('editMetaId').readOnly = true;
+}
+
 function openAddModal() {
   if (!loggedIn) { openLoginModal(); return; }
   editMode = 'add'; editIdx = -1;
+  resetModalChrome();
   $('editTitle').innerText = 'Add Dataset';
+  $('editSaveBtn').innerText = 'Save Metadata';
   initFormOpts();
   clearEditForm();
+  setVal('editVersionBadge', '1');
   setVal('editDateCreated', today()); setVal('editDateUpdated', today()); setVal('editDateTop', today());
   fillAuthor(); buildMetaId();
   open('editOverlay'); $('editOverlay').scrollTop = 0;
@@ -897,9 +1069,51 @@ function openAddModal() {
 function openEditModal(i) {
   if (!loggedIn) { openLoginModal(); return; }
   editMode = 'edit'; editIdx = i;
+  resetModalChrome();
   $('editTitle').innerText = 'Edit Metadata';
+  $('editSaveBtn').innerText = 'Save Metadata';
   initFormOpts();
+  loadRowIntoForm(DATA[i]);
+  setVal('editVersionBadge', DATA[i].version || '1');
+  setVal('editDateTop', today());
+  $('editMetaId').value = DATA[i].id || (buildMetaId(), $('editMetaId').value);
+  fillAuthor();
+  open('editOverlay'); $('editOverlay').scrollTop = 0;
+}
+
+// Opens the same form, but saving will create a NEW row (new version)
+// instead of overwriting the current one. The old row gets archived
+// (is_current -> false) once the new version saves successfully.
+function openReviseModal(i) {
+  if (!loggedIn) { openLoginModal(); return; }
+  editMode = 'revise'; editIdx = i;
   const d = DATA[i];
+
+  $('editCardHdr').classList.add('revise-hdr');
+  $('reviseBanner').style.display = 'flex';
+  $('editRemarksLabel').innerText = 'What changed in this version?';
+  $('editLinkHint').innerText = 'Ganti dengan link/folder file versi baru — link versi lama tetap tersimpan di riwayat.';
+  $('editMetaId').readOnly = true;
+
+  $('editTitle').innerText = `Create new version — ${d.file_name || d.title || ''}`;
+  $('editSaveBtn').innerText = 'Save as new version';
+  initFormOpts();
+  loadRowIntoForm(d);
+
+  // clear remarks — this should describe THIS revision, not carry over old notes
+  setVal('editRemarks', '');
+
+  const nextVersion = (parseInt(d.version) || 1) + 1;
+  setVal('editVersionBadge', String(nextVersion));
+  setVal('editDateCreated', d.date_created || d.dateCreated || today());
+  setVal('editDateUpdated', today());
+  setVal('editDateTop', today());
+  buildMetaId();
+  fillAuthor();
+  open('editOverlay'); $('editOverlay').scrollTop = 0;
+}
+
+function loadRowIntoForm(d) {
   const get = (...keys) => { for (const k of keys) if(d[k]) return d[k]; return ''; };
   setVal('editFTitle',    get('title','file_name'));
   setVal('editFAbstract', get('abstract','desc'));
@@ -919,12 +1133,8 @@ function openEditModal(i) {
   setVal('editLicense',   get('license'));
   setVal('editDivision',  get('organization','division') || 'CarbonX GIS Team');
   setVal('editRemarks',   get('remarks'));
-  setVal('editDateTop',   today());
   setCatDropdowns(get('cat1_key','l1_key'), get('cat2_key','l2_key'), get('cat3'));
-  $('editMetaId').value = d.id || (buildMetaId(), $('editMetaId').value);
   $('editLinkOpen').href = $('editLink').value || '#';
-  fillAuthor();
-  open('editOverlay'); $('editOverlay').scrollTop = 0;
 }
 
 function clearEditForm() {
@@ -937,12 +1147,16 @@ function clearEditForm() {
 
 function resetEditForm() {
   if (!confirm('Reset all fields?')) return;
-  editMode === 'edit' ? openEditModal(editIdx) : (clearEditForm(), buildMetaId());
+  if (editMode === 'edit') openEditModal(editIdx);
+  else if (editMode === 'revise') openReviseModal(editIdx);
+  else { clearEditForm(); buildMetaId(); }
 }
 
 function collectForm() {
   const u = USERS[curUser] || {};
   const k1 = fv('editCat1'), k2 = fv('editCat2');
+  const src = editIdx >= 0 ? DATA[editIdx] : null;
+
   return {
     id:                $('editMetaId').value,
     timestamp:         new Date().toISOString(),
@@ -971,7 +1185,14 @@ function collectForm() {
     organization:      fv('editDivision'),
     email:             u.email || '',
     remarks:           fv('editRemarks'),
-    action:            editMode === 'edit' ? 'update' : 'insert',
+
+    // versioning fields
+    dataset_group_id:  editMode === 'revise' ? src.dataset_group_id : (src ? src.dataset_group_id : $('editMetaId').value),
+    version:            fv('editVersionBadge') || '1',
+    supersedes_id:      editMode === 'revise' ? (src.id || '') : (src ? (src.supersedes_id || '') : ''),
+    is_current:          'true',
+
+    action: editMode === 'edit' ? 'update' : 'insert',
   };
 }
 
@@ -979,12 +1200,14 @@ async function saveDataset() {
   const data = collectForm();
   if (!data.title)    return toast('Dataset title is required', 'err');
   if (!data.abstract) return toast('Abstract is required', 'err');
+  if (editMode === 'revise' && !data.remarks) return toast('Jelaskan apa yang berubah di versi ini', 'err');
+
   try {
     const res  = await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(data) });
     const json = JSON.parse(await res.text());
     if (!json.success) return toast(json.error || 'Save failed', 'err');
 
-    toast(editMode === 'edit' ? 'Metadata updated ✓' : 'Metadata saved ✓', 'ok');
+    // Build the local row object mirroring what's now on the sheet
     const row = {
       ...(editMode === 'edit' ? DATA[editIdx] : {}),
       id:data.id,             title:data.title,           file_name:data.title,
@@ -1003,16 +1226,51 @@ async function saveDataset() {
       creator:data.creator,  author:data.creator,
       organization:data.organization, division:data.organization,
       email:data.email,      remarks:data.remarks,
+      dataset_group_id:data.dataset_group_id,
+      version:data.version,
+      supersedes_id:data.supersedes_id,
+      is_current:'true',
     };
-    if (editMode === 'edit') DATA[editIdx] = row;
-    else { DATA.unshift(row); editCtr++; localStorage.setItem('editCtr', editCtr); }
+
+    if (editMode === 'edit') {
+      DATA[editIdx] = row;
+    } else if (editMode === 'revise') {
+      // 1. add the new version locally + to the sheet (already inserted above)
+      DATA.unshift(row);
+      editCtr++; localStorage.setItem('editCtr', editCtr);
+
+      // 2. archive the version being superseded
+      const oldRow = DATA.find(d => d.id === data.supersedes_id);
+      if (oldRow) oldRow.is_current = 'false';
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method:'POST',
+          body: JSON.stringify({ action:'set_current', id: data.supersedes_id, is_current:'false' })
+        });
+      } catch(e) {
+        console.warn('Could not archive old version on the sheet — it will show as current there until fixed manually.', e);
+        toast('Versi baru tersimpan, tapi gagal mengarsipkan versi lama di Sheet', 'err');
+      }
+    } else {
+      DATA.unshift(row); editCtr++; localStorage.setItem('editCtr', editCtr);
+    }
+
+    toast(
+      editMode === 'revise' ? `Versi ${data.version} tersimpan ✓` :
+      editMode === 'edit'   ? 'Metadata updated ✓' : 'Metadata saved ✓',
+      'ok'
+    );
     render(DATA); close('editOverlay');
   } catch(e) { console.error(e); toast('Connection failed', 'err'); }
 }
 
 async function deleteRow(i) {
   const d = DATA[i], name = d.file_name || d.title || 'this dataset';
-  if (!confirm(`Delete "${name}"?\n\nThis will also remove it from the Sheet.`)) return;
+  const warnExtra = groupSize(d.dataset_group_id) > 1
+    ? '\n\nDataset ini punya versi lain — hanya versi ini yang akan dihapus, versi lainnya tetap ada.'
+    : '';
+  if (!confirm(`Delete "${name}" (v${d.version||1})?\n\nThis will also remove it from the Sheet.${warnExtra}`)) return;
   if (d.id) {
     try {
       const res  = await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify({ action:'delete', id:d.id }) });
