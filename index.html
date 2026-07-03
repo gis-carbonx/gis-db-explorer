@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Explorer</title>
+<title>GIS Data Explorer 1</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -60,26 +60,36 @@ header {
   font: 700 13px 'Inter'; color: #fff;
 }
 
-/* page */
-.page { padding: 26px; max-width: 1560px; margin: auto; }
-.toolbar {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 20px; flex-wrap: wrap; justify-content: flex-end;
+/* layout */
+.layout { display: flex; align-items: flex-start; gap: 24px; padding: 26px; max-width: 1560px; margin: auto; }
+.main-content { flex: 1; min-width: 0; }
+
+/* sidebar */
+.sidebar {
+  width: 264px; flex-shrink: 0;
+  background: #fff; border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  position: sticky; top: 26px;
 }
-.toolbar input, .toolbar select {
-  height: 44px; border: 1px solid #d1d5db; border-radius: 9px;
-  padding: 0 13px; font: 14px 'Inter'; outline: none;
-  background: #fff; color: var(--text);
+.sidebar-hdr { display: flex; justify-content: space-between; align-items: center; }
+.sidebar-hdr h3 { font-size: 15px; font-weight: 700; }
+.sidebar-reset { font-size: 12px; color: var(--blue); cursor: pointer; background: none; border: none; }
+.sidebar-reset:hover { text-decoration: underline; }
+.filter-block { display: flex; flex-direction: column; gap: 6px; }
+.filter-block label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.filter-block input, .filter-block select {
+  height: 40px; border: 1px solid #d1d5db; border-radius: 9px;
+  padding: 0 12px; font: 13px 'Inter'; outline: none;
+  background: #fff; color: var(--text); width: 100%;
 }
-.toolbar input { width: 400px; }
-.toolbar input:focus, .toolbar select:focus { border-color: var(--blue); }
+.filter-block input:focus, .filter-block select:focus { border-color: var(--blue); }
+.sidebar hr { border: none; border-top: 1px solid var(--border); margin: 2px 0; }
 .toolbar-check {
-  display: flex; align-items: center; gap: 7px;
-  font: 500 12px 'Inter'; color: var(--muted);
-  background: #fff; border: 1px solid #d1d5db; border-radius: 9px;
-  height: 44px; padding: 0 13px; cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 8px;
+  font: 500 13px 'Inter'; color: var(--text); cursor: pointer; user-select: none;
 }
 .toolbar-check input { width: 15px; height: 15px; cursor: pointer; }
+.sidebar-link { width: 100%; text-align: center; text-decoration: none; display: block; box-sizing: border-box; }
 
 /* table */
 .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
@@ -145,12 +155,6 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
 }
 .topbar-field .id-field { width: 300px; font-weight: 600; }
 
-.revise-banner {
-  margin: 14px 22px 0;
-  padding: 0; font-size: 12px; color: #92400e;
-  display: flex; align-items: center; gap: 8px;
-}
-
 .edit-body { padding: 22px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form-section {
@@ -192,10 +196,6 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
 .author-box .avatar { width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg,var(--navy),var(--navy2)); flex-shrink: 0; }
 .author-box .name { font-weight: 600; font-size: 13px; }
 .author-box .email { font-size: 12px; color: var(--muted); }
-.form-notice {
-  grid-column: 1/-1; background: #fffbeb; border: 1px solid #fde68a;
-  border-radius: 8px; padding: 10px 13px; font-size: 12px; color: #92400e;
-}
 .edit-footer {
   padding: 13px 22px; border-top: 1px solid var(--border);
   background: #fafafa; display: flex; justify-content: space-between; align-items: center;
@@ -290,21 +290,22 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
 
 /* version history — embedded inside the View modal */
 .meta-history-hdr {
-  margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
-  font: 700 13px 'Inter'; color: var(--navy); margin-bottom: 6px;
+  margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+  font: 700 14px 'Inter'; color: var(--navy); margin-bottom: 4px;
 }
 .history-item {
-  display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border);
+  display: flex; gap: 14px; padding: 16px 0;
+  border-bottom: 1px solid var(--border);
 }
-.history-item:last-child { border-bottom: none; }
-.history-dot-col { display: flex; flex-direction: column; align-items: center; }
-.history-dot { width: 12px; height: 12px; border-radius: 50%; background: #d1d5db; margin-top: 4px; }
+.history-item:last-child { border-bottom: none; padding-bottom: 4px; }
+.history-dot-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding-top: 3px; }
+.history-dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; flex-shrink: 0; }
 .history-dot.current { background: var(--green); }
-.history-line { flex: 1; width: 2px; background: var(--border); margin-top: 4px; }
-.history-content { flex: 1; }
-.history-content .hv-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; display: flex; align-items: center; gap: 8px; }
-.history-content .hv-meta { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-.history-content .hv-remark { font-size: 12px; color: var(--muted); }
+.history-line { flex: 1; width: 2px; background: var(--border); margin-top: 6px; min-height: 20px; }
+.history-content { flex: 1; min-width: 0; }
+.history-content .hv-title { font-weight: 700; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+.history-content .hv-meta { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+.history-content .hv-remark { font-size: 12px; color: var(--text); background: #f9fafb; border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; }
 
 /* toast */
 .toast {
@@ -344,40 +345,62 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
   </div>
 </header>
 
-<div class="page">
-  <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="Search datasets…">
-    <select id="catFilter"><option value="">All Categories</option></select>
-    <select id="geoFilter"><option value="">All Types</option></select>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-hdr">
+      <h3>Filters</h3>
+      <button class="sidebar-reset" onclick="resetFilters()">Reset</button>
+    </div>
+
+    <div class="filter-block">
+      <label>Search datasets</label>
+      <input type="text" id="searchInput" placeholder="Search datasets…">
+    </div>
+
+    <div class="filter-block">
+      <label>Category</label>
+      <select id="catFilter"><option value="">All Categories</option></select>
+    </div>
+
+    <div class="filter-block">
+      <label>Type</label>
+      <select id="geoFilter"><option value="">All Types</option></select>
+    </div>
+
     <label class="toolbar-check">
       <input type="checkbox" id="showAllVersions" onchange="applyFilters()">
       Show all versions
     </label>
-    <a href="https://gis-carbonx.github.io/gis-db-explorer/reference" target="_blank" class="btn btn-outline">↗ Reference</a>
-    <button class="btn btn-outline" id="manageCatBtn" style="display:none" onclick="openCatManager()">Manage Categories</button>
-    <button class="btn btn-navy" onclick="openAddModal()">+ Add Dataset</button>
-  </div>
 
-  <div class="card">
-    <div class="card-header">
-      <span>Total <span id="totalCount">0</span> datasets</span>
-      <span style="font-weight:400;color:var(--muted);font-size:11px" id="hiddenCountNote"></span>
+    <hr>
+
+    <a href="https://gis-carbonx.github.io/gis-db-explorer/reference" target="_blank" class="btn btn-outline sidebar-link">↗ Reference</a>
+    <button class="btn btn-outline sidebar-link" id="manageCatBtn" style="display:none" onclick="openCatManager()">Manage Categories</button>
+    <button class="btn btn-navy sidebar-link" onclick="openAddModal()">+ Add Dataset</button>
+  </aside>
+
+  <main class="main-content">
+    <div class="card">
+      <div class="card-header">
+        <span>Total <span id="totalCount">0</span> datasets</span>
+        <span style="font-weight:400;color:var(--muted);font-size:11px" id="hiddenCountNote"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Dataset</th><th>Category</th>
+            <th>Extent</th><th>Created</th><th>Type</th>
+            <th>Last Updated</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>Dataset</th><th>Category</th>
-          <th>Extent</th><th>Created</th><th>Type</th>
-          <th>Last Updated</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
 
-  <footer>
-    <span>CarbonX</span><span>v1.2026</span>
-  </footer>
+    <footer>
+      <span>CarbonX</span><span>v1.2026</span>
+    </footer>
+  </main>
 </div>
 
 <!-- metadata view (includes version history when applicable) -->
@@ -386,7 +409,6 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
     <h3 id="metaTitle"></h3>
     <div id="metaContent"></div>
     <div id="metaHistorySection"></div>
-    <button class="btn btn-navy" style="margin-top:16px" onclick="close('metaOverlay')">Close</button>
   </div>
 </div>
 
@@ -412,11 +434,7 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
   <div class="edit-card">
     <div class="edit-card-hdr" id="editCardHdr">
       <h2 id="editTitle">Add Dataset</h2>
-      <button class="btn btn-ghost btn-sm" onclick="close('editOverlay')">Cancel</button>
       <button class="btn btn-white btn-sm" onclick="saveDataset()">☁ Save</button>
-    </div>
-    <div class="revise-banner" id="reviseBanner" style="display:none">
-      ⚠ Ini akan membuat <strong>versi baru</strong> dari dataset ini. Versi sebelumnya akan diarsipkan (tidak dihapus) dan tetap bisa dilihat lewat riwayat versi.
     </div>
     <div class="edit-topbar">
       <div class="topbar-field">
@@ -514,7 +532,6 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
             </div>
           </div>
         </div>
-        <div class="form-notice" id="editFormNotice">Double-check all info before saving — changes go straight to Google Sheet.</div>
       </div>
     </div>
     <div class="edit-footer">
@@ -588,10 +605,9 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
         </div>
       </div>
     </div>
-    <div class="catmgr-footer">
+    <div class="catmgr-footer" style="justify-content:flex-start">
       <a href="https://docs.google.com/spreadsheets/d/1Os3rvfP1w4kZkMjGJ_vk3A5ucOeXp15aamysSltuij8/edit?gid=579807719#gid=579807719"
          target="_blank" class="btn btn-outline btn-sm">↗ Spreadsheet</a>
-      <button class="btn btn-navy btn-sm" onclick="close('catOverlay')">Close</button>
     </div>
   </div>
 </div>
@@ -844,6 +860,14 @@ function applyFilters() {
   }));
 }
 
+function resetFilters() {
+  $('searchInput').value = '';
+  $('catFilter').value = '';
+  $('geoFilter').value = '';
+  $('showAllVersions').checked = false;
+  applyFilters();
+}
+
 // ── METADATA VIEW (includes version history when applicable) ──
 function showMeta(i) {
   const d = DATA[i];
@@ -1011,8 +1035,6 @@ function fillAuthor() {
 // ── ADD / EDIT / REVISE MODAL ─────────────────────────────────
 function resetModalChrome() {
   $('editCardHdr').classList.remove('revise-hdr');
-  $('reviseBanner').style.display = 'none';
-  $('editFormNotice').style.display = 'block';
   $('editRemarksLabel').innerText = 'Remarks';
   $('editLinkHint').innerText = '';
   $('editMetaId').readOnly = true;
@@ -1056,8 +1078,6 @@ function openReviseModal(i) {
   const d = DATA[i];
 
   $('editCardHdr').classList.add('revise-hdr');
-  $('reviseBanner').style.display = 'flex';
-  $('editFormNotice').style.display = 'none';
   $('editRemarksLabel').innerText = 'What changed in this version?';
   $('editLinkHint').innerText = 'Ganti dengan link/folder file versi baru — link versi lama tetap tersimpan di riwayat.';
   $('editMetaId').readOnly = true;
@@ -1163,11 +1183,17 @@ function collectForm() {
   };
 }
 
+let isSaving = false;
+
 async function saveDataset() {
+  if (isSaving) return;
   const data = collectForm();
   if (!data.title)    return toast('Dataset title is required', 'err');
   if (!data.abstract) return toast('Abstract is required', 'err');
   if (editMode === 'revise' && !data.remarks) return toast('Jelaskan apa yang berubah di versi ini', 'err');
+
+  isSaving = true;
+  $('editSaveBtn').disabled = true;
 
   try {
     const res  = await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(data) });
@@ -1230,6 +1256,7 @@ async function saveDataset() {
     );
     render(DATA); close('editOverlay');
   } catch(e) { console.error(e); toast('Connection failed', 'err'); }
+  finally { isSaving = false; $('editSaveBtn').disabled = false; }
 }
 
 async function deleteRow(i) {
