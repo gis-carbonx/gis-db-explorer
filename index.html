@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Explorer 1</title>
+<title>GIS Data Explorer</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -291,21 +291,19 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
 /* version history — embedded inside the View modal */
 .meta-history-hdr {
   margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
-  font: 700 14px 'Inter'; color: var(--navy); margin-bottom: 4px;
+  font: 700 14px 'Inter'; color: var(--navy); margin-bottom: 10px;
 }
-.history-item {
-  display: flex; gap: 14px; padding: 16px 0;
-  border-bottom: 1px solid var(--border);
+.history-table { width: 100%; border-collapse: collapse; }
+.history-table th {
+  text-align: left; font-size: 11px; font-weight: 600; color: var(--muted);
+  padding: 6px 8px; border-bottom: 1px solid var(--border);
 }
-.history-item:last-child { border-bottom: none; padding-bottom: 4px; }
-.history-dot-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding-top: 3px; }
-.history-dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; flex-shrink: 0; }
-.history-dot.current { background: var(--green); }
-.history-line { flex: 1; width: 2px; background: var(--border); margin-top: 6px; min-height: 20px; }
-.history-content { flex: 1; min-width: 0; }
-.history-content .hv-title { font-weight: 700; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
-.history-content .hv-meta { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
-.history-content .hv-remark { font-size: 12px; color: var(--text); background: #f9fafb; border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; }
+.history-table td {
+  padding: 10px 8px; font-size: 12px; color: var(--text);
+  border-bottom: 1px solid var(--border); vertical-align: top;
+}
+.history-table tr:last-child td { border-bottom: none; }
+.history-table tr.hv-current td { font-weight: 700; }
 
 /* toast */
 .toast {
@@ -693,7 +691,12 @@ const $    = id => document.getElementById(id);
 const fv   = id => ($( id)?.value || '').trim();
 const today = () => new Date().toISOString().split('T')[0];
 const slugify = s => s.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-const isCurrent = d => (d.is_current === undefined || d.is_current === '' || d.is_current === 'true' || d.is_current === true);
+const isCurrent = d => {
+  const raw = d.is_current;
+  if (raw === undefined || raw === null || raw === '') return true; // legacy rows tanpa kolom ini
+  const v = String(raw).trim().toLowerCase();
+  return v === 'true' || v === '1' || v === 'yes';
+};
 
 function deriveCode(label) {
   const m = label.match(/^([A-Z0-9]+)\.\s/) || label.match(/^(\d+)/);
@@ -888,6 +891,12 @@ function showMeta(i) {
 
   $('metaHistorySection').innerHTML = buildHistorySection(d.dataset_group_id);
   open('metaOverlay');
+
+  // pastikan selalu kelihatan dari atas — kalau sebelumnya user scroll ke
+  // bawah (misal ke bagian riwayat versi) lalu klik "View this version",
+  // tanpa ini kontennya berubah tapi tetap di posisi scroll lama sehingga
+  // terlihat seperti tombolnya tidak berfungsi.
+  document.querySelector('#metaOverlay .modal-box').scrollTop = 0;
 }
 
 function buildHistorySection(groupId) {
@@ -896,29 +905,28 @@ function buildHistorySection(groupId) {
     .sort((a,b) => (parseInt(b.version)||1) - (parseInt(a.version)||1));
   if (rows.length <= 1) return '';
 
-  const items = rows.map((d, i) => {
+  const items = rows.map((d) => {
     const idx = DATA.indexOf(d);
     const cur = isCurrent(d);
-    return `<div class="history-item">
-      <div class="history-dot-col">
-        <div class="history-dot ${cur?'current':''}"></div>
-        ${i < rows.length-1 ? '<div class="history-line"></div>' : ''}
-      </div>
-      <div class="history-content">
-        <div class="hv-title">
-          v${d.version||1}
-          <span class="tag">${cur ? 'Current' : 'Superseded'}</span>
-        </div>
-        <div class="hv-meta">Updated ${d.date_of_update||d.dateUpdated||'—'} by ${d.author||d.creator||'—'}</div>
-        <div class="hv-remark">${d.remarks || '—'}</div>
-        <div style="margin-top:8px">
-          <button class="btn btn-outline btn-sm" onclick="showMeta(${idx})">View this version</button>
-        </div>
-      </div>
-    </div>`;
+    return `<tr class="${cur ? 'hv-current' : ''}">
+      <td>v${d.version||1}</td>
+      <td>${cur ? 'Current' : 'Superseded'}</td>
+      <td>${d.date_created||d.dateCreated||'—'}</td>
+      <td>${d.date_of_update||d.dateUpdated||'—'}</td>
+      <td>${d.author||d.creator||'—'}</td>
+      <td>${d.remarks || '—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="showMeta(${idx})">View</button></td>
+    </tr>`;
   }).join('');
 
-  return `<div class="meta-history-hdr">Version history (${rows.length})</div>${items}`;
+  return `
+    <div class="meta-history-hdr">Version history (${rows.length})</div>
+    <table class="history-table">
+      <thead>
+        <tr><th>Version</th><th>Status</th><th>Created</th><th>Updated</th><th>By</th><th>Description</th><th></th></tr>
+      </thead>
+      <tbody>${items}</tbody>
+    </table>`;
 }
 
 // ── AUTH ──────────────────────────────────────────────────────
