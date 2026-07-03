@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS</title>
+<title>GIS Data Explorer</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -739,12 +739,27 @@ function splitCSV(row) {
   return res.map(v => v.replace(/^"|"$/g, ''));
 }
 
+// Kolom "Metadata" sheet dipetakan berdasarkan POSISI, bukan teks header
+// baris 1 — karena header sheet sengaja dikustomisasi jadi nama yang lebih
+// enak dibaca (mis. "file_name" bukan "title", "scale" bukan "resolution",
+// "date_of_creation" bukan "dateCreated"). Urutan ini HARUS sama persis
+// dengan urutan COLUMNS di Apps Script.
+const SHEET_COLUMNS = [
+  'id','timestamp','title','abstract','keywords',
+  'cat1_key','cat1_label','cat2_key','cat2_label','cat3',
+  'geoExtent','crs','resolution','geomType',
+  'dateCreated','dateUpdated','timePeriod',
+  'dataSource','lineage','qualityAccuracy',
+  'dropboxLink','accessConstraints','license',
+  'creator','organization','email','remarks',
+  'dataset_group_id','version','supersedes_id','is_current'
+];
+
 function csvToObjects(str) {
-  const [hdr, ...rows] = str.trim().split('\n');
-  const keys = hdr.split(',');
+  const rows = str.trim().split('\n').slice(1); // baris pertama cuma judul kolom, dilewati
   return rows.map(r => {
     const vals = splitCSV(r);
-    return Object.fromEntries(keys.map((k,i) => [k.trim(), (vals[i]||'').trim()]));
+    return Object.fromEntries(SHEET_COLUMNS.map((key, i) => [key, (vals[i] || '').trim()]));
   });
 }
 
@@ -804,7 +819,7 @@ async function loadData() {
     }
 
     fillFilters();
-    render(DATA);
+    applyFilters();
   } catch(e) { console.error('Failed to load data:', e); }
 }
 
@@ -837,7 +852,7 @@ function render(rows) {
     const author  = d.author || d.creator || '';
     const cur     = isCurrent(d);
     const versionTag = `<span class="tag">v${d.version || 1}</span>` +
-      (cur ? `<span class="tag">Current</span>` : `<span class="tag">Superseded</span>`);
+      (cur ? `<span class="tag">Current</span>` : `<span class="tag">Archived</span>`);
 
     return `<tr class="${cur ? '' : 'superseded-row'}">
       <td>${DATA.indexOf(d)+1}</td>
@@ -896,7 +911,7 @@ function showMeta(i) {
   $('metaTitle').innerText = d.file_name || d.title || '';
   const link = d.dropboxLink || d.file_link || d.fileLink || '#';
   $('metaContent').innerHTML = [
-    ['Version',        `v${d.version||1} ${isCurrent(d) ? '(current)' : '(superseded)'}`],
+    ['Version',        `v${d.version||1} ${isCurrent(d) ? '(current)' : '(archived)'}`],
     ['Description',   d.desc||d.abstract||''],
     ['Category',      `${d.l1||d.cat1_label||''} / ${d.l2||d.cat2_label||''}`],
     ['Geometry Type', d.geo_type||d.geomType||''],
@@ -929,7 +944,7 @@ function buildHistorySection(groupId) {
     const cur = isCurrent(d);
     return `<tr class="${cur ? 'hv-current' : ''}">
       <td>v${d.version||1}</td>
-      <td>${cur ? 'Current' : 'Superseded'}</td>
+      <td>${cur ? 'Current' : 'Archived'}</td>
       <td>${d.date_created||d.dateCreated||'—'}</td>
       <td>${d.date_of_update||d.dateUpdated||'—'}</td>
       <td>${d.author||d.creator||'—'}</td>
@@ -979,7 +994,7 @@ function doLogin() {
     localStorage.setItem('gis_login', 'true');
     localStorage.setItem('gis_user', selLoginUser);
     loggedIn = true; curUser = selLoginUser;
-    updateHeader(); close('loginOverlay'); render(DATA);
+    updateHeader(); close('loginOverlay'); applyFilters();
     toast(`Welcome, ${u.name.split(' ')[0]}!`, 'ok');
   } else {
     $('loginErr').style.display = 'block';
@@ -991,7 +1006,7 @@ function logout() {
   if (!confirm('Log out?')) return;
   localStorage.setItem('gis_login','false'); localStorage.removeItem('gis_user');
   loggedIn = false; curUser = null;
-  updateHeader(); render(DATA); toast('Logged out');
+  updateHeader(); applyFilters(); toast('Logged out');
 }
 
 function updateHeader() {
@@ -1301,7 +1316,7 @@ async function saveDataset() {
       editMode === 'edit'   ? 'Metadata updated ✓' : 'Metadata saved ✓',
       'ok'
     );
-    render(DATA); close('editOverlay');
+    applyFilters(); close('editOverlay');
   } catch(e) { console.error(e); toast('Connection failed', 'err'); }
   finally { isSaving = false; $('editSaveBtn').disabled = false; }
 }
@@ -1319,7 +1334,7 @@ async function deleteRow(i) {
       if (!json.success) return toast('Sheet delete failed: ' + (json.error||'unknown'), 'err');
     } catch(e) { return toast('Connection failed — not deleted', 'err'); }
   }
-  DATA.splice(i, 1); render(DATA); toast('Dataset deleted', 'ok');
+  DATA.splice(i, 1); applyFilters(); toast('Dataset deleted', 'ok');
 }
 
 // ── CATEGORY MANAGER ──────────────────────────────────────────
