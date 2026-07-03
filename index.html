@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS</title>
+<title>GIS 2</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -95,8 +95,8 @@ header {
 .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
 .card-header { padding: 16px 20px; font: 600 13px 'Inter'; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 table { width: 100%; border-collapse: collapse; }
-thead { background: linear-gradient(90deg, var(--navy), var(--navy2)); color: #fff; }
-thead th { padding: 14px 15px; font-size: 12px; text-align: left; font-weight: 600; }
+.card thead { background: linear-gradient(90deg, var(--navy), var(--navy2)); color: #fff; }
+.card thead th { padding: 14px 15px; font-size: 12px; text-align: left; font-weight: 600; }
 tbody td { padding: 16px 15px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 13px; }
 tbody tr.superseded-row { background: #fafafa; }
 tbody tr.superseded-row .ds-title { color: #6b7280; }
@@ -294,9 +294,10 @@ footer { margin-top: 16px; display: flex; justify-content: space-between; font-s
   font: 700 14px 'Inter'; color: var(--navy); margin-bottom: 10px;
 }
 .history-table { width: 100%; border-collapse: collapse; }
+.history-table thead { background: #f3f4f6; }
 .history-table th {
-  text-align: left; font-size: 11px; font-weight: 600; color: var(--muted);
-  padding: 6px 8px; border-bottom: 1px solid var(--border);
+  text-align: left; font-size: 11px; font-weight: 700; color: #111827;
+  padding: 8px; border-bottom: 1px solid var(--border);
 }
 .history-table td {
   padding: 10px 8px; font-size: 12px; color: var(--text);
@@ -784,6 +785,24 @@ async function loadData() {
       if (d.is_current === undefined || d.is_current === '') d.is_current = 'true';
     });
 
+    // Guard against exact duplicate rows in the sheet (same id twice —
+    // usually leftover from a double-submit before the save button had
+    // a busy-state guard). Keep the last occurrence of each id, since
+    // that's typically the most complete/most recently written one.
+    if (DATA.some(d => d.id)) {
+      const seen = new Map();
+      DATA.forEach(d => { if (d.id) seen.set(d.id, d); });
+      const deduped = [];
+      const usedIds = new Set();
+      DATA.forEach(d => {
+        if (!d.id) { deduped.push(d); return; }
+        if (usedIds.has(d.id)) return;
+        usedIds.add(d.id);
+        deduped.push(seen.get(d.id));
+      });
+      DATA = deduped;
+    }
+
     fillFilters();
     render(DATA);
   } catch(e) { console.error('Failed to load data:', e); }
@@ -903,7 +922,7 @@ function buildHistorySection(groupId) {
   const rows = DATA
     .filter(d => d.dataset_group_id === groupId)
     .sort((a,b) => (parseInt(b.version)||1) - (parseInt(a.version)||1));
-  if (rows.length <= 1) return '';
+  if (!rows.length) return '';
 
   const items = rows.map((d) => {
     const idx = DATA.indexOf(d);
