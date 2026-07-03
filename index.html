@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS 2</title>
+<title>GIS Data Explorer 1</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1214,6 +1214,11 @@ let isSaving = false;
 
 async function saveDataset() {
   if (isSaving) return;
+  // Capture the row being revised BEFORE any array mutation below —
+  // needed as a fallback identifier in case this legacy row never had
+  // a real 'id' value written to the sheet.
+  const reviseSourceRow = (editMode === 'revise' && editIdx >= 0) ? DATA[editIdx] : null;
+
   const data = collectForm();
   if (!data.title)    return toast('Dataset title is required', 'err');
   if (!data.abstract) return toast('Abstract is required', 'err');
@@ -1259,15 +1264,30 @@ async function saveDataset() {
       DATA.unshift(row);
       editCtr++; localStorage.setItem('editCtr', editCtr);
 
-      // 2. archive the version being superseded
-      const oldRow = DATA.find(d => d.id === data.supersedes_id);
+      // 2. archive the version being superseded — pass a fallback
+      // identifier (title + dateCreated) in case this old row never
+      // had a real id written to the sheet, which was the actual root
+      // cause of "status tidak berubah": the id-based lookup failed
+      // silently and the old version stayed marked as current forever.
+      const oldRow = DATA.find(d => d.id === data.supersedes_id) || reviseSourceRow;
       if (oldRow) oldRow.is_current = 'false';
 
       try {
-        await fetch(SCRIPT_URL, {
+        const arcRes  = await fetch(SCRIPT_URL, {
           method:'POST',
-          body: JSON.stringify({ action:'set_current', id: data.supersedes_id, is_current:'false' })
+          body: JSON.stringify({
+            action: 'set_current',
+            id: data.supersedes_id,
+            fallback_title: reviseSourceRow ? (reviseSourceRow.title || reviseSourceRow.file_name || '') : '',
+            fallback_date_created: reviseSourceRow ? (reviseSourceRow.date_created || reviseSourceRow.dateCreated || '') : '',
+            is_current: 'false',
+          })
         });
+        const arcJson = JSON.parse(await arcRes.text());
+        if (!arcJson.success) {
+          console.warn('Archive old version failed:', arcJson.error);
+          toast('Versi baru tersimpan, tapi versi lama gagal diarsipkan: ' + (arcJson.error || 'unknown'), 'err');
+        }
       } catch(e) {
         console.warn('Could not archive old version on the sheet — it will show as current there until fixed manually.', e);
         toast('Versi baru tersimpan, tapi gagal mengarsipkan versi lama di Sheet', 'err');
