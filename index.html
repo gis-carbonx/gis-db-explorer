@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Explorer</title>
+<title>GIS Data Explorer 1</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -436,6 +436,7 @@ footer { margin-top: 14px; display: flex; justify-content: space-between; font-s
       <button class="btn btn-white btn-sm" onclick="saveDataset()">☁ Save</button>
     </div>
     <div class="edit-topbar">
+      <input type="hidden" id="editBaseId">
       <div class="topbar-field">
         <label>Metadata ID</label>
         <input type="text" id="editMetaId" class="id-field" readonly>
@@ -455,7 +456,7 @@ footer { margin-top: 14px; display: flex; justify-content: space-between; font-s
         <div class="form-section">
           <div class="form-section-hdr">1. Identification</div>
           <div class="form-section-body">
-            <div class="field"><label>Title <span class="req">*</span></label><input type="text" id="editFTitle"></div>
+            <div class="field"><label>Title <span class="req">*</span></label><input type="text" id="editFTitle" oninput="buildMetaId()"></div>
             <div class="field"><label>Abstract <span class="req">*</span></label><textarea id="editFAbstract" rows="3"></textarea></div>
             <div class="field"><label>Keywords</label><input type="text" id="editFKeywords"><div class="hint">Comma-separated</div></div>
             <div class="cat-row">
@@ -1021,13 +1022,43 @@ function updateHeader() {
 }
 
 // ── EDIT FORM — CATEGORY CASCADE ─────────────────────────────
+
+// Mengubah teks jadi PascalCase tanpa spasi, mis. "Batas Kabupaten Sanggau"
+// -> "BatasKabupatenSanggau" (sesuai contoh di standar penamaan).
+function toPascalCase(text) {
+  return (text || '')
+    .replace(/[^a-zA-Z0-9\s]/g, '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join('');
+}
+
+// Kode Level 2, 3-4 huruf kapital, sesuai standar (contoh: BIO, SOP).
+// Diprioritaskan dari field "Code" yang diisi manual saat menambah
+// kategori Level 2 (lihat Manage Categories). Untuk kategori lama yang
+// masih pakai kode angka (mis. "01"), kode diturunkan otomatis dari
+// labelnya sebagai fallback.
+function deriveLvl2Code(key, label) {
+  if (key && /^[A-Za-z]+$/.test(key)) return key.toUpperCase().slice(0, 4);
+  const clean = (label || '').replace(/^\d+\.\s*/, '').trim();
+  const words = clean.split(/\s+/).filter(Boolean);
+  if (!words.length) return 'GEN';
+  if (words.length === 1) return words[0].toUpperCase().slice(0, 4);
+  return words.map(w => w[0]).join('').toUpperCase().slice(0, 4);
+}
+
 function buildMetaId() {
   const d = new Date(), p = n => String(n).padStart(2,'0');
-  const dd=p(d.getDate()), mm=p(d.getMonth()+1), yy=String(d.getFullYear()).slice(-2);
-  const k1=fv('editCat1'), k2=fv('editCat2'), k3=fv('editCat3');
-  const seg3 = k3 ? slugify(k3) : (k2||'000');
-  const version = fv('editVersionBadge') || '1';
-  $('editMetaId').value = `${dd}${mm}${yy}-${k1||'00'}/${k2||'00'}/${seg3}-${curUser||'XX'}-${String(editCtr).padStart(4,'0')}-v${version}`;
+  const yyyymmdd = `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`;
+  const k1 = fv('editCat1'), k2 = fv('editCat2');
+  const lvl2Code  = deriveLvl2Code(k2, CAT[k1]?.sub[k2]?.label || '');
+  const deskripsi = toPascalCase(fv('editFTitle')) || 'UntitledDataset';
+  const version   = fv('editVersionBadge') || '1';
+
+  const baseId = `${lvl2Code}_${deskripsi}_${yyyymmdd}`;
+  $('editBaseId').value = baseId;
+  $('editMetaId').value = `${baseId}_v${version}`;
 }
 
 // single function handles L1→L2 and L2→L3 cascade
@@ -1216,7 +1247,7 @@ function collectForm() {
     remarks:           fv('editRemarks'),
 
     // versioning fields
-    dataset_group_id:  editMode === 'revise' ? src.dataset_group_id : (src ? src.dataset_group_id : $('editMetaId').value),
+    dataset_group_id:  editMode === 'revise' ? src.dataset_group_id : (src ? src.dataset_group_id : $('editBaseId').value),
     version:            fv('editVersionBadge') || '1',
     supersedes_id:      editMode === 'revise' ? (src.id || '') : (src ? (src.supersedes_id || '') : ''),
     is_current:          'true',
