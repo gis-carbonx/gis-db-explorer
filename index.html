@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIS Data Explorer 0</title>
+<title>GIS Data Explorer</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -433,7 +433,6 @@ footer { margin-top: 14px; display: flex; justify-content: space-between; font-s
   <div class="edit-card">
     <div class="edit-card-hdr" id="editCardHdr">
       <h2 id="editTitle">Add Dataset</h2>
-      <button class="btn btn-white btn-sm" onclick="saveDataset()">☁ Save</button>
     </div>
     <div class="edit-topbar">
       <input type="hidden" id="editBaseId">
@@ -476,7 +475,6 @@ footer { margin-top: 14px; display: flex; justify-content: space-between; font-s
               <input type="text" id="editCRS">
               <select id="editCRSQuick" style="margin-top:3px;font-size:11px;padding:3px 7px;font-family:inherit"></select>
             </div>
-            <div class="field"><label>Resolution / Scale</label><input type="text" id="editResolution"></div>
             <div class="field"><label>Geometry Type</label><select id="editGeomType"></select></div>
           </div>
         </div>
@@ -485,7 +483,6 @@ footer { margin-top: 14px; display: flex; justify-content: space-between; font-s
           <div class="form-section-hdr">3. Temporal</div>
           <div class="form-section-body">
             <div class="field"><label>Date Created</label><input type="date" id="editDateCreated"></div>
-            <div class="field"><label>Date Updated</label><input type="date" id="editDateUpdated"></div>
             <div class="field"><label>Period Covered</label><input type="text" id="editPeriod"></div>
           </div>
         </div>
@@ -495,7 +492,6 @@ footer { margin-top: 14px; display: flex; justify-content: space-between; font-s
           <div class="form-section-body">
             <div class="field"><label>Data Source</label><input type="text" id="editSource"></div>
             <div class="field"><label>Lineage / Processing</label><textarea id="editLineage" rows="3"></textarea></div>
-            <div class="field"><label>Quality / Accuracy</label><input type="text" id="editQuality"></div>
           </div>
         </div>
         <!-- 5. Access -->
@@ -1122,7 +1118,7 @@ function openAddModal() {
   initFormOpts();
   clearEditForm();
   setVal('editVersionBadge', '1');
-  setVal('editDateCreated', today()); setVal('editDateUpdated', today()); setVal('editDateTop', today());
+  setVal('editDateCreated', today()); setVal('editDateTop', today());
   fillAuthor(); buildMetaId();
   open('editOverlay'); $('editOverlay').scrollTop = 0;
 }
@@ -1166,7 +1162,6 @@ function openReviseModal(i) {
   const nextVersion = (parseInt(d.version) || 1) + 1;
   setVal('editVersionBadge', String(nextVersion));
   setVal('editDateCreated', d.date_created || d.dateCreated || today());
-  setVal('editDateUpdated', today());
   setVal('editDateTop', today());
   buildMetaId();
   fillAuthor();
@@ -1180,14 +1175,11 @@ function loadRowIntoForm(d) {
   setVal('editFKeywords', get('keywords'));
   setVal('editExtent',    get('geoExtent','extent'));
   setVal('editCRS',       get('crs'));
-  setVal('editResolution',get('resolution'));
   setVal('editGeomType',  get('geomType','geo_type'));
   setVal('editDateCreated',get('dateCreated','date_created') || today());
-  setVal('editDateUpdated',get('dateUpdated','date_of_update') || today());
   setVal('editPeriod',    get('timePeriod','time_period'));
   setVal('editSource',    get('dataSource','source'));
   setVal('editLineage',   get('lineage'));
-  setVal('editQuality',   get('qualityAccuracy'));
   setVal('editLink',      get('dropboxLink','file_link','fileLink'));
   setVal('editAccess',    get('accessConstraints','access_constraints'));
   setVal('editLicense',   get('license'));
@@ -1198,8 +1190,8 @@ function loadRowIntoForm(d) {
 }
 
 function clearEditForm() {
-  ['editFTitle','editFAbstract','editFKeywords','editCRS','editResolution',
-   'editPeriod','editSource','editLineage','editQuality','editLink','editRemarks']
+  ['editFTitle','editFAbstract','editFKeywords','editCRS',
+   'editPeriod','editSource','editLineage','editLink','editRemarks']
     .forEach(id => setVal(id, ''));
   ['editExtent','editGeomType','editAccess','editLicense'].forEach(id => $(id).selectedIndex = 0);
   setVal('editDivision','CarbonX GIS Team');
@@ -1230,14 +1222,21 @@ function collectForm() {
     cat3:              fv('editCat3'),
     geoExtent:         fv('editExtent'),
     crs:               fv('editCRS'),
-    resolution:        fv('editResolution'),
+    // Resolution / Scale is no longer an editable field — carry the
+    // previous value forward untouched (blank for brand-new datasets)
+    // so we don't wipe existing data on edit/revise.
+    resolution:        src ? (src.resolution || '') : '',
     geomType:          fv('editGeomType'),
     dateCreated:       fv('editDateCreated'),
-    dateUpdated:       fv('editDateUpdated'),
+    // Date Updated is no longer a manual field — it now simply reflects
+    // the moment this save happened.
+    dateUpdated:       today(),
     timePeriod:        fv('editPeriod'),
     dataSource:        fv('editSource'),
     lineage:           fv('editLineage'),
-    qualityAccuracy:   fv('editQuality'),
+    // Quality / Accuracy is no longer an editable field — same
+    // carry-forward treatment as resolution above.
+    qualityAccuracy:   src ? (src.qualityAccuracy || '') : '',
     dropboxLink:       fv('editLink'),
     accessConstraints: fv('editAccess'),
     license:           fv('editLicense'),
